@@ -55,8 +55,8 @@ local QPred = GetPredictionForPlayer(GetOrigin(GetMyHero()), target, GetMoveSpee
 								CastSpell(_W)
 						end
 -- E
-						if ValidTarget(target, 240) and Menu.useE then -- Fixed E 2.0
-									CastSpell(_E)
+						if CanUseSpell(myHero, _E) == READY and not IsInDistance(target, 150) and IsInDistance(target, 245) and Menu.useE then
+                              CastSpell(_E)
 						end
 		end
 	end)
