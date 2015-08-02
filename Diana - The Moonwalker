@@ -1,5 +1,14 @@
 require('Inspired')
 
+
+-- Thanks to:
+-----------------------------
+-- Deftsu
+-- Zypppy
+-- Cloud
+-- Inspired
+-----------------------------
+
 Menu = scriptConfig("Diana", "Moonwalker")
 Menu.addParam("useQ", "Use Q in combo", SCRIPT_PARAM_ONOFF, true)
 Menu.addParam("useW", "Use W in combo", SCRIPT_PARAM_ONOFF, true)
@@ -7,15 +16,36 @@ Menu.addParam("useE", "Use E in combo", SCRIPT_PARAM_ONOFF, true)
 Menu.addParam("useR", "Use R in combo", SCRIPT_PARAM_ONOFF, true)
 --Menu.addParam("ksR", "Use R to killsteal", SCRIPT_PARAM_ONOFF, true)
 Menu.addParam("combo", "Combo", SCRIPT_PARAM_KEYDOWN, string.byte(" "))
-
 Menu.addParam("escape", "Escape to mouse position", SCRIPT_PARAM_KEYDOWN, string.byte("a"))
 
+Menu.addParam("DrawQ", "Draw Q range", SCRIPT_PARAM_ONOFF, false)
+Menu.addParam("DrawW", "Draw W range", SCRIPT_PARAM_ONOFF, true)
+Menu.addParam("DrawE", "Draw E range", SCRIPT_PARAM_ONOFF, true)
+Menu.addParam("DrawR", "Draw R range", SCRIPT_PARAM_ONOFF, true)
+
 OnLoop(function(myHero)
+
 
 local myHeroPos = GetOrigin(myHero)
 local target = GetCurrentTarget()
 local mymouse = GetMousePos()
 local QPred = GetPredictionForPlayer(GetOrigin(GetMyHero()), target, GetMoveSpeed(target),2000, 250, 830, 150, false, true)
+
+-- Drawings
+
+	if Menu.DrawQ then
+		DrawCircle(myHeroPos,GetCastRange(myHero,_Q),1,1,0x00F57F)
+	end
+	if Menu.DrawW then
+		DrawCircle(myHeroPos,GetCastRange(myHero,_W),1,1,0x00F57F)
+	end
+	if Menu.DrawE then
+		DrawCircle(myHeroPos,GetCastRange(myHero,_E),1,1,0x00F57F)
+	end
+	if Menu.DrawR then
+		DrawCircle(myHeroPos,GetCastRange(myHero,_R),1,1,0x00F57F)
+	end
+
 
 -- Escape
 
@@ -30,8 +60,6 @@ local QPred = GetPredictionForPlayer(GetOrigin(GetMyHero()), target, GetMoveSpee
 
 		end
 	end
-
-
 
 
 		if Menu.combo then
@@ -51,10 +79,10 @@ local QPred = GetPredictionForPlayer(GetOrigin(GetMyHero()), target, GetMoveSpee
 							CastSkillShot(_Q, QPred.PredPos.x, QPred.PredPos.y, QPred.PredPos.z)
 						end
 -- W
-						if ValidTarget(target, 200) and Menu.useW then -- Fixed W - Working 2.0
+						if ValidTarget(target, 200) and Menu.useW then
 								CastSpell(_W)
 						end
--- E
+-- E (Simple Logic)
 						if CanUseSpell(myHero, _E) == READY and not IsInDistance(target, 150) and IsInDistance(target, 245) and Menu.useE then
                               CastSpell(_E)
 						end
