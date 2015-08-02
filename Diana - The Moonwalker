@@ -14,6 +14,7 @@ OnLoop(function(myHero) --RQ-Combo
 
 	myHeroPos = GetOrigin(myHero)
 	local target = GetCurrentTarget()
+	local QPred = GetPredictionForPlayer(myHeroPos, target, GetMoveSpeed(target), 1600, 250, GetCastRange(myHero, _Q), 150, false, true)
 
 		if Menu.combo then
 
@@ -22,19 +23,16 @@ OnLoop(function(myHero) --RQ-Combo
 				if ValidTarget(target, GetCastRange(myHero, _R)) then
 					CastTargetSpell(target,_R)
 
-						if ValidTarget(target, GetCastRange(myHero, _W)) then
-						CastTargetSpell(target,_W)
-						end
-							
-							if ValidTarget(target, GetCastRange(myHero, _E)) then
-								CastTargetSpell(target,_E)
-							end
-
-						local QPred = GetPredictionForPlayer(myHeroPos, target, GetMoveSpeed(target), 1600, 250, GetCastRange(myHero, _Q), 150, false, true)
-
-						if QPred.HitChance == 1 and CanUseSpell(myHero, _Q) == READY and Menu.useQ then -- Cast Q
+						if QPred.HitChance == 1 and CanUseSpell(myHero, _Q) == READY and Menu.useQ then -- Cast Q Broken?
 							CastSkillShot(_Q, QPred.PredPos.x, QPred.PredPos.y, QPred.PredPos.z)
 						end
+
+							if ValidTarget(target, GetCastRange(myHero, _W)) then -- Fixed W
+								CastSpell(_W)
+							end
+								if ValidTarget(target, GetCastRange(myHero, _E)) then -- Fixed E
+								CastSpell(_E)
+								end
 				end
 			end
 		end
