@@ -14,15 +14,20 @@ OnLoop(function(myHero)
 
 local myHeroPos = GetOrigin(myHero)
 local target = GetCurrentTarget()
-local mymouse = GetMousePos();
+local mymouse = GetMousePos()
 local QPred = GetPredictionForPlayer(GetOrigin(GetMyHero()), target, GetMoveSpeed(target),2000, 250, 830, 150, false, true)
 
+-- Escape
+
 	if Menu.escape then
-		mymouse = GetMousePos();
 		if CanUseSpell(myHero,_Q) == READY and CanUseSpell(myHero,_R) == READY then
 			CastSkillShot(_Q,mymouse.x,mymouse.y,mymouse.z)
 			delay(100)
 			CastTargetSpell(_R,mymouse.x,mymouse.y,mymouse.z)
+
+			elseif CanUseSpell(myHero,_R) == READY and CanUseSpell(myHero,_Q) == NOTAVAILABLE then
+				CastTargetSpell(_R,mymouse.x,mymouse.y,mymouse.z)
+
 		end
 	end
 
