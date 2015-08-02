@@ -26,8 +26,8 @@ OnLoop(function(myHero) --RQ-Combo
 
 
 		if Menu.combo then
-
-	    	if CanUseSpell(myHero, _R) == READY and CanUseSpell(myHero, _Q) == READY and Menu.useR then --QR Combo
+-- RQ-Combo
+	    	if CanUseSpell(myHero, _R) == READY and CanUseSpell(myHero, _Q) == READY and Menu.useR then
 
 				if ValidTarget(target, GetCastRange(myHero, _R)) then
 					CastTargetSpell(target,_R)
@@ -37,11 +37,21 @@ OnLoop(function(myHero) --RQ-Combo
 						end
 				end
 			end
-							if ValidTarget(target, 200) and Menu.useW then -- Fixed W - Working 2.0 (range added)
+-- Basic Combo
+-- Q
+						if QPred.HitChance == 1 and CanUseSpell(myHero, _Q) == READY and Menu.useQ then
+							CastSkillShot(_Q, QPred.PredPos.x, QPred.PredPos.y, QPred.PredPos.z)
+						end
+-- W
+						if ValidTarget(target, 200) and Menu.useW then -- Fixed W - Working 2.0
 								CastSpell(_W)
-							end
-								if ValidTarget(target, 240) and Menu.useE then -- Fixed E 2.0 (Range Logic)
+						end
+-- E
+						if ValidTarget(target, 240) and Menu.useE then -- Fixed E 2.0
 									CastSpell(_E)
-								end
+						end
+
+
+
 		end
 	end)
