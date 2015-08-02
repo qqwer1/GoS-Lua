@@ -1,0 +1,43 @@
+require('Inspired')
+
+Menu = scriptConfig("Diana", "Moonwalker")
+Menu.addParam("useQ", "Use Q in combo", SCRIPT_PARAM_ONOFF, true)
+--Menu.addParam("useW", "Use W in combo", SCRIPT_PARAM_ONOFF, true)
+--Menu.addParam("useE", "Use E in combo", SCRIPT_PARAM_ONOFF, true)
+Menu.addParam("useR", "Use R in combo", SCRIPT_PARAM_ONOFF, true)
+--Menu.addParam("ksR", "Use R to killsteal", SCRIPT_PARAM_ONOFF, true)
+Menu.addParam("combo", "Combo", SCRIPT_PARAM_KEYDOWN, string.byte(" "))
+
+local myHero = GetMyHero()
+
+OnLoop(function(myHero) --RQ-Combo
+
+	myHeroPos = GetOrigin(myHero)
+	local target = GetCurrentTarget()
+
+		if Menu.combo then
+
+	    	if CanUseSpell(myHero, _R) == READY and CanUseSpell(myHero, _Q) == READY and Menu.useR then
+
+				if ValidTarget(target, GetCastRange(myHero, _R)) then
+					CastTargetSpell(target,_R)
+
+						if ValidTarget(target, GetCastRange(myHero, _W)) then
+						CastTargetSpell(target,_W)
+						end
+							
+							if ValidTarget(target, GetCastRange(myHero, _E)) then
+								CastTargetSpell(target,_E)
+							end
+
+						local QPred = GetPredictionForPlayer(myHeroPos, target, GetMoveSpeed(target), 1600, 250, GetCastRange(myHero, _Q), 150, false, true)
+
+						if QPred.HitChance == 1 and CanUseSpell(myHero, _Q) == READY and Menu.useQ then -- Cast Q
+							CastSkillShot(_Q, QPred.PredPos.x, QPred.PredPos.y, QPred.PredPos.z)
+						end
+				end
+			end
+		end
+
+
+	end)
