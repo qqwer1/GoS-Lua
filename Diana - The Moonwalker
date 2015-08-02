@@ -10,19 +10,19 @@ Menu.addParam("combo", "Combo", SCRIPT_PARAM_KEYDOWN, string.byte(" "))
 
 Menu.addParam("useqtom", "Use Q to mouse position", SCRIPT_PARAM_KEYDOWN, string.byte("a"))
 
-local myHero = GetMyHero()
-OnLoop(function(myHero)
+myHeroPos = GetOrigin(myHero)
+local target = GetCurrentTarget()
+mymouse = GetMousePos();
+
 	if Menu.useqtom then
+		mymouse = GetMousePos();
 		if CanUseSpell(myHero,_Q) == READY then
 			CastSkillShot(_Q,mymouse.x,mymouse.y,mymouse.z)
 		end
 	end
-end)
 
 OnLoop(function(myHero) --RQ-Combo
 
-	myHeroPos = GetOrigin(myHero)
-	local target = GetCurrentTarget()
 
 
 		if Menu.combo then
