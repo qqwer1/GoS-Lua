@@ -10,10 +10,12 @@ Menu.addParam("combo", "Combo", SCRIPT_PARAM_KEYDOWN, string.byte(" "))
 
 Menu.addParam("useqtom", "Use Q to mouse position", SCRIPT_PARAM_KEYDOWN, string.byte("a"))
 
+OnLoop(function(myHero) --RQ-Combo
+
 local myHeroPos = GetOrigin(myHero)
 local target = GetCurrentTarget()
 local mymouse = GetMousePos();
-local QPred = GetPredictionForPlayer(GetOrigin(GetMyHero()), target, GetMoveSpeed(target),2000, 250, 830, 150, false,false)
+local QPred = GetPredictionForPlayer(GetOrigin(GetMyHero()), target, GetMoveSpeed(target),2000, 250, 830, 150, false, true)
 
 	if Menu.useqtom then
 		mymouse = GetMousePos();
@@ -22,7 +24,7 @@ local QPred = GetPredictionForPlayer(GetOrigin(GetMyHero()), target, GetMoveSpee
 		end
 	end
 
-OnLoop(function(myHero) --RQ-Combo
+
 
 
 		if Menu.combo then
@@ -31,7 +33,7 @@ OnLoop(function(myHero) --RQ-Combo
 
 				if ValidTarget(target, GetCastRange(myHero, _R)) then
 					CastTargetSpell(target,_R)
-					-- QPred = GetPredictionForPlayer(myHeroPos, target, GetMoveSpeed(target), 1600, 250, GetCastRange(myHero, _Q), 150, false, true) -- Q Pred
+					--QPred = GetPredictionForPlayer(myHeroPos, target, GetMoveSpeed(target), 1600, 250, GetCastRange(myHero, _Q), 150, false, true) -- Q Pred
 						if QPred.HitChance == 1 and CanUseSpell(myHero, _Q) == READY and Menu.useQ then -- Cast Q Broken?
 							CastSkillShot(_Q, QPred.PredPos.x, QPred.PredPos.y, QPred.PredPos.z)
 						end
