@@ -8,7 +8,7 @@ Menu.addParam("useR", "Use R in combo", SCRIPT_PARAM_ONOFF, true)
 --Menu.addParam("ksR", "Use R to killsteal", SCRIPT_PARAM_ONOFF, true)
 Menu.addParam("combo", "Combo", SCRIPT_PARAM_KEYDOWN, string.byte(" "))
 
-Menu.addParam("useqtom", "Use Q to mouse position", SCRIPT_PARAM_KEYDOWN, string.byte("a"))
+Menu.addParam("escape", "Escape to mouse position", SCRIPT_PARAM_KEYDOWN, string.byte("a"))
 
 OnLoop(function(myHero)
 
@@ -17,10 +17,12 @@ local target = GetCurrentTarget()
 local mymouse = GetMousePos();
 local QPred = GetPredictionForPlayer(GetOrigin(GetMyHero()), target, GetMoveSpeed(target),2000, 250, 830, 150, false, true)
 
-	if Menu.useqtom then
+	if Menu.escape then
 		mymouse = GetMousePos();
-		if CanUseSpell(myHero,_Q) == READY then
+		if CanUseSpell(myHero,_Q) == READY and CanUseSpell(myHero,_R) == READY then
 			CastSkillShot(_Q,mymouse.x,mymouse.y,mymouse.z)
+			delay(100)
+			CastTargetSpell(_R,mymouse.x,mymouse.y,mymouse.z)
 		end
 	end
 
@@ -53,4 +55,3 @@ local QPred = GetPredictionForPlayer(GetOrigin(GetMyHero()), target, GetMoveSpee
 						end
 		end
 	end)
-
