@@ -2,8 +2,8 @@ require('Inspired')
 
 Menu = scriptConfig("Diana", "Moonwalker")
 Menu.addParam("useQ", "Use Q in combo", SCRIPT_PARAM_ONOFF, true)
---Menu.addParam("useW", "Use W in combo", SCRIPT_PARAM_ONOFF, true)
---Menu.addParam("useE", "Use E in combo", SCRIPT_PARAM_ONOFF, true)
+Menu.addParam("useW", "Use W in combo", SCRIPT_PARAM_ONOFF, true)
+Menu.addParam("useE", "Use E in combo", SCRIPT_PARAM_ONOFF, true)
 Menu.addParam("useR", "Use R in combo", SCRIPT_PARAM_ONOFF, true)
 --Menu.addParam("ksR", "Use R to killsteal", SCRIPT_PARAM_ONOFF, true)
 Menu.addParam("combo", "Combo", SCRIPT_PARAM_KEYDOWN, string.byte(" "))
@@ -18,7 +18,7 @@ OnLoop(function(myHero) --RQ-Combo
 
 		if Menu.combo then
 
-	    	if CanUseSpell(myHero, _R) == READY and CanUseSpell(myHero, _Q) == READY and Menu.useR then
+	    	if CanUseSpell(myHero, _R) == READY and CanUseSpell(myHero, _Q) == READY and Menu.useR then --QR Combo
 
 				if ValidTarget(target, GetCastRange(myHero, _R)) then
 					CastTargetSpell(target,_R)
@@ -26,16 +26,13 @@ OnLoop(function(myHero) --RQ-Combo
 						if QPred.HitChance == 1 and CanUseSpell(myHero, _Q) == READY and Menu.useQ then -- Cast Q Broken?
 							CastSkillShot(_Q, QPred.PredPos.x, QPred.PredPos.y, QPred.PredPos.z)
 						end
-
-							if ValidTarget(target, GetCastRange(myHero, _W)) then -- Fixed W
-								CastSpell(_W)
-							end
-								if ValidTarget(target, GetCastRange(myHero, _E)) then -- Fixed E
-								CastSpell(_E)
-								end
 				end
 			end
+							if ValidTarget(target, GetCastRange(myHero, _W)) and Menu.useW then -- Fixed W
+								CastSpell(_W)
+							end
+								if ValidTarget(target, GetCastRange(myHero, _E)) and Menu.useE then -- Fixed E
+									CastSpell(_E)
+								end
 		end
-
-
 	end)
