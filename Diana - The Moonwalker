@@ -24,7 +24,6 @@ mymouse = GetMousePos();
 OnLoop(function(myHero) --RQ-Combo
 
 
-
 		if Menu.combo then
 
 	    	if CanUseSpell(myHero, _R) == READY and CanUseSpell(myHero, _Q) == READY and Menu.useR then --QR Combo
@@ -40,7 +39,7 @@ OnLoop(function(myHero) --RQ-Combo
 							if ValidTarget(target, 200) and Menu.useW then -- Fixed W - Working 2.0 (range added)
 								CastSpell(_W)
 							end
-								if ValidTarget(target, >=150 or <=250) and Menu.useE then -- Fixed E 2.0 (Range Logic)
+								if ValidTarget(target, 240) and Menu.useE then -- Fixed E 2.0
 									CastSpell(_E)
 								end
 		end
