@@ -80,11 +80,15 @@ local QPred = GetPredictionForPlayer(GetOrigin(GetMyHero()), target, GetMoveSpee
 						end
 -- W
 						if ValidTarget(target, 200) and Menu.useW then
-								CastSpell(_W)
+							CastSpell(_W)
 						end
 -- E (Simple Logic)
 						if CanUseSpell(myHero, _E) == READY and not IsInDistance(target, 150) and IsInDistance(target, 245) and Menu.useE then
-                              CastSpell(_E)
+							CastSpell(_E)
+						end
+-- R (Simple Logic)
+						if (CanUseSpell(myHero,_R)) == READY and GotBuff(target,"Moonlight") >= 1 and ValidTarget(target, GetCastRange(myHero,_R)) and Menu.useR then
+							CastTargetSpell(target,_R)
 						end
 		end
 	end)
