@@ -21,10 +21,10 @@ Menu.addParam("escape", "Escape to mouse position", SCRIPT_PARAM_KEYDOWN, string
 Menu.addParam("gapW", "Use W agains gapcloser", SCRIPT_PARAM_ONOFF, true)
 Menu.addParam("gapE", "Use E agains gapcloser", SCRIPT_PARAM_ONOFF, true)
 
-Menu.addParam("DrawQ", "Draw Q range", SCRIPT_PARAM_ONOFF, false)
-Menu.addParam("DrawW", "Draw W range", SCRIPT_PARAM_ONOFF, true)
-Menu.addParam("DrawE", "Draw E range", SCRIPT_PARAM_ONOFF, true)
-Menu.addParam("DrawR", "Draw R range", SCRIPT_PARAM_ONOFF, true)
+Menu.addParam("DrawQ", "Draw Q range", SCRIPT_PARAM_ONOFF, true)
+Menu.addParam("DrawW", "Draw W range", SCRIPT_PARAM_ONOFF, false)
+Menu.addParam("DrawE", "Draw E range", SCRIPT_PARAM_ONOFF, false)
+Menu.addParam("DrawR", "Draw R range", SCRIPT_PARAM_ONOFF, false)
 
 OnLoop(function(myHero)
 
@@ -36,26 +36,28 @@ local QPred = GetPredictionForPlayer(GetOrigin(GetMyHero()), target, GetMoveSpee
 
 -- Drawings
 
-	if Menu.DrawQ then
-		DrawCircle(myHeroPos,GetCastRange(myHero,_Q),1,1,0x00F57F)
-	end
-	if Menu.DrawW then
-		DrawCircle(myHeroPos,GetCastRange(myHero,_W),1,1,0x00F57F)
-	end
-	if Menu.DrawE then
-		DrawCircle(myHeroPos,GetCastRange(myHero,_E),1,1,0x00F57F)
-	end
-	if Menu.DrawR then
-		DrawCircle(myHeroPos,GetCastRange(myHero,_R),1,1,0x00F57F)
+	if CanUseSpell(myHero, _Q) == READY and Menu.DrawQ then
+		DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,GetCastRange(myHero,_Q),3,100,0xff00ff00)
 	end
 
+	if CanUseSpell(myHero, _W) == READY and Menu.DrawW then
+		DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,GetCastRange(myHero,_W),3,100,0xff00ff00)
+	end
+
+	if CanUseSpell(myHero, _E) == READY and Menu.DrawE then
+		DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,GetCastRange(myHero,_E),3,100,0xff00ff00)
+	end
+
+	if CanUseSpell(myHero, _R) == READY and Menu.DrawR then
+		DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,GetCastRange(myHero,_R),3,100,0xff00ff00)
+	end
 
 -- Escape
 
 	if Menu.escape then
 		if CanUseSpell(myHero,_Q) == READY and CanUseSpell(myHero,_R) == READY then
 			CastSkillShot(_Q,mymouse.x,mymouse.y,mymouse.z)
-			DelayAction(CastTargetSpell(_R,mymouse.x,mymouse.y,mymouse.z), 100)
+			CastTargetSpell(_R,mymouse.x,mymouse.y,mymouse.z)
 
 			elseif CanUseSpell(myHero,_R) == READY and CanUseSpell(myHero,_Q) == NOTAVAILABLE then
 				CastTargetSpell(_R,mymouse.x,mymouse.y,mymouse.z)
