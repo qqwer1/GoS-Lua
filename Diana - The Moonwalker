@@ -18,6 +18,9 @@ Menu.addParam("useR", "Use R in combo", SCRIPT_PARAM_ONOFF, true)
 Menu.addParam("combo", "Combo", SCRIPT_PARAM_KEYDOWN, string.byte(" "))
 Menu.addParam("escape", "Escape to mouse position", SCRIPT_PARAM_KEYDOWN, string.byte("a"))
 
+Menu.addParam("gapW", "Use W agains gapcloser", SCRIPT_PARAM_ONOFF, true)
+Menu.addParam("gapE", "Use E agains gapcloser", SCRIPT_PARAM_ONOFF, true)
+
 Menu.addParam("DrawQ", "Draw Q range", SCRIPT_PARAM_ONOFF, false)
 Menu.addParam("DrawW", "Draw W range", SCRIPT_PARAM_ONOFF, true)
 Menu.addParam("DrawE", "Draw E range", SCRIPT_PARAM_ONOFF, true)
@@ -59,6 +62,16 @@ local QPred = GetPredictionForPlayer(GetOrigin(GetMyHero()), target, GetMoveSpee
 				CastTargetSpell(_R,mymouse.x,mymouse.y,mymouse.z)
 
 		end
+	end
+
+-- Anti Gapcloser
+
+	if Menu.gapW then
+		AddGapcloseEvent(_W, 200, false)
+	end
+
+	if Menu.gapE then
+		AddGapcloseEvent(_E, 250, false)
 	end
 
 
