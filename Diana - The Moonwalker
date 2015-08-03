@@ -16,7 +16,7 @@ Menu.addParam("useE", "Use E in combo", SCRIPT_PARAM_ONOFF, true)
 Menu.addParam("useR", "Use R in combo", SCRIPT_PARAM_ONOFF, true)
 --Menu.addParam("ksR", "Use R to killsteal", SCRIPT_PARAM_ONOFF, true)
 Menu.addParam("combo", "Combo", SCRIPT_PARAM_KEYDOWN, string.byte(" "))
-Menu.addParam("escape", "Escape to mouse position", SCRIPT_PARAM_KEYDOWN, string.byte("a"))
+Menu.addParam("escape", "Escape to mouse position", SCRIPT_PARAM_KEYDOWN, string.byte("A"))
 
 Menu.addParam("gapW", "Use W agains gapcloser", SCRIPT_PARAM_ONOFF, true)
 Menu.addParam("gapE", "Use E agains gapcloser", SCRIPT_PARAM_ONOFF, true)
