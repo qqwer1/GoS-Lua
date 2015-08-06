@@ -9,59 +9,60 @@ require('Inspired')
 -- Inspired
 -----------------------------
 
-Menu = scriptConfig("Diana", "The Moonwalker")
-Menu.addParam("useQ", "Use Q in combo", SCRIPT_PARAM_ONOFF, true)
-Menu.addParam("useW", "Use W in combo", SCRIPT_PARAM_ONOFF, true)
-Menu.addParam("useE", "Use E in combo", SCRIPT_PARAM_ONOFF, true)
-Menu.addParam("useR", "Use R in combo", SCRIPT_PARAM_ONOFF, true)
-Menu.addParam("ksR", "Use R to killsteal", SCRIPT_PARAM_ONOFF, true)
-Menu.addParam("combo", "Combo", SCRIPT_PARAM_KEYDOWN, string.byte(" "))
-Menu.addParam("escape", "Escape to mouse position", SCRIPT_PARAM_KEYDOWN, string.byte("A"))
+Config = scriptConfig("Diana", "The Moonwalker")
+Config.addParam("useQ", "Use Q in combo", SCRIPT_PARAM_ONOFF, true)
+Config.addParam("useW", "Use W in combo", SCRIPT_PARAM_ONOFF, true)
+Config.addParam("useE", "Use E in combo", SCRIPT_PARAM_ONOFF, true)
+Config.addParam("useR", "Use R in combo", SCRIPT_PARAM_ONOFF, true)
+Config.addParam("ksR", "Use R to killsteal", SCRIPT_PARAM_ONOFF, true)
+Config.addParam("combo", "Combo", SCRIPT_PARAM_KEYDOWN, string.byte(" "))
+Config.addParam("escape", "Escape to mouse position", SCRIPT_PARAM_KEYDOWN, string.byte("A"))
 
-Menu.addParam("gapW", "Use W agains gapcloser", SCRIPT_PARAM_ONOFF, true)
-Menu.addParam("gapE", "Use E agains gapcloser", SCRIPT_PARAM_ONOFF, true)
+Config.addParam("gapW", "Use W agains gapcloser", SCRIPT_PARAM_ONOFF, true)
+Config.addParam("gapE", "Use E agains gapcloser", SCRIPT_PARAM_ONOFF, true)
 
-Menu.addParam("DrawQ", "Draw Q range", SCRIPT_PARAM_ONOFF, true)
---Menu.addParam("DrawW", "Draw W range", SCRIPT_PARAM_ONOFF, false)
---Menu.addParam("DrawE", "Draw E range", SCRIPT_PARAM_ONOFF, false)
---Menu.addParam("DrawR", "Draw R range", SCRIPT_PARAM_ONOFF, false)
+--Config.addParam("DrawQ", "Draw Q range", SCRIPT_PARAM_ONOFF, true)
+--Config.addParam("DrawW", "Draw W range", SCRIPT_PARAM_ONOFF, false)
+--Config.addParam("DrawE", "Draw E range", SCRIPT_PARAM_ONOFF, false)
+--Configu.addParam("DrawR", "Draw R range", SCRIPT_PARAM_ONOFF, false)
 
---Menu.addParam("DrawRDMG", "Draw R damage on enemies hpbar", SCRIPT_PARAM_ONOFF, true)
+--Config.addParam("DrawRDMG", "Draw R damage on enemies hpbar", SCRIPT_PARAM_ONOFF, true)
 
 OnLoop(function(myHero)
 
 
 --local myHeroPos = GetMyHeroPos()
 local target = GetCurrentTarget()
---local QPred = GetPredictionForPlayer(GetMyHeroPos(), target, GetMoveSpeed(target),2000, 250, 830, 150, false, true)
+
+
 
 -- Drawings
 
-	if CanUseSpell(myHero, _Q) == READY and Menu.DrawQ then
-		DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,GetCastRange(myHero,_Q),3,100,ARGB(0,0,200,15))
-	end
+--	if CanUseSpell(myHero, _Q) == READY and Config.DrawQ then
+--		DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,GetCastRange(myHero,_Q),3,100,ARGB(0,0,200,15))
+--	end
 
---	if CanUseSpell(myHero, _W) == READY and Menu.DrawW then
+--	if CanUseSpell(myHero, _W) == READY and Config.DrawW then
 --		DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,GetCastRange(myHero,_W),3,100,ARGB(0,0,200,15))
 --	end
 
---	if CanUseSpell(myHero, _E) == READY and Menu.DrawE then
+--	if CanUseSpell(myHero, _E) == READY and Config.DrawE then
 --		DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,GetCastRange(myHero,_E),3,100,ARGB(0,0,200,15))
 --	end
 
---	if CanUseSpell(myHero, _R) == READY and Menu.DrawR then
+--	if CanUseSpell(myHero, _R) == READY and Config.DrawR then
 --		DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,GetCastRange(myHero,_R),3,100,ARGB(0,0,200,15))
 --	end
 
 -- DMG Drawings
 
---	if CanUseSpell(myHero, _R) == READY and Menu.DrawRDMG then
+--	if CanUseSpell(myHero, _R) == READY and Config.DrawRDMG then
 --		DrawDmgOverHpBar(myHero,GetCurrentHP(myHero),3,100,ARGB(0,0,200,15))
 --	end
 
 -- Escape
 
-	if Menu.escape then
+	if Config.escape then
 		if CanUseSpell(myHero,_Q) == READY and CanUseSpell(myHero,_R) == READY then
 			local mymouse = GetMousePos()
 			CastSkillShot(_Q,mymouse.x,mymouse.y,mymouse.z)
@@ -73,24 +74,26 @@ local target = GetCurrentTarget()
 		end
 	end
 
+if ValidTarget(target, 1250) then
+
 -- Anti Gapcloser
 
-	if Menu.gapW then
+	if Config.gapW then
 		AddGapcloseEvent(_W, 200, false)
 	end
 
-	if Menu.gapE then
+	if Config.gapE then
 		AddGapcloseEvent(_E, 250, false)
 	end
 
 
-		if Menu.combo then
+		if Config.combo then
 -- RQ-Combo 2.0
-	    	if CanUseSpell(myHero, _R) == READY and CanUseSpell(myHero, _Q) == READY and Menu.useQ and Menu.useR then
+	    	if CanUseSpell(myHero, _R) == READY and CanUseSpell(myHero, _Q) == READY and Config.useQ and Config.useR then
 
 					local QPred = GetPredictionForPlayer(GetMyHeroPos(), target, GetMoveSpeed(target),1900, 250, 830, 150, false, true)
 
-						if QPred.HitChance == 1 and CanUseSpell(myHero, _Q) == READY and Menu.useQ then
+						if QPred.HitChance == 1 and CanUseSpell(myHero, _Q) == READY and Config.useQ then
 							CastSkillShot(_Q, QPred.PredPos.x, QPred.PredPos.y, QPred.PredPos.z)
 								if ValidTarget(target, GetCastRange(myHero, _R)) then
 									CastTargetSpell(target,_R)
@@ -99,11 +102,11 @@ local target = GetCurrentTarget()
 			end
 
 -- RQ-Combo
---	    	if CanUseSpell(myHero, _R) == READY and CanUseSpell(myHero, _Q) == READY and Menu.useR then
+--	    	if CanUseSpell(myHero, _R) == READY and CanUseSpell(myHero, _Q) == READY and Config.useR then
 --
 --				if ValidTarget(target, GetCastRange(myHero, _R)) then
 --					CastTargetSpell(target,_R)
---						if QPred.HitChance == 1 and CanUseSpell(myHero, _Q) == READY and Menu.useQ then
+--						if QPred.HitChance == 1 and CanUseSpell(myHero, _Q) == READY and Config.useQ then
 --							CastSkillShot(_Q, QPred.PredPos.x, QPred.PredPos.y, QPred.PredPos.z)
 --						end
 --				end
@@ -111,7 +114,7 @@ local target = GetCurrentTarget()
 
 -- Basic Combo
 -- Q
-						if CanUseSpell(myHero, _Q) == READY and Menu.useQ then
+						if CanUseSpell(myHero, _Q) == READY and Config.useQ then
 
 							local QPred = GetPredictionForPlayer(GetMyHeroPos(), target, GetMoveSpeed(target),1900, 250, 830, 150, false, true)
 
@@ -120,20 +123,21 @@ local target = GetCurrentTarget()
 							end
 						end
 -- W
-						if ValidTarget(target, 200) and Menu.useW then
+						if ValidTarget(target, 200) and Config.useW then
 							CastSpell(_W)
 						end
 -- E (Simple Logic)
-						if CanUseSpell(myHero, _E) == READY and not IsInDistance(target, 150) and IsInDistance(target, 245) and Menu.useE then
+						if CanUseSpell(myHero, _E) == READY and not IsInDistance(target, 150) and IsInDistance(target, 245) and Config.useE then
 							CastSpell(_E)
 						end
 -- R (Simple Logic) placeholder for now
-						if CanUseSpell(myHero,_R) == READY and GotBuff(target,"moonlight") >= 1 and ValidTarget(target, GetCastRange(myHero,_R)) and Menu.useR then
+						if CanUseSpell(myHero,_R) == READY and GotBuff(target,"moonlight") >= 1 and ValidTarget(target, GetCastRange(myHero,_R)) and Config.useR then
 							CastTargetSpell(target,_R)
 						end
 		end
 -- R KS
-						if CanUseSpell(myHero,_R) == READY and ValidTarget(target, GetCastRange(myHero,_R)) and GetCurrentHP(target) < CalcDamage(myHero, target, 0, (60*GetCastLevel(myHero,_R)+40+(0.6*(GetBonusAP(myHero))))) and Menu.ksR then
+						if CanUseSpell(myHero,_R) == READY and ValidTarget(target, GetCastRange(myHero,_R)) and GetCurrentHP(target) < CalcDamage(myHero, target, 0, (60*GetCastLevel(myHero,_R)+40+(0.6*(GetBonusAP(myHero))))) and Config.ksR then
 							CastTargetSpell(target,_R)
 						end
+	end
 	end)
