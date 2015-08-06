@@ -22,19 +22,18 @@ Menu.addParam("gapW", "Use W agains gapcloser", SCRIPT_PARAM_ONOFF, true)
 Menu.addParam("gapE", "Use E agains gapcloser", SCRIPT_PARAM_ONOFF, true)
 
 Menu.addParam("DrawQ", "Draw Q range", SCRIPT_PARAM_ONOFF, true)
-Menu.addParam("DrawW", "Draw W range", SCRIPT_PARAM_ONOFF, false)
-Menu.addParam("DrawE", "Draw E range", SCRIPT_PARAM_ONOFF, false)
-Menu.addParam("DrawR", "Draw R range", SCRIPT_PARAM_ONOFF, false)
+--Menu.addParam("DrawW", "Draw W range", SCRIPT_PARAM_ONOFF, false)
+--Menu.addParam("DrawE", "Draw E range", SCRIPT_PARAM_ONOFF, false)
+--Menu.addParam("DrawR", "Draw R range", SCRIPT_PARAM_ONOFF, false)
 
 --Menu.addParam("DrawRDMG", "Draw R damage on enemies hpbar", SCRIPT_PARAM_ONOFF, true)
 
 OnLoop(function(myHero)
 
 
-local myHeroPos = GetOrigin(myHero)
+--local myHeroPos = GetMyHeroPos()
 local target = GetCurrentTarget()
-local mymouse = GetMousePos()
-local QPred = GetPredictionForPlayer(GetOrigin(GetMyHero()), target, GetMoveSpeed(target),2000, 250, 830, 150, false, true)
+--local QPred = GetPredictionForPlayer(GetMyHeroPos(), target, GetMoveSpeed(target),2000, 250, 830, 150, false, true)
 
 -- Drawings
 
@@ -42,17 +41,17 @@ local QPred = GetPredictionForPlayer(GetOrigin(GetMyHero()), target, GetMoveSpee
 		DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,GetCastRange(myHero,_Q),3,100,ARGB(0,0,200,15))
 	end
 
-	if CanUseSpell(myHero, _W) == READY and Menu.DrawW then
-		DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,GetCastRange(myHero,_W),3,100,ARGB(0,0,200,15))
-	end
+--	if CanUseSpell(myHero, _W) == READY and Menu.DrawW then
+--		DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,GetCastRange(myHero,_W),3,100,ARGB(0,0,200,15))
+--	end
 
-	if CanUseSpell(myHero, _E) == READY and Menu.DrawE then
-		DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,GetCastRange(myHero,_E),3,100,ARGB(0,0,200,15))
-	end
+--	if CanUseSpell(myHero, _E) == READY and Menu.DrawE then
+--		DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,GetCastRange(myHero,_E),3,100,ARGB(0,0,200,15))
+--	end
 
-	if CanUseSpell(myHero, _R) == READY and Menu.DrawR then
-		DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,GetCastRange(myHero,_R),3,100,ARGB(0,0,200,15))
-	end
+--	if CanUseSpell(myHero, _R) == READY and Menu.DrawR then
+--		DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,GetCastRange(myHero,_R),3,100,ARGB(0,0,200,15))
+--	end
 
 -- DMG Drawings
 
@@ -64,6 +63,7 @@ local QPred = GetPredictionForPlayer(GetOrigin(GetMyHero()), target, GetMoveSpee
 
 	if Menu.escape then
 		if CanUseSpell(myHero,_Q) == READY and CanUseSpell(myHero,_R) == READY then
+			local mymouse = GetMousePos()
 			CastSkillShot(_Q,mymouse.x,mymouse.y,mymouse.z)
 			CastTargetSpell(_R,mymouse.x,mymouse.y,mymouse.z)
 
@@ -88,6 +88,8 @@ local QPred = GetPredictionForPlayer(GetOrigin(GetMyHero()), target, GetMoveSpee
 -- RQ-Combo 2.0
 	    	if CanUseSpell(myHero, _R) == READY and CanUseSpell(myHero, _Q) == READY and Menu.useQ and Menu.useR then
 
+					local QPred = GetPredictionForPlayer(GetMyHeroPos(), target, GetMoveSpeed(target),1900, 250, 830, 150, false, true)
+
 						if QPred.HitChance == 1 and CanUseSpell(myHero, _Q) == READY and Menu.useQ then
 							CastSkillShot(_Q, QPred.PredPos.x, QPred.PredPos.y, QPred.PredPos.z)
 								if ValidTarget(target, GetCastRange(myHero, _R)) then
@@ -109,8 +111,13 @@ local QPred = GetPredictionForPlayer(GetOrigin(GetMyHero()), target, GetMoveSpee
 
 -- Basic Combo
 -- Q
-						if QPred.HitChance == 1 and CanUseSpell(myHero, _Q) == READY and Menu.useQ then
-							CastSkillShot(_Q, QPred.PredPos.x, QPred.PredPos.y, QPred.PredPos.z)
+						if CanUseSpell(myHero, _Q) == READY and Menu.useQ then
+
+							local QPred = GetPredictionForPlayer(GetMyHeroPos(), target, GetMoveSpeed(target),1900, 250, 830, 150, false, true)
+
+							if QPred.HitChance == 1 then
+								CastSkillShot(_Q, QPred.PredPos.x, QPred.PredPos.y, QPred.PredPos.z)
+							end
 						end
 -- W
 						if ValidTarget(target, 200) and Menu.useW then
