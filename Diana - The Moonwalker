@@ -91,7 +91,7 @@ if ValidTarget(target, 1250) then
 -- RQ-Combo 2.0
 	    	if CanUseSpell(myHero, _R) == READY and CanUseSpell(myHero, _Q) == READY and Config.useQ and Config.useR then
 
-					local QPred = GetPredictionForPlayer(GetMyHeroPos(), target, GetMoveSpeed(target),1900, 250, 830, 150, false, true)
+					local QPred = GetPredictionForPlayer(GetMyHeroPos(1,1,1), target, GetMoveSpeed(target),1900, 250, 830, 150, false, true)
 
 						if QPred.HitChance == 1 and CanUseSpell(myHero, _Q) == READY and Config.useQ then
 							CastSkillShot(_Q, QPred.PredPos.x, QPred.PredPos.y, QPred.PredPos.z)
