@@ -9,12 +9,12 @@ require('Inspired')
 -- Inspired
 -----------------------------
 
-Menu = scriptConfig("Diana", "Moonwalker")
+Menu = scriptConfig("Diana", "The Moonwalker")
 Menu.addParam("useQ", "Use Q in combo", SCRIPT_PARAM_ONOFF, true)
 Menu.addParam("useW", "Use W in combo", SCRIPT_PARAM_ONOFF, true)
 Menu.addParam("useE", "Use E in combo", SCRIPT_PARAM_ONOFF, true)
 Menu.addParam("useR", "Use R in combo", SCRIPT_PARAM_ONOFF, true)
---Menu.addParam("ksR", "Use R to killsteal", SCRIPT_PARAM_ONOFF, true)
+Menu.addParam("ksR", "Use R to killsteal", SCRIPT_PARAM_ONOFF, true)
 Menu.addParam("combo", "Combo", SCRIPT_PARAM_KEYDOWN, string.byte(" "))
 Menu.addParam("escape", "Escape to mouse position", SCRIPT_PARAM_KEYDOWN, string.byte("A"))
 
@@ -37,19 +37,19 @@ local QPred = GetPredictionForPlayer(GetOrigin(GetMyHero()), target, GetMoveSpee
 -- Drawings
 
 	if CanUseSpell(myHero, _Q) == READY and Menu.DrawQ then
-		DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,GetCastRange(myHero,_Q),3,100,0xff00ff00)
+		DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,GetCastRange(myHero,_Q),3,100,ARGB(0xff,0,200,15))
 	end
 
 	if CanUseSpell(myHero, _W) == READY and Menu.DrawW then
-		DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,GetCastRange(myHero,_W),3,100,0xff00ff00)
+		DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,GetCastRange(myHero,_W),3,100,ARGB(0xff,0,200,15))
 	end
 
 	if CanUseSpell(myHero, _E) == READY and Menu.DrawE then
-		DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,GetCastRange(myHero,_E),3,100,0xff00ff00)
+		DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,GetCastRange(myHero,_E),3,100,ARGB(0xff,0,200,15))
 	end
 
 	if CanUseSpell(myHero, _R) == READY and Menu.DrawR then
-		DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,GetCastRange(myHero,_R),3,100,0xff00ff00)
+		DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,GetCastRange(myHero,_R),3,100,ARGB(0xff,0,200,15))
 	end
 
 -- Escape
@@ -77,16 +77,28 @@ local QPred = GetPredictionForPlayer(GetOrigin(GetMyHero()), target, GetMoveSpee
 
 
 		if Menu.combo then
--- RQ-Combo
-	    	if CanUseSpell(myHero, _R) == READY and CanUseSpell(myHero, _Q) == READY and Menu.useR then
+-- RQ-Combo 2.0
+	    	if CanUseSpell(myHero, _R) == READY and CanUseSpell(myHero, _Q) == READY and Menu.useQ and Menu.useR then
 
-				if ValidTarget(target, GetCastRange(myHero, _R)) then
-					CastTargetSpell(target,_R)
 						if QPred.HitChance == 1 and CanUseSpell(myHero, _Q) == READY and Menu.useQ then
 							CastSkillShot(_Q, QPred.PredPos.x, QPred.PredPos.y, QPred.PredPos.z)
+								if ValidTarget(target, GetCastRange(myHero, _R)) then
+									CastTargetSpell(target,_R)
+								end
 						end
-				end
 			end
+
+-- RQ-Combo
+--	    	if CanUseSpell(myHero, _R) == READY and CanUseSpell(myHero, _Q) == READY and Menu.useR then
+--
+--				if ValidTarget(target, GetCastRange(myHero, _R)) then
+--					CastTargetSpell(target,_R)
+--						if QPred.HitChance == 1 and CanUseSpell(myHero, _Q) == READY and Menu.useQ then
+--							CastSkillShot(_Q, QPred.PredPos.x, QPred.PredPos.y, QPred.PredPos.z)
+--						end
+--				end
+--			end
+
 -- Basic Combo
 -- Q
 						if QPred.HitChance == 1 and CanUseSpell(myHero, _Q) == READY and Menu.useQ then
@@ -101,8 +113,12 @@ local QPred = GetPredictionForPlayer(GetOrigin(GetMyHero()), target, GetMoveSpee
 							CastSpell(_E)
 						end
 -- R (Simple Logic) placeholder for now
-						if (CanUseSpell(myHero,_R)) == READY and GotBuff(target,"Placeholder.Moonlight.Buff") >= 1 and ValidTarget(target, GetCastRange(myHero,_R)) and Menu.useR then
+						if CanUseSpell(myHero,_R) == READY and GotBuff(target,"moonlight") >= 1 and ValidTarget(target, GetCastRange(myHero,_R)) and Menu.useR then
 							CastTargetSpell(target,_R)
 						end
 		end
+-- R KS
+						if CanUseSpell(myHero,_R) == READY and GetCurrentHP(target) < CalcDamage(myHero, target, 0, (60*GetCastLevel(myHero,_R)+40+(0.6*(GetBonusAP(myHero))))) and Menu.ksR then
+							CastTargetSpell(target,_R)
+						end
 	end)
