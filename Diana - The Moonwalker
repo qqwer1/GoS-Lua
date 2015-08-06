@@ -26,6 +26,8 @@ Menu.addParam("DrawW", "Draw W range", SCRIPT_PARAM_ONOFF, false)
 Menu.addParam("DrawE", "Draw E range", SCRIPT_PARAM_ONOFF, false)
 Menu.addParam("DrawR", "Draw R range", SCRIPT_PARAM_ONOFF, false)
 
+--Menu.addParam("DrawRDMG", "Draw R damage on enemies hpbar", SCRIPT_PARAM_ONOFF, true)
+
 OnLoop(function(myHero)
 
 
@@ -37,20 +39,26 @@ local QPred = GetPredictionForPlayer(GetOrigin(GetMyHero()), target, GetMoveSpee
 -- Drawings
 
 	if CanUseSpell(myHero, _Q) == READY and Menu.DrawQ then
-		DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,GetCastRange(myHero,_Q),3,100,ARGB(0xff,0,200,15))
+		DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,GetCastRange(myHero,_Q),3,100,ARGB(0,0,200,15))
 	end
 
 	if CanUseSpell(myHero, _W) == READY and Menu.DrawW then
-		DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,GetCastRange(myHero,_W),3,100,ARGB(0xff,0,200,15))
+		DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,GetCastRange(myHero,_W),3,100,ARGB(0,0,200,15))
 	end
 
 	if CanUseSpell(myHero, _E) == READY and Menu.DrawE then
-		DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,GetCastRange(myHero,_E),3,100,ARGB(0xff,0,200,15))
+		DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,GetCastRange(myHero,_E),3,100,ARGB(0,0,200,15))
 	end
 
 	if CanUseSpell(myHero, _R) == READY and Menu.DrawR then
-		DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,GetCastRange(myHero,_R),3,100,ARGB(0xff,0,200,15))
+		DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,GetCastRange(myHero,_R),3,100,ARGB(0,0,200,15))
 	end
+
+-- DMG Drawings
+
+--	if CanUseSpell(myHero, _R) == READY and Menu.DrawRDMG then
+--		DrawDmgOverHpBar(myHero,GetCurrentHP(myHero),3,100,ARGB(0,0,200,15))
+--	end
 
 -- Escape
 
@@ -118,7 +126,7 @@ local QPred = GetPredictionForPlayer(GetOrigin(GetMyHero()), target, GetMoveSpee
 						end
 		end
 -- R KS
-						if CanUseSpell(myHero,_R) == READY and GetCurrentHP(target) < CalcDamage(myHero, target, 0, (60*GetCastLevel(myHero,_R)+40+(0.6*(GetBonusAP(myHero))))) and Menu.ksR then
+						if CanUseSpell(myHero,_R) == READY and ValidTarget(target, GetCastRange(myHero,_R)) and GetCurrentHP(target) < CalcDamage(myHero, target, 0, (60*GetCastLevel(myHero,_R)+40+(0.6*(GetBonusAP(myHero))))) and Menu.ksR then
 							CastTargetSpell(target,_R)
 						end
 	end)
