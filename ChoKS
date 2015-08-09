@@ -1,6 +1,11 @@
 require('Inspired')
 
 Config = scriptConfig("Chogath", "ChoKS")
+Config.addParam("useQ", "Use Q in combo", SCRIPT_PARAM_ONOFF, true)
+Config.addParam("useW", "Use W in combo", SCRIPT_PARAM_ONOFF, true)
+Config.addParam("useR", "Use R in combo", SCRIPT_PARAM_ONOFF, true)
+Config.addParam("combo", "Combo", SCRIPT_PARAM_KEYDOWN, string.byte(" "))
+
 Config.addParam("ksR", "Use R to killsteal", SCRIPT_PARAM_ONOFF, true)
 
 OnLoop (function (myHero)
@@ -10,6 +15,32 @@ local target = GetCurrentTarget()
 
 if CanUseSpell(myHero,_R) == READY and ValidTarget(target, 250) and GetCurrentHP(target) < (175*GetCastLevel(myHero,_R)+125+(0.7*(GetBonusAP(myHero)))) and Config.ksR then
 	CastTargetSpell(target,_R)
+end
+
+if Config.combo then
+--Q
+if CanUseSpell(myHero, _Q) == READY and Config.useQ then
+
+							local QPred = GetPredictionForPlayer(myHeroPos, target, GetMoveSpeed(target),1900, 250, 830, 150, false, true)
+
+							if QPred.HitChance == 1 then
+								CastSkillShot(_Q, QPred.PredPos.x, QPred.PredPos.y, QPred.PredPos.z)
+							end
+						end
+--W						
+if CanUseSpell(myHero, _W) == READY and Config.useW then
+
+							local WPred = GetPredictionForPlayer(myHeroPos, target, GetMoveSpeed(target),1900, 250, 830, 150, false, true)
+
+							if WPred.HitChance == 1 then
+								CastSkillShot(_W, WPred.PredPos.x, WPred.PredPos.y, WPred.PredPos.z)
+							end
+						end	
+--R
+if CanUseSpell(myHero,_R) == READY and ValidTarget(target, GetCastRange(myHero,_R)) and Config.useR then
+							CastTargetSpell(target,_R)
+						end						
+
 end
 
 end)
