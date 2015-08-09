@@ -21,7 +21,7 @@ if Config.combo then
 --Q
 if CanUseSpell(myHero, _Q) == READY and Config.useQ then
 
-							local QPred = GetPredictionForPlayer(myHeroPos, target, GetMoveSpeed(target),1900, 250, 830, 150, false, true)
+							local QPred = GetPredictionForPlayer(myHeroPos, target, GetMoveSpeed(target),1900, 250, 950, 150, false, true)
 
 							if QPred.HitChance == 1 then
 								CastSkillShot(_Q, QPred.PredPos.x, QPred.PredPos.y, QPred.PredPos.z)
@@ -30,7 +30,7 @@ if CanUseSpell(myHero, _Q) == READY and Config.useQ then
 --W						
 if CanUseSpell(myHero, _W) == READY and Config.useW then
 
-							local WPred = GetPredictionForPlayer(myHeroPos, target, GetMoveSpeed(target),1900, 250, 830, 150, false, true)
+							local WPred = GetPredictionForPlayer(myHeroPos, target, GetMoveSpeed(target),1900, 250, 650, 150, false, true)
 
 							if WPred.HitChance == 1 then
 								CastSkillShot(_W, WPred.PredPos.x, WPred.PredPos.y, WPred.PredPos.z)
