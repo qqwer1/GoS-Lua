@@ -1,0 +1,15 @@
+require('Inspired')
+
+Config = scriptConfig("Chogath", "ChoKS")
+Config.addParam("ksR", "Use R to killsteal", SCRIPT_PARAM_ONOFF, true)
+
+OnLoop (function (myHero)
+
+local myHeroPos = GetOrigin(myHero)
+local target = GetCurrentTarget()
+
+if CanUseSpell(myHero,_R) == READY and ValidTarget(target, 250) and GetCurrentHP(target) < CalcDamage(myHero, target, 0, (175*GetCastLevel(myHero,_R)+125+(0.7*(GetBonusAP(myHero))))) and Config.ksR then
+	CastTargetSpell(target,_R)
+end
+
+end)
