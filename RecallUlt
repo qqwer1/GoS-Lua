@@ -1,0 +1,57 @@
+--RecallUlt
+--    +
+--BaseUlt
+
+OnLoop (function (myHero)
+
+local target = GetCurrentTarget()
+myHero = GetMyHero()
+
+-- Team
+if GetTeam(myHero) == 100 then 
+	enemyBasePos = Vector(14340, 171, 14390)
+elseif GetTeam(myHero) == 200 then 
+	enemyBasePos = Vector(400, 200, 400)
+end
+
+-- Champ List 
+if GetObjectName(myHero) == "Ashe" then 
+speed = 1600
+delay = 250
+dmg = CalcDamage(myHero, target, 0, 175*GetCastLevel(myHero,_R)+ 75 + GetBonusAP(myHero))
+elseif GetObjectName(myHero) == "Draven" then 
+speed = 2000
+delay = 400
+dmg = CalcDamage(myHero, target, 0, 40*GetCastLevel(myHero,_R)+ 30 + (0.44*GetBonusDMG(myHero)))
+elseif GetObjectName(myHero) == "Ezreal" then 
+speed = 2000
+delay = 1000 -- rework
+dmg = CalcDamage(myHero, target, 0, 45*GetCastLevel(myHero,_R)+ 60 + (0.27*GetBonusAP(myHero)) + (0.30*GetBonusDMG(myHero)))
+elseif GetObjectName(myHero) == "Jinx" then 
+speed = !!!! -- rework
+delay = 600
+dmg = CalcDamage(myHero, target, 0, 175*GetCastLevel(myHero,_R)+ 75 + GetBonusAP(myHero)) !!!!! -- rework
+end
+
+-- Detect Recall use R
+if GotBuff(target,"recall") == 1 and CanUseSpell(myHero,_R) == READY and GetCurrentHP(target) < dmg then
+OnProcessRecall(function(Object,recallProc)
+t = recallProc.totalTime - recallProc.passedTime
+
+local myHeroPos = GetOrigin(myHero)
+local targetPos = GetOrigin(target)
+local spawnPos = enemyBasePos
+
+distanceChamp = math.sqrt(math.pow((myHeroPos.x - targetPos.x),2) + math.pow((myHeroPos.y - targetPos.y),2) + math.pow((myHeroPos.z - targetPos.z),2))
+distanceSpawn = math.sqrt(math.pow((myHeroPos.x - spawnPos.x),2) + math.pow((myHeroPos.y - spawnPos.y),2) + math.pow((myHeroPos.z - spawnPos.z),2))
+
+tChamp = distanceChamp / speed
+tSpawn = distanceSpawn / speed
+
+if tChamp < t then
+		CastSkillShop(_R, targetPos.x, targetPos.y, targetPos.z)
+	elseif 
+		
+end
+end)
+end)
