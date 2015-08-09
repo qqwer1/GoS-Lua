@@ -1,0 +1,25 @@
+DrawingsConfig = scriptConfig("Drawings", "Drawings")
+DrawingsConfig.addParam("DrawQ","Draw Q", SCRIPT_PARAM_ONOFF, true)
+DrawingsConfig.addParam("DrawW","Draw W", SCRIPT_PARAM_ONOFF, true)
+DrawingsConfig.addParam("DrawE","Draw E", SCRIPT_PARAM_ONOFF, true)
+DrawingsConfig.addParam("DrawR","Draw R", SCRIPT_PARAM_ONOFF, true)
+
+OnLoop (function(myHero)
+Drawings()
+end)
+
+function Drawings()
+myHeroPos = GetOrigin(myHero)
+if CanUseSpell(myHero, _Q) == READY and DrawingsConfig.DrawQ then DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,GetCastRange(myHero,_Q),1,100,0xff00ff00)
+	elseif CanUseSpell(myHero, _Q) == ONCOOLDOWN and DrawingsConfig.DrawQ then DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,GetCastRange(myHero,_Q),1,100,0xffff0000)
+	end
+if CanUseSpell(myHero, _W) == READY and DrawingsConfig.DrawW then DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,GetCastRange(myHero,_W),1,100,0xff00ff00)
+	elseif CanUseSpell(myHero, _W) == ONCOOLDOWN and DrawingsConfig.DrawW then DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,GetCastRange(myHero,_W),1,100,0xffff0000)
+	end
+if CanUseSpell(myHero, _E) == READY and DrawingsConfig.DrawE then DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,GetCastRange(myHero,_E),1,100,0xff00ff00) 
+	elseif CanUseSpell(myHero, _E) == ONCOOLDOWN and DrawingsConfig.DrawE then DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,GetCastRange(myHero,_E),1,100,0xffff0000)
+	end
+if CanUseSpell(myHero, _R) == READY and DrawingsConfig.DrawR then DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,GetCastRange(myHero,_R),2,100,0xff00ff00) 
+	elseif CanUseSpell(myHero, _R) == ONCOOLDOWN and DrawingsConfig.DrawR then DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,GetCastRange(myHero,_R),1,100,0xffff0000)
+	end
+end
