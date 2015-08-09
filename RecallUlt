@@ -35,7 +35,7 @@ dmg = function(target) return CalcDamage(myHero, target, 0, 175*GetCastLevel(myH
 end
 
 -- Detect Recall use R
-	if GotBuff(target,"recall") == 1 and CanUseSpell(myHero,_E) == READY and GetCurrentHP(target) < dmg then
+	if GotBuff(target,"recall") == 1 and CanUseSpell(myHero,_R) == READY and GetCurrentHP(target) < dmg then
 
 		OnProcessRecall(function(Object,recallProc)
 		t = recallProc.totalTime - recallProc.passedTime
@@ -51,7 +51,7 @@ end
 	tSpawn = distanceSpawn / speed
 
 		if tChamp < t then
-			CastSkillShop(_E, targetPos.x, targetPos.y, targetPos.z)
+			CastSkillShop(_R, targetPos.x, targetPos.y, targetPos.z)
 		end
 end)
 end
