@@ -8,7 +8,7 @@ OnLoop (function (myHero)
 local myHeroPos = GetOrigin(myHero)
 local target = GetCurrentTarget()
 
-if CanUseSpell(myHero,_R) == READY and ValidTarget(target, 250) and GetCurrentHP(target) < CalcDamage(myHero, target, 0, (175*GetCastLevel(myHero,_R)+125+(0.7*(GetBonusAP(myHero))))) and Config.ksR then
+if CanUseSpell(myHero,_R) == READY and ValidTarget(target, 250) and GetCurrentHP(target) < (175*GetCastLevel(myHero,_R)+125+(0.7*(GetBonusAP(myHero)))) and Config.ksR then
 	CastTargetSpell(target,_R)
 end
 
