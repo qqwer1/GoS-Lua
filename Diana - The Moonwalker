@@ -26,7 +26,7 @@ Config.addParam("combo", "Combo", SCRIPT_PARAM_KEYDOWN, string.byte(" "))
 --Config.addParam("DrawE", "Draw E range", SCRIPT_PARAM_ONOFF, false)
 --Configu.addParam("DrawR", "Draw R range", SCRIPT_PARAM_ONOFF, false)
 
---Config.addParam("DrawRDMG", "Draw R damage on enemies hpbar", SCRIPT_PARAM_ONOFF, true)
+Config.addParam("DrawDMG", "Draw damage on enemies hpbar", SCRIPT_PARAM_ONOFF, true)
 
 OnLoop(function(myHero)
 
@@ -56,9 +56,19 @@ local target = GetCurrentTarget()
 
 -- DMG Drawings
 
---	if CanUseSpell(myHero, _R) == READY and Config.DrawRDMG then
---		DrawDmgOverHpBar(myHero,GetCurrentHP(myHero),3,100,ARGB(0,0,200,15))
---	end
+
+
+	if Config.DrawDMG then
+	-- if CanUseSpell(myHero,_Q) == READY and CanUseSpell(myHero,_W) == READY and CanUseSpell(myHero,_R) == READY then
+-- local trueDMG = CalcDamage(myHero, target, 0, (60*GetCastLevel(myHero,_R)+40+(0.6*(GetBonusAP(myHero))))) + CalcDamage(myHero, target, 0, (35*GetCastLevel(myHero,_Q)+25+(0.7*(GetBonusAP(myHero))))) + CalcDamage(myHero, target, 0, (36*GetCastLevel(myHero,_W)+30+(0.6*(GetBonusAP(myHero)))))
+	-- elseif CanUseSpell(myHero,_Q) == READY and CanUseSpell(myHero,_W) == READY then
+	 -- local trueDMG = CalcDamage(myHero, target, 0, (35*GetCastLevel(myHero,_Q)+25+(0.7*(GetBonusAP(myHero))))) + CalcDamage(myHero, target, 0, (36*GetCastLevel(myHero,_W)+30+(0.6*(GetBonusAP(myHero)))))
+	-- elseif CanUseSpell(myHero,_Q) == READY then
+	 -- local trueDMG = CalcDamage(myHero, target, 0, (35*GetCastLevel(myHero,_Q)+25+(0.7*(GetBonusAP(myHero)))))
+	 -- else trueDMG = 50
+-- end
+		DrawDmgOverHpBar(target,GetCurrentHP(target),trueDMG,0,0xffff0000)
+	end
 
 -- Escape
 
@@ -143,3 +153,13 @@ if ValidTarget(target, 1250) then
 						end
 	end
 	end)
+	
+function trueDMGCalc()
+if CanUseSpell(myHero,_Q) == READY and CanUseSpell(myHero,_W) == READY and CanUseSpell(myHero,_R) == READY then
+ trueDMG = CalcDamage(myHero, target, 0, (60*GetCastLevel(myHero,_R)+40+(0.6*(GetBonusAP(myHero))))) + CalcDamage(myHero, target, 0, (35*GetCastLevel(myHero,_Q)+25+(0.7*(GetBonusAP(myHero))))) + CalcDamage(myHero, target, 0, (36*GetCastLevel(myHero,_W)+30+(0.6*(GetBonusAP(myHero)))))
+	elseif CanUseSpell(myHero,_Q) == READY and CanUseSpell(myHero,_W) == READY then
+	  trueDMG = CalcDamage(myHero, target, 0, (35*GetCastLevel(myHero,_Q)+25+(0.7*(GetBonusAP(myHero))))) + CalcDamage(myHero, target, 0, (36*GetCastLevel(myHero,_W)+30+(0.6*(GetBonusAP(myHero)))))
+	elseif CanUseSpell(myHero,_Q) == READY then
+	  trueDMG = CalcDamage(myHero, target, 0, (35*GetCastLevel(myHero,_Q)+25+(0.7*(GetBonusAP(myHero)))))
+end
+end
