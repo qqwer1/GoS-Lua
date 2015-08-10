@@ -18,8 +18,8 @@ Config.addParam("ksR", "Use R to killsteal", SCRIPT_PARAM_ONOFF, true)
 Config.addParam("combo", "Combo", SCRIPT_PARAM_KEYDOWN, string.byte(" "))
 Config.addParam("escape", "Escape to mouse position", SCRIPT_PARAM_KEYDOWN, string.byte("A"))
 
-Config.addParam("gapW", "Use W agains gapcloser", SCRIPT_PARAM_ONOFF, true)
-Config.addParam("gapE", "Use E agains gapcloser", SCRIPT_PARAM_ONOFF, true)
+--Config.addParam("gapW", "Use W agains gapcloser", SCRIPT_PARAM_ONOFF, true)
+--Config.addParam("gapE", "Use E agains gapcloser", SCRIPT_PARAM_ONOFF, true)
 
 --Config.addParam("DrawQ", "Draw Q range", SCRIPT_PARAM_ONOFF, true)
 --Config.addParam("DrawW", "Draw W range", SCRIPT_PARAM_ONOFF, false)
@@ -78,13 +78,13 @@ if ValidTarget(target, 1250) then
 
 -- Anti Gapcloser
 
-	if Config.gapW then
-		AddGapcloseEvent(_W, 200, false)
-	end
+--	if Config.gapW then
+--		AddGapcloseEvent(_W, 200, false)
+--	end
 
-	if Config.gapE then
-		AddGapcloseEvent(_E, 250, false)
-	end
+--	if Config.gapE then
+--		AddGapcloseEvent(_E, 250, false)
+--	end
 
 
 		if Config.combo then
@@ -131,7 +131,7 @@ if ValidTarget(target, 1250) then
 							CastSpell(_E)
 						end
 -- R (Simple Logic) placeholder for now
-						if CanUseSpell(myHero,_R) == READY and GotBuff(target,"moonlight") >= 1 and ValidTarget(target, GetCastRange(myHero,_R)) and Config.useR then
+						if CanUseSpell(myHero,_R) == READY and GotBuff(target,"dianamoonlight") >= 1 and ValidTarget(target, GetCastRange(myHero,_R)) and Config.useR then
 							CastTargetSpell(target,_R)
 						end
 		end
