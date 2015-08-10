@@ -16,7 +16,7 @@ Config.addParam("useE", "Use E in combo", SCRIPT_PARAM_ONOFF, true)
 Config.addParam("useR", "Use R in combo", SCRIPT_PARAM_ONOFF, true)
 Config.addParam("ksR", "Use R to killsteal", SCRIPT_PARAM_ONOFF, true)
 Config.addParam("combo", "Combo", SCRIPT_PARAM_KEYDOWN, string.byte(" "))
-Config.addParam("escape", "Escape to mouse position", SCRIPT_PARAM_KEYDOWN, string.byte("A"))
+--Config.addParam("escape", "Escape to mouse position", SCRIPT_PARAM_KEYDOWN, string.byte("A"))
 
 --Config.addParam("gapW", "Use W agains gapcloser", SCRIPT_PARAM_ONOFF, true)
 --Config.addParam("gapE", "Use E agains gapcloser", SCRIPT_PARAM_ONOFF, true)
@@ -62,27 +62,27 @@ local target = GetCurrentTarget()
 
 -- Escape
 
-	if Config.escape then
-		if CanUseSpell(myHero,_Q) == READY and CanUseSpell(myHero,_R) == READY then
-			local mymouse = GetMousePos()
-			CastSkillShot(_Q,mymouse.x,mymouse.y,mymouse.z)
-			CastTargetSpell(_R,mymouse.x,mymouse.y,mymouse.z)
-
-			elseif CanUseSpell(myHero,_R) == READY and CanUseSpell(myHero,_Q) == NOTAVAILABLE then
-				CastTargetSpell(_R,mymouse.x,mymouse.y,mymouse.z)
-
-		end
-	end
+--	if Config.escape then
+--		if CanUseSpell(myHero,_Q) == READY and CanUseSpell(myHero,_R) == READY then
+--			local mymouse = GetMousePos()
+--			CastSkillShot(_Q,mymouse.x,mymouse.y,mymouse.z)
+--			CastTargetSpell(_R,mymouse.x,mymouse.y,mymouse.z)
+--
+--			elseif CanUseSpell(myHero,_R) == READY and CanUseSpell(myHero,_Q) == NOTAVAILABLE then
+--				CastTargetSpell(_R,mymouse.x,mymouse.y,mymouse.z)
+--
+--		end
+--	end
 
 if ValidTarget(target, 1250) then
 
 -- Anti Gapcloser
 
---	if Config.gapW then
+--	if Config.gapW and CanUseSpell(myHero,_W) == READY then
 --		AddGapcloseEvent(_W, 200, false)
 --	end
 
---	if Config.gapE then
+--	if Config.gapE and CanUseSpell(myHero,_E) == READY then
 --		AddGapcloseEvent(_E, 250, false)
 --	end
 
@@ -91,7 +91,7 @@ if ValidTarget(target, 1250) then
 -- RQ-Combo 2.0
 	    	if CanUseSpell(myHero, _R) == READY and CanUseSpell(myHero, _Q) == READY and Config.useQ and Config.useR then
 
-					local QPred = GetPredictionForPlayer(myHeroPos, target, GetMoveSpeed(target),1900, 250, 830, 150, false, true)
+					QPred = GetPredictionForPlayer(myHeroPos, target, GetMoveSpeed(target),1900, 250, 830, 150, false, true)
 
 						if QPred.HitChance == 1 and CanUseSpell(myHero, _Q) == READY and Config.useQ then
 							CastSkillShot(_Q, QPred.PredPos.x, QPred.PredPos.y, QPred.PredPos.z)
@@ -100,12 +100,14 @@ if ValidTarget(target, 1250) then
 								end
 						end
 			end
+		
 
 -- RQ-Combo
 --	    	if CanUseSpell(myHero, _R) == READY and CanUseSpell(myHero, _Q) == READY and Config.useR then
 --
 --				if ValidTarget(target, GetCastRange(myHero, _R)) then
 --					CastTargetSpell(target,_R)
+--					QPred = GetPredictionForPlayer(myHeroPos, target, GetMoveSpeed(target),1900, 250, 830, 150, false, true)
 --						if QPred.HitChance == 1 and CanUseSpell(myHero, _Q) == READY and Config.useQ then
 --							CastSkillShot(_Q, QPred.PredPos.x, QPred.PredPos.y, QPred.PredPos.z)
 --						end
