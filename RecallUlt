@@ -65,7 +65,7 @@ end
 		if tChamp < t then
 			CastSkillShot(_R, targetPos.x, targetPos.y, targetPos.z)
 			elseif tSpawn < t then
-				if tSpawn = t then
+				if tSpawn == t then
 					CastSkillShot(_R,spawnPos.x,spawnPos.y,spawnPos.z)
 				end
 		end
