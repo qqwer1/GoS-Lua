@@ -16,22 +16,34 @@ elseif GetTeam(myHero) == 200 then
 end
 
 -- Champ List 
+--Ashe
 if GetObjectName(myHero) == "Ashe" then 
-speed = 1600
+speedChamp = 1600
+speedSpawn = 1600
 delay = 250
+colision = true
 dmg = function(target) return CalcDamage(myHero, target, 0, 175*GetCastLevel(myHero,_R)+ 75 + GetBonusAP(myHero)) end
+--Draven
 elseif GetObjectName(myHero) == "Draven" then 
-speed = 2000
+speedChamp = 2000
+speedSpawn = 2000
 delay = 400
+colision = false
 dmg = function(target) return CalcDamage(myHero, target, 0, 40*GetCastLevel(myHero,_R)+ 30 + (0.44*GetBonusDMG(myHero))) end
+--Ezreal
 elseif GetObjectName(myHero) == "Ezreal" then 
-speed = 2000
+speedChamp = 2000
+speedSpawn = 2000
 delay = 1000
+colision = false
 dmg = function(target) return CalcDamage(myHero, target, 0, 45*GetCastLevel(myHero,_R)+ 60 + (0.27*GetBonusAP(myHero)) + (0.30*GetBonusDMG(myHero))) end
+--Jinx
 elseif GetObjectName(myHero) == "Jinx" then 
-speed = 2300 -- rework
+speedChamp = (distanceChamp / (1 + ((distanceChamp-1500)/2500)))
+speedSpawn = (distanceSpawn / (1 + ((distanceSpawn-1500)/2500)))
 delay = 600
-dmg = function(target) return CalcDamage(myHero, target, 0, 175*GetCastLevel(myHero,_R)+ 75 + GetBonusAP(myHero)) end
+colision = true
+dmg = function(target) return CalcDamage(myHero, target, ((GetMaxHP(target)-GetCurrentHP(target))*(0.2+0.05*GetCastLevel(myHero, _R))) + 100*GetCastLevel(myHero,_R) + 150 + GetBonusDmg(myHero)) end
 end
 
 -- Detect Recall use R
@@ -47,8 +59,8 @@ end
 	distanceChamp = math.sqrt(math.pow((myHeroPos.x - targetPos.x),2) + math.pow((myHeroPos.y - targetPos.y),2) + math.pow((myHeroPos.z - targetPos.z),2))
 	distanceSpawn = math.sqrt(math.pow((myHeroPos.x - spawnPos.x),2) + math.pow((myHeroPos.y - spawnPos.y),2) + math.pow((myHeroPos.z - spawnPos.z),2))
 
-	tChamp = distanceChamp / speed
-	tSpawn = distanceSpawn / speed
+	tChamp = ((distanceChamp / speedChamp) + (delay/1000))
+	tSpawn = ((distanceSpawn / speedSpawn) + (delay/1000))
 
 		if tChamp < t then
 			CastSkillShop(_R, targetPos.x, targetPos.y, targetPos.z)
