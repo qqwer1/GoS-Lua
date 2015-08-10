@@ -63,7 +63,11 @@ end
 	tSpawn = ((distanceSpawn / speedSpawn) + (delay/1000))
 
 		if tChamp < t then
-			CastSkillShop(_R, targetPos.x, targetPos.y, targetPos.z)
+			CastSkillShot(_R, targetPos.x, targetPos.y, targetPos.z)
+			elseif tSpawn < t then
+				if tSpawn = t then
+					CastSkillShot(_R,spawnPos)
+				end
 		end
 end)
 end
