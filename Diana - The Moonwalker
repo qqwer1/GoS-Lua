@@ -56,18 +56,42 @@ local target = GetCurrentTarget()
 
 -- DMG Drawings
 
-
-
-	if Config.DrawDMG then
-	-- if CanUseSpell(myHero,_Q) == READY and CanUseSpell(myHero,_W) == READY and CanUseSpell(myHero,_R) == READY then
--- local trueDMG = CalcDamage(myHero, target, 0, (60*GetCastLevel(myHero,_R)+40+(0.6*(GetBonusAP(myHero))))) + CalcDamage(myHero, target, 0, (35*GetCastLevel(myHero,_Q)+25+(0.7*(GetBonusAP(myHero))))) + CalcDamage(myHero, target, 0, (36*GetCastLevel(myHero,_W)+30+(0.6*(GetBonusAP(myHero)))))
-	-- elseif CanUseSpell(myHero,_Q) == READY and CanUseSpell(myHero,_W) == READY then
-	 -- local trueDMG = CalcDamage(myHero, target, 0, (35*GetCastLevel(myHero,_Q)+25+(0.7*(GetBonusAP(myHero))))) + CalcDamage(myHero, target, 0, (36*GetCastLevel(myHero,_W)+30+(0.6*(GetBonusAP(myHero)))))
-	-- elseif CanUseSpell(myHero,_Q) == READY then
-	 -- local trueDMG = CalcDamage(myHero, target, 0, (35*GetCastLevel(myHero,_Q)+25+(0.7*(GetBonusAP(myHero)))))
-	 -- else trueDMG = 50
--- end
-		DrawDmgOverHpBar(target,GetCurrentHP(target),trueDMG,0,0xffff0000)
+	if ValidTarget(target) and Config.DrawDMG then	
+-- QWR
+if CanUseSpell(myHero,_Q) == READY and CanUseSpell(myHero,_W) == READY and CanUseSpell(myHero,_R) == READY then 
+local trueDMG = CalcDamage(myHero, target, 0, (60*GetCastLevel(myHero,_R)+40+(0.6*(GetBonusAP(myHero))))) + CalcDamage(myHero, target, 0, (35*GetCastLevel(myHero,_Q)+25+(0.7*(GetBonusAP(myHero))))) + CalcDamage(myHero, target, 0, (36*GetCastLevel(myHero,_W)+30+(0.6*(GetBonusAP(myHero)))))
+		DrawDmgOverHpBar(target,GetCurrentHP(target),trueDMG,0,0xff00ff00)
+		end
+-- QW		
+if CanUseSpell(myHero,_Q) == READY and CanUseSpell(myHero,_W) == READY then 
+local trueDMG = CalcDamage(myHero, target, 0, (35*GetCastLevel(myHero,_Q)+25+(0.7*(GetBonusAP(myHero))))) + CalcDamage(myHero, target, 0, (36*GetCastLevel(myHero,_W)+30+(0.6*(GetBonusAP(myHero)))))
+		DrawDmgOverHpBar(target,GetCurrentHP(target),trueDMG,0,0xff00ff00)
+		end		
+-- Q		
+if CanUseSpell(myHero,_Q) == READY then 
+local trueDMG = CalcDamage(myHero, target, 0, (35*GetCastLevel(myHero,_Q)+25+(0.7*(GetBonusAP(myHero)))))
+		DrawDmgOverHpBar(target,GetCurrentHP(target),trueDMG,0,0xff00ff00)
+		end
+-- W
+if CanUseSpell(myHero,_W) == READY then 
+local trueDMG = CalcDamage(myHero, target, 0, (36*GetCastLevel(myHero,_W)+30+(0.6*(GetBonusAP(myHero)))))
+		DrawDmgOverHpBar(target,GetCurrentHP(target),trueDMG,0,0xff00ff00)
+		end	
+-- R
+if CanUseSpell(myHero,_R) == READY then 
+local trueDMG = CalcDamage(myHero, target, 0, (60*GetCastLevel(myHero,_R)+40+(0.6*(GetBonusAP(myHero)))))
+		DrawDmgOverHpBar(target,GetCurrentHP(target),trueDMG,0,0xff00ff00)
+		end	
+-- RQ
+if CanUseSpell(myHero,_Q) == READY and CanUseSpell(myHero,_R) == READY then 
+local trueDMG = CalcDamage(myHero, target, 0, (60*GetCastLevel(myHero,_R)+40+(0.6*(GetBonusAP(myHero))))) + CalcDamage(myHero, target, 0, (35*GetCastLevel(myHero,_Q)+25+(0.7*(GetBonusAP(myHero)))))
+		DrawDmgOverHpBar(target,GetCurrentHP(target),trueDMG,0,0xff00ff00)
+		end	
+-- RW	
+if CanUseSpell(myHero,_W) == READY and CanUseSpell(myHero,_R) == READY then 
+local trueDMG = CalcDamage(myHero, target, 0, (60*GetCastLevel(myHero,_R)+40+(0.6*(GetBonusAP(myHero))))) + CalcDamage(myHero, target, 0, (36*GetCastLevel(myHero,_W)+30+(0.6*(GetBonusAP(myHero)))))
+		DrawDmgOverHpBar(target,GetCurrentHP(target),trueDMG,0,0xff00ff00)
+		end		
 	end
 
 -- Escape
@@ -86,6 +110,7 @@ local target = GetCurrentTarget()
 
 if ValidTarget(target, 1250) then
 
+
 -- Anti Gapcloser
 
 --	if Config.gapW and CanUseSpell(myHero,_W) == READY then
@@ -101,7 +126,7 @@ if ValidTarget(target, 1250) then
 -- RQ-Combo 2.0
 	    	if CanUseSpell(myHero, _R) == READY and CanUseSpell(myHero, _Q) == READY and Config.useQ and Config.useR then
 
-					QPred = GetPredictionForPlayer(myHeroPos, target, GetMoveSpeed(target),1900, 250, 830, 150, false, true)
+					QPred = GetPredictionForPlayer(myHeroPos, target, GetMoveSpeed(target),1670, 250, 830, 150, false, true)
 
 						if QPred.HitChance == 1 and CanUseSpell(myHero, _Q) == READY and Config.useQ then
 							CastSkillShot(_Q, QPred.PredPos.x, QPred.PredPos.y, QPred.PredPos.z)
@@ -128,7 +153,7 @@ if ValidTarget(target, 1250) then
 -- Q
 						if CanUseSpell(myHero, _Q) == READY and Config.useQ then
 
-							local QPred = GetPredictionForPlayer(myHeroPos, target, GetMoveSpeed(target),1900, 250, 830, 150, false, true)
+							local QPred = GetPredictionForPlayer(myHeroPos, target, GetMoveSpeed(target),1670, 250, 830, 150, false, true)
 
 							if QPred.HitChance == 1 then
 								CastSkillShot(_Q, QPred.PredPos.x, QPred.PredPos.y, QPred.PredPos.z)
@@ -142,7 +167,7 @@ if ValidTarget(target, 1250) then
 						if CanUseSpell(myHero, _E) == READY and not IsInDistance(target, 150) and IsInDistance(target, 245) and Config.useE then
 							CastSpell(_E)
 						end
--- R (Simple Logic) placeholder for now
+-- R (Simple Logic)
 						if CanUseSpell(myHero,_R) == READY and GotBuff(target,"dianamoonlight") >= 1 and ValidTarget(target, GetCastRange(myHero,_R)) and Config.useR then
 							CastTargetSpell(target,_R)
 						end
@@ -153,13 +178,3 @@ if ValidTarget(target, 1250) then
 						end
 	end
 	end)
-	
-function trueDMGCalc()
-if CanUseSpell(myHero,_Q) == READY and CanUseSpell(myHero,_W) == READY and CanUseSpell(myHero,_R) == READY then
- trueDMG = CalcDamage(myHero, target, 0, (60*GetCastLevel(myHero,_R)+40+(0.6*(GetBonusAP(myHero))))) + CalcDamage(myHero, target, 0, (35*GetCastLevel(myHero,_Q)+25+(0.7*(GetBonusAP(myHero))))) + CalcDamage(myHero, target, 0, (36*GetCastLevel(myHero,_W)+30+(0.6*(GetBonusAP(myHero)))))
-	elseif CanUseSpell(myHero,_Q) == READY and CanUseSpell(myHero,_W) == READY then
-	  trueDMG = CalcDamage(myHero, target, 0, (35*GetCastLevel(myHero,_Q)+25+(0.7*(GetBonusAP(myHero))))) + CalcDamage(myHero, target, 0, (36*GetCastLevel(myHero,_W)+30+(0.6*(GetBonusAP(myHero)))))
-	elseif CanUseSpell(myHero,_Q) == READY then
-	  trueDMG = CalcDamage(myHero, target, 0, (35*GetCastLevel(myHero,_Q)+25+(0.7*(GetBonusAP(myHero)))))
-end
-end
