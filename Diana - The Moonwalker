@@ -1,13 +1,6 @@
 require('Inspired')
+require('Interrupter')
 
-
--- Thanks to:
------------------------------
--- Deftsu
--- Zypppy
--- Cloud
--- Inspired
------------------------------
 
 Config = scriptConfig("Diana", "The Moonwalker")
 Config.addParam("useQ", "Use Q in combo", SCRIPT_PARAM_ONOFF, true)
@@ -94,6 +87,14 @@ local trueDMG = CalcDamage(myHero, target, 0, (60*GetCastLevel(myHero,_R)+40+(0.
 		end		
 	end
 
+-- Interrupter
+
+addInterrupterCallback(function(target)
+  if IsInDistance(target, GetCastRange(myHero,_E)) and CanUseSpell(myHero,_E) == READY then
+    CastSpell(_E)
+  end
+end)	
+	
 -- Escape
 
 --	if Config.escape then
