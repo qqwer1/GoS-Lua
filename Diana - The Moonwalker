@@ -34,21 +34,6 @@ local target = GetCurrentTarget()
 
 -- Drawings
 
---	if CanUseSpell(myHero, _Q) == READY and Config.DrawQ then
---		DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,GetCastRange(myHero,_Q),3,100,ARGB(0,0,200,15))
---	end
-
---	if CanUseSpell(myHero, _W) == READY and Config.DrawW then
---		DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,GetCastRange(myHero,_W),3,100,ARGB(0,0,200,15))
---	end
-
---	if CanUseSpell(myHero, _E) == READY and Config.DrawE then
---		DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,GetCastRange(myHero,_E),3,100,ARGB(0,0,200,15))
---	end
-
---	if CanUseSpell(myHero, _R) == READY and Config.DrawR then
---		DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,GetCastRange(myHero,_R),3,100,ARGB(0,0,200,15))
---	end
 
 -- DMG Drawings
 
@@ -197,13 +182,11 @@ if ValidTarget(target, 1250) then
 							CastTargetSpell(target,_R)
 						end
 		end
+
 -- R KS
 						if CanUseSpell(myHero,_R) == READY and ValidTarget(target, GetCastRange(myHero,_R)) and GetCurrentHP(target) < CalcDamage(myHero, target, 0, (60*GetCastLevel(myHero,_R)+40+(0.6*(GetBonusAP(myHero))))) and Config.ksR then
 							CastTargetSpell(target,_R)
 						end
-		
-
-
-		
+	
 	end
 	end)
