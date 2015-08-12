@@ -1,6 +1,6 @@
 require('Inspired')
 require('Interrupter')
-
+require('Drawings')
 
 Config = scriptConfig("Diana", "The Moonwalker")
 Config.addParam("useQ", "Use Q in combo", SCRIPT_PARAM_ONOFF, true)
@@ -12,6 +12,7 @@ Config.addParam("combo", "Combo", SCRIPT_PARAM_KEYDOWN, string.byte(" "))
 Config.addParam("harass", "Harass", SCRIPT_PARAM_KEYDOWN, string.byte("C"))
 Config.addParam("useQh", "Use Q in harass", SCRIPT_PARAM_ONOFF, true)
 Config.addParam("useWh", "Use W in harass", SCRIPT_PARAM_ONOFF, true)
+Config.addParam("Interrupter", "Use E to interrupt", SCRIPT_PARAM_ONOFF, true)
 --Config.addParam("escape", "Escape to mouse position", SCRIPT_PARAM_KEYDOWN, string.byte("A"))
 
 --Config.addParam("gapW", "Use W agains gapcloser", SCRIPT_PARAM_ONOFF, true)
@@ -76,12 +77,13 @@ local trueDMG = CalcDamage(myHero, target, 0, (60*GetCastLevel(myHero,_R)+40+(0.
 	end
 
 -- Interrupter
-
+if Config.Interrupter then
 addInterrupterCallback(function(target)
   if IsInDistance(target, GetCastRange(myHero,_E)) and CanUseSpell(myHero,_E) == READY then
     CastSpell(_E)
-  end
+  end 
 end)	
+end
 	
 -- Escape
 
