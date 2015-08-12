@@ -9,6 +9,9 @@ Config.addParam("useE", "Use E in combo", SCRIPT_PARAM_ONOFF, true)
 Config.addParam("useR", "Use R in combo", SCRIPT_PARAM_ONOFF, true)
 Config.addParam("ksR", "Use R to killsteal", SCRIPT_PARAM_ONOFF, true)
 Config.addParam("combo", "Combo", SCRIPT_PARAM_KEYDOWN, string.byte(" "))
+Config.addParam("harass", "Harass", SCRIPT_PARAM_KEYDOWN, string.byte("C"))
+Config.addParam("useQh", "Use Q in harass", SCRIPT_PARAM_ONOFF, true)
+Config.addParam("useWh", "Use W in harass", SCRIPT_PARAM_ONOFF, true)
 --Config.addParam("escape", "Escape to mouse position", SCRIPT_PARAM_KEYDOWN, string.byte("A"))
 
 --Config.addParam("gapW", "Use W agains gapcloser", SCRIPT_PARAM_ONOFF, true)
@@ -19,7 +22,7 @@ Config.addParam("combo", "Combo", SCRIPT_PARAM_KEYDOWN, string.byte(" "))
 --Config.addParam("DrawE", "Draw E range", SCRIPT_PARAM_ONOFF, false)
 --Configu.addParam("DrawR", "Draw R range", SCRIPT_PARAM_ONOFF, false)
 
-Config.addParam("DrawDMG", "Draw damage on enemies hpbar", SCRIPT_PARAM_ONOFF, true)
+Config.addParam("DrawDMG", "Draw damage", SCRIPT_PARAM_ONOFF, true)
 
 OnLoop(function(myHero)
 
@@ -108,6 +111,27 @@ end)
 --
 --		end
 --	end
+-- Harass
+if Config.harass then
+	local mymouse = GetMousePos()
+	MoveToXYZ(mymouse)
+	if ValidTarget(target, 1200) then
+	AttackUnit(target)
+	-- Q
+						if CanUseSpell(myHero, _Q) == READY and Config.useQh then
+
+							local QPred = GetPredictionForPlayer(myHeroPos, target, GetMoveSpeed(target),1670, 250, 830, 150, false, true)
+
+							if QPred.HitChance == 1 then
+								CastSkillShot(_Q, QPred.PredPos.x, QPred.PredPos.y, QPred.PredPos.z)
+							end
+						end
+-- W
+						if ValidTarget(target, 200) and Config.useWh then
+							CastSpell(_W)
+						end
+	end					
+	end
 
 if ValidTarget(target, 1250) then
 
@@ -177,5 +201,9 @@ if ValidTarget(target, 1250) then
 						if CanUseSpell(myHero,_R) == READY and ValidTarget(target, GetCastRange(myHero,_R)) and GetCurrentHP(target) < CalcDamage(myHero, target, 0, (60*GetCastLevel(myHero,_R)+40+(0.6*(GetBonusAP(myHero))))) and Config.ksR then
 							CastTargetSpell(target,_R)
 						end
+		
+
+
+		
 	end
 	end)
