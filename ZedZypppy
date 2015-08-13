@@ -16,6 +16,8 @@ myIAC = IAC()
  
 OnLoop(function(myHero)
 
+local target = GetCurrentTarget()
+
 Drawings()
 Killsteal()
 
