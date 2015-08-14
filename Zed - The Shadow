@@ -61,26 +61,26 @@ end
 	-- PrintChat("Cast first Second W is ready!")
 -- end
 
- local WStatus = GotBuff(myHero,"zedwhandler")
+ -- local WStatus = GotBuff(myHero,"zedwhandler")
 
  -- PrintChat("W Status: "..WStatus)
 -- Combo
-if Config.Combo then
+-- if Config.Combo then
 
-	if ValidTarget(target, 1000) then
+	-- if ValidTarget(target, 1000) then
 
 -- W
 
-if Config.useW then
-	local WPred = GetPredictionForPlayer(myHeroPos,target,GetMoveSpeed(target),250,300,GetCastRange(myHero,_W),290,false,false)
-	if CanUseSpell(myHero, _W) == READY and WPred.HitChance == 1 and ValidTarget(target, GetCastRange(myHero,_W)) and WStatus == 0 and Config.useW then
+-- if Config.useW then
+	-- local WPred = GetPredictionForPlayer(myHeroPos,target,GetMoveSpeed(target),250,300,GetCastRange(myHero,_W),290,false,false)
+	-- if CanUseSpell(myHero, _W) == READY and WPred.HitChance == 1 and ValidTarget(target, GetCastRange(myHero,_W)) and WStatus == 0 and Config.useW then
 
-		DelayAction(function() if WStatus == 0 then
-									CastSkillShot(_W,WPred.PredPos.x,WPred.PredPos.y,WPred.PredPos.z) end end, 50)
-	end
-end						
+		-- DelayAction(function() if WStatus == 0 then
+									-- CastSkillShot(_W,WPred.PredPos.x,WPred.PredPos.y,WPred.PredPos.z) end end, 50)
+	-- end
+-- end						
 
-waitTickCount = GetTickCount() + 400 and if waitTickCount > GetTickCount() then return end
+-- waitTickCount = GetTickCount() + 400 and if waitTickCount > GetTickCount() then return end
 
 --WBuffname = zedwhandler
 --Wname = ZedShadow
@@ -90,7 +90,7 @@ waitTickCount = GetTickCount() + 400 and if waitTickCount > GetTickCount() then 
 -- zedw2
 
 
-end
+-- end
 end
 end)
 
