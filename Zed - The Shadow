@@ -1,5 +1,5 @@
 require('Inspired')
-require('IAC2')
+require('IAC')
 
 Config = scriptConfig("Zed", "Zed - The Shadow")
 Config.addParam("ksR", "Use R to killsteal", SCRIPT_PARAM_ONOFF, true)
