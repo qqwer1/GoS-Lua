@@ -1,5 +1,5 @@
 require('Inspired')
-require('IAC2')
+require('IAC')
 
 Config = scriptConfig("Zed", "Zed - The Shadow")
 Config.addParam("ksR", "Use R to killsteal", SCRIPT_PARAM_ONOFF, true)
@@ -48,7 +48,7 @@ elseif GotBuff(target,"zedulttargetmark") == 1 then
 	MarkDMG = CalcDamage(myHero, target, 0, ((0.15*GetCastLevel(myHero,_R) + 0.05) * (Reduction * extraDMG)) + (GetBaseDamage(myHero) + GetBonusDmg(myHero)))
 	DrawDmgOverHpBar(target,GetCurrentHP(target),MarkDMG,0,0xff00ff00)
 		
-	PrintChat("Mark DMG: ".. MarkDMG)
+	--PrintChat("Mark DMG: ".. MarkDMG)
 else
 	DrawDmgOverHpBar(target,GetCurrentHP(target),DPS,0,0xff00ff00)
 end	
@@ -120,7 +120,7 @@ function Killsteal()
             if CanUseSpell(myHero, _R) == READY and ValidTarget(enemy,GetCastRange(myHero,_R)) and Config.ksR and GetCurrentHP(enemy) < trueDMGr then
             CastTargetSpell(enemy, _R)
 			StartHP = GetCurrentHP(enemy)
-			PrintChat("StartHP: "..StartHP)
+			--PrintChat("StartHP: "..StartHP)
             end
       end
 end
