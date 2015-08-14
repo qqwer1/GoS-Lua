@@ -1,7 +1,14 @@
 require('Inspired')
+require('IAC2')
 
 Config = scriptConfig("Zed", "Zed - The Shadow")
 Config.addParam("ksR", "Use R to killsteal", SCRIPT_PARAM_ONOFF, true)
+Config.addParam("AutoE", "Use Auto-E", SCRIPT_PARAM_ONOFF, true)
+Config.addParam("Combo", "Combo", SCRIPT_PARAM_KEYDOWN, string.byte(" "))
+Config.addParam("useW", "Use W", SCRIPT_PARAM_ONOFF, true)
+Config.addParam("gabW", "Use W to gabclose", SCRIPT_PARAM_ONOFF, true)
+
+myIAC = IAC()
 
 OnLoop (function(myHero)
 
@@ -46,17 +53,45 @@ else
 	DrawDmgOverHpBar(target,GetCurrentHP(target),DPS,0,0xff00ff00)
 end	
 
--- Combo Here
+-- Auto E
+	if ValidTarget(target, 290) and Config.AutoE then
+		CastSpell(_E)
+	end 
+-- if GotBuff(myHero,"zedwhandler") == 0 then
+	-- PrintChat("Cast first Second W is ready!")
+-- end
+
+ local WStatus = GotBuff(myHero,"zedwhandler")
+
+ -- PrintChat("W Status: "..WStatus)
+-- Combo
+if Config.Combo then
+
+	if ValidTarget(target, 1000) then
+
+-- W
+
+if Config.useW then
+	local WPred = GetPredictionForPlayer(myHeroPos,target,GetMoveSpeed(target),250,300,GetCastRange(myHero,_W),290,false,false)
+	if CanUseSpell(myHero, _W) == READY and WPred.HitChance == 1 and ValidTarget(target, GetCastRange(myHero,_W)) and WStatus == 0 and Config.useW then
+
+		DelayAction(function() if WStatus == 0 then
+									CastSkillShot(_W,WPred.PredPos.x,WPred.PredPos.y,WPred.PredPos.z) end end, 50)
+	end
+end						
+
+waitTickCount = GetTickCount() + 400 and if waitTickCount > GetTickCount() then return end
+
+--WBuffname = zedwhandler
+--Wname = ZedShadow
+--WBasename = Shadow
+--WObjtype = obj_AI_Minion
+--W Spell name = Shadow Swap
+-- zedw2
 
 
-
-
-
-
-
-
-
-
+end
+end
 end)
 
 function Killsteal()
@@ -85,7 +120,7 @@ function Killsteal()
 			else trueDMGr = 0
 			end
 			
-            if CanUseSpell(myHero, _R) == READY and not GotBuff(myHero,"ZedR2") == 1 and ValidTarget(enemy,GetCastRange(myHero,_R)) and Config.ksR and GetCurrentHP(enemy) < trueDMGr then
+            if CanUseSpell(myHero, _R) == READY and ValidTarget(enemy,GetCastRange(myHero,_R)) and Config.ksR and GetCurrentHP(enemy) < trueDMGr then
             CastTargetSpell(enemy, _R)
 			StartHP = GetCurrentHP(enemy)
 			PrintChat("StartHP: "..StartHP)
