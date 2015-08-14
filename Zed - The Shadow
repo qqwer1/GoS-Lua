@@ -1,0 +1,94 @@
+require('Inspired')
+
+Config = scriptConfig("Zed", "Zed - The Shadow")
+Config.addParam("ksR", "Use R to killsteal", SCRIPT_PARAM_ONOFF, true)
+
+OnLoop (function(myHero)
+
+local myHeroPos = GetOrigin(myHero)
+local target = GetCurrentTarget()
+local AD = GetBaseDamage(myHero) + GetBonusDmg(myHero)
+Killsteal()
+
+-- R DMG Calc 
+	USER = KeyIsDown(82)
+	if USER == true then
+		StartHP = GetCurrentHP(target)
+		-- ArmorTarget = GetArmor(target)
+		-- ArmorA = (100/(100+GetArmor(target)))-1
+		-- Reduction = math.sqrt(math.pow(ArmorA,2)) + 1
+		-- PrintChat("Enemy Starting HP: ".. StartHP)
+		-- AD = GetBaseDamage(myHero) + GetBonusDmg(myHero)
+		-- PrintChat("Lux Armor: ".. ArmorTarget)
+		-- PrintChat("Lux DMG Reduction: ".. Reduction)
+		-- PrintChat("AD: ".. AD)
+		-- PrintChat("DPS: ".. DPS)
+		-- PrintChat("trueDMGr: "..trueDMGr)
+	end
+
+
+	
+	EndHP = GetCurrentHP(target)
+	
+if CanUseSpell(myHero,_R) == READY then
+	DrawDmgOverHpBar(target,GetCurrentHP(target),trueDMGr,0,0xff00ff00)
+	
+elseif GotBuff(target,"zedulttargetmark") == 1 then
+	ArmorTarget = GetArmor(target)
+	ArmorA = (100/(100+GetArmor(target)))-1
+	Reduction = math.sqrt(math.pow(ArmorA,2)) + 1
+	extraDMG = StartHP - EndHP
+	MarkDMG = CalcDamage(myHero, target, 0, ((0.15*GetCastLevel(myHero,_R) + 0.05) * (Reduction * extraDMG)) + (GetBaseDamage(myHero) + GetBonusDmg(myHero)))
+	DrawDmgOverHpBar(target,GetCurrentHP(target),MarkDMG,0,0xff00ff00)
+		
+	PrintChat("Mark DMG: ".. MarkDMG)
+else
+	DrawDmgOverHpBar(target,GetCurrentHP(target),DPS,0,0xff00ff00)
+end	
+
+-- Combo Here
+
+
+
+
+
+
+
+
+
+
+end)
+
+function Killsteal()
+       for i,enemy in pairs(GetEnemyHeroes()) do
+			
+			if CanUseSpell(myHero,_Q) == READY then 
+				qDMG = CalcDamage(myHero, enemy, 0, (24*GetCastLevel(myHero,_Q)+21+(0.6*(GetBaseDamage(myHero) + GetBonusDmg(myHero)))))
+				qDMGpre = (24*GetCastLevel(myHero,_Q)+21+(0.6*(GetBaseDamage(myHero) + GetBonusDmg(myHero))))
+			else qDMG = 0
+				 qDMGpre = 0
+			end
+			
+			if CanUseSpell(myHero,_E) == READY then 
+				eDMG = CalcDamage(myHero, enemy, 0, (30*GetCastLevel(myHero,_E)+30+(0.8*(GetBaseDamage(myHero) + GetBonusDmg(myHero)))))
+				eDMGpre = (30*GetCastLevel(myHero,_E)+30+(0.8*(GetBaseDamage(myHero) + GetBonusDmg(myHero))))
+			else eDMG = 0
+				 eDMGpre = 0
+			end
+			
+			DPS = qDMG + eDMG
+			DPSpre = qDMGpre + eDMGpre
+			
+			if CanUseSpell(myHero,_R) == READY then
+				AADMG = CalcDamage(myHero, enemy, 0, (GetBaseDamage(myHero) + GetBonusDmg(myHero)))
+				trueDMGr = CalcDamage(myHero, enemy, 0, (((0.15*GetCastLevel(myHero,_R) + 0.05) * DPSpre ) + (GetBaseDamage(myHero) + GetBonusDmg(myHero)) + AADMG)) + DPSpre
+			else trueDMGr = 0
+			end
+			
+            if CanUseSpell(myHero, _R) == READY and not GotBuff(myHero,"ZedR2") == 1 and ValidTarget(enemy,GetCastRange(myHero,_R)) and Config.ksR and GetCurrentHP(enemy) < trueDMGr then
+            CastTargetSpell(enemy, _R)
+			StartHP = GetCurrentHP(enemy)
+			PrintChat("StartHP: "..StartHP)
+            end
+      end
+end
