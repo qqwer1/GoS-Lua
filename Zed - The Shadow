@@ -1,5 +1,5 @@
 require('Inspired')
-require('IAC')
+require('IAC2')
 
 Config = scriptConfig("Zed", "Zed - The Shadow")
 Config.addParam("ksR", "Use R to killsteal", SCRIPT_PARAM_ONOFF, true)
@@ -89,9 +89,6 @@ end
 --W Spell name = Shadow Swap
 -- zedw2
 
-
--- end
-end
 end)
 
 function Killsteal()
