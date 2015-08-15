@@ -12,7 +12,17 @@ Config.addParam("Combo", "Combo", SCRIPT_PARAM_KEYDOWN, string.byte(" "))
 Config.addParam("useW", "Use W", SCRIPT_PARAM_ONOFF, true)
 Config.addParam("useQ", "Use Q", SCRIPT_PARAM_ONOFF, true)
 Config.addParam("useE", "Use E", SCRIPT_PARAM_ONOFF, true)
-Config.addParam("gabW", "Use W to gabclose", SCRIPT_PARAM_ONOFF, true)
+Config.addParam("gabW", "Use W to gapclose", SCRIPT_PARAM_ONOFF, true)
+
+DrawingsConfig = scriptConfig("Zed", "Drawings")
+DrawingsConfig.addParam("DrawQ","Draw Q", SCRIPT_PARAM_ONOFF, true)
+DrawingsConfig.addParam("DrawW","Draw W", SCRIPT_PARAM_ONOFF, true)
+DrawingsConfig.addParam("DrawE","Draw E", SCRIPT_PARAM_ONOFF, true)
+DrawingsConfig.addParam("DrawR","Draw R", SCRIPT_PARAM_ONOFF, true)
+DrawingsConfig.addParam("DrawWShadow","W - Shadow Drawings", SCRIPT_PARAM_ONOFF, true)
+DrawingsConfig.addParam("DrawRShadow","R - Shadow Drawings", SCRIPT_PARAM_ONOFF, true)
+DrawingsConfig.addParam("DrawDMG","DrawDmgOverHpBar", SCRIPT_PARAM_ONOFF, true)
+
 
 myIAC = IAC()
 global_ticks = 0
@@ -30,6 +40,7 @@ local myHeroPos = GetOrigin(myHero)
 local target = GetCurrentTarget()
 local AD = GetBaseDamage(myHero) + GetBonusDmg(myHero)
 Killsteal()
+Drawings()
 
 -- R DMG Calc 
 	USER = KeyIsDown(82)
@@ -50,7 +61,7 @@ Killsteal()
 
 	
 	EndHP = GetCurrentHP(target)
-	
+if DrawingsConfig.DrawDMG then
 if CanUseSpell(myHero,_R) == READY then
 	DrawDmgOverHpBar(target,GetCurrentHP(target),trueDMGr,0,0xff00ff00)
 	
@@ -66,7 +77,7 @@ elseif GotBuff(target,"zedulttargetmark") == 1 then
 else
 	DrawDmgOverHpBar(target,GetCurrentHP(target),DPS,0,0xff00ff00)
 end	
-
+end
 -- Auto E
 if Config.AutoE then
 	if ValidTarget(target, 290) and Config.AutoE then
@@ -140,6 +151,7 @@ OnProcessSpell(function(unit, spell)
 end)
 
 -- Draw R Shadow
+if DrawingsConfig.DrawRShadow then
 if RPosx > 1 and CanUseSpell(myHero,_Q) == READY and CanUseSpell(myHero,_E) == READY then
 	DrawCircle(RPosx,RPosy,RPosz,GetCastRange(myHero,_Q),1,50,0xff0ffff0)
 	DrawCircle(RPosx,RPosy,RPosz,GetCastRange(myHero,_E),1,50,0xff0ffff0)
@@ -155,8 +167,10 @@ elseif RPosx > 1 then
 elseif RPosx == 1 then
 	-- DrawCircle(RPosx,RPosy,RPosz,50,1,50,0xff0ffff0)	
 end	
+end
 
 -- Draw W Shadow
+if DrawingsConfig.DrawWShadow then
 if WPosx > 1 and CanUseSpell(myHero,_Q) == READY and CanUseSpell(myHero,_E) == READY then
 	DrawCircle(WPosx,WPosy,WPosz,GetCastRange(myHero,_Q),1,50,0xff00ff00)
 	DrawCircle(WPosx,WPosy,WPosz,GetCastRange(myHero,_E),1,50,0xff00ff00)
@@ -172,7 +186,7 @@ elseif WPosx > 1 then
 elseif WPosx == 1 then
 	-- DrawCircle(WPosx,WPosy,WPosz,100,1,50,0xff00ff00)	
 end			
-
+end
 
 -- Combo
 if Config.Combo then
@@ -383,4 +397,20 @@ function Killsteal()
 			StartHP = GetCurrentHP(enemy)
             end
       end
+end
+
+function Drawings()
+myHeroPos = GetOrigin(myHero)
+if CanUseSpell(myHero, _Q) == READY and DrawingsConfig.DrawQ then DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,GetCastRange(myHero,_Q),1,100,0xff00ff00)
+	elseif CanUseSpell(myHero, _Q) == ONCOOLDOWN and DrawingsConfig.DrawQ then DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,GetCastRange(myHero,_Q),1,100,0xffff0000)
+	end
+if CanUseSpell(myHero, _W) == READY and DrawingsConfig.DrawW then DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,GetCastRange(myHero,_W),1,100,0xff00ff00)
+	elseif CanUseSpell(myHero, _W) == ONCOOLDOWN and DrawingsConfig.DrawW then DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,GetCastRange(myHero,_W),1,100,0xffff0000)
+	end
+if CanUseSpell(myHero, _E) == READY and DrawingsConfig.DrawE then DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,GetCastRange(myHero,_E),1,100,0xff00ff00) 
+	elseif CanUseSpell(myHero, _E) == ONCOOLDOWN and DrawingsConfig.DrawE then DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,GetCastRange(myHero,_E),1,100,0xffff0000)
+	end
+if CanUseSpell(myHero, _R) == READY and DrawingsConfig.DrawR then DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,GetCastRange(myHero,_R),2,100,0xff00ff00) 
+	elseif CanUseSpell(myHero, _R) == ONCOOLDOWN and DrawingsConfig.DrawR then DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,GetCastRange(myHero,_R),1,100,0xffff0000)
+	end
 end
