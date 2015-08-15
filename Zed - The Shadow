@@ -2,6 +2,7 @@ require('Inspired')
 require('IAC')
 
 -- Creditis to:
+-- Zypppy
 -- Deftsu
 
 Config = scriptConfig("Zed", "Zed - The Shadow")
@@ -18,6 +19,10 @@ global_ticks = 0
 	WPosx = 1
 	WPosy = 1
 	WPosz = 1
+	
+	RPosx = 1
+	RPosy = 1
+	RPosz = 1
 	
 OnLoop (function(myHero)
 
@@ -63,12 +68,28 @@ else
 end	
 
 -- Auto E
+if Config.AutoE then
 	if ValidTarget(target, 290) and Config.AutoE then
 		CastSpell(_E)
-	end 
-	
+	end
+-- W _E	
+	if CanUseSpell(myHero,_E) == READY and Config.AutoE then
+		local wEPred = GetPredictionForPlayer(vWPos,target,GetMoveSpeed(target),1700,250,GetCastRange(myHero,_E),0,false,false)
+			if CanUseSpell(myHero, _E) == READY and wEPred.HitChance == 1 then
+				CastSpell(_E)
+			end
+	end
+-- R _E	
+	if CanUseSpell(myHero,_E) == READY and Config.AutoE then
+		local rEPred = GetPredictionForPlayer(vRPos,target,GetMoveSpeed(target),1700,250,GetCastRange(myHero,_E),0,false,false)
+			if CanUseSpell(myHero, _E) == READY and rEPred.HitChance == 1 then
+				CastSpell(_E)
+			end
+	end	
+end	
 Ticker1 = GetTickCount()
 
+-- W Tracker
 OnProcessSpell(function(unit, spell)
   if unit and unit == myHero and spell then
     if spell.name:lower():find("zedshadowdash") then
@@ -93,8 +114,49 @@ OnProcessSpell(function(unit, spell)
   end
 end)
 
+-- R Tracker
+OnProcessSpell(function(unit, spell)
+  if unit and unit == myHero and spell then
+    if spell.name:lower():find("zedult") then
+	RPosx = spell.startPos.x
+	RPosy = spell.startPos.y
+	RPosz = spell.startPos.z
+	vRPos = Vector(RPosx,RPosy,spell.RPosz)
+	
+	elseif spell.name:lower():find("zedr2") then
+	RPosx = spell.startPos.x
+	RPosy = spell.startPos.y
+	RPosz = spell.startPos.z
+	vRPos = Vector(RPosx,RPosy,RPosz)
+	
+	elseif CanUseSpell(myHero,_R) == ONCOOLDOWN then
+	
+	RPosx = 1
+	RPosy = 1
+	RPosz = 1
+	vRPos = Vector(RPosx,RPosy,RPosz)
+	end  
+  end
+end)
 
+-- Draw R Shadow
+if RPosx > 1 and CanUseSpell(myHero,_Q) == READY and CanUseSpell(myHero,_E) == READY then
+	DrawCircle(RPosx,RPosy,RPosz,GetCastRange(myHero,_Q),1,50,0xff0ffff0)
+	DrawCircle(RPosx,RPosy,RPosz,GetCastRange(myHero,_E),1,50,0xff0ffff0)
+	DrawCircle(RPosx,RPosy,RPosz,100,1,50,0xff0ffff0)
+elseif RPosx > 1 and CanUseSpell(myHero,_Q) == READY then
+	DrawCircle(RPosx,RPosy,RPosz,GetCastRange(myHero,_Q),1,50,0xff0ffff0)
+	DrawCircle(RPosx,RPosy,RPosz,100,1,50,0xff0ffff0)
+elseif RPosx > 1 and CanUseSpell(myHero,_E) == READY then
+	DrawCircle(RPosx,RPosy,RPosz,GetCastRange(myHero,_E),1,50,0xff0ffff0)
+	DrawCircle(RPosx,RPosy,RPosz,100,1,50,0xff0ffff0)	
+elseif RPosx > 1 then
+	DrawCircle(RPosx,RPosy,RPosz,100,1,50,0xff0ffff0)
+elseif RPosx == 1 then
+	-- DrawCircle(RPosx,RPosy,RPosz,50,1,50,0xff0ffff0)	
+end	
 
+-- Draw W Shadow
 if WPosx > 1 and CanUseSpell(myHero,_Q) == READY and CanUseSpell(myHero,_E) == READY then
 	DrawCircle(WPosx,WPosy,WPosz,GetCastRange(myHero,_Q),1,50,0xff00ff00)
 	DrawCircle(WPosx,WPosy,WPosz,GetCastRange(myHero,_E),1,50,0xff00ff00)
@@ -108,8 +170,9 @@ elseif WPosx > 1 and CanUseSpell(myHero,_E) == READY then
 elseif WPosx > 1 then
 	DrawCircle(WPosx,WPosy,WPosz,100,1,50,0xff00ff00)
 elseif WPosx == 1 then
-	DrawCircle(WPosx,WPosy,WPosz,100,1,50,0xff00ff00)	
+	-- DrawCircle(WPosx,WPosy,WPosz,100,1,50,0xff00ff00)	
 end			
+
 
 -- Combo
 if Config.Combo then
@@ -120,6 +183,7 @@ if Config.Combo then
 -- W Gab Combo
 if Config.useW and Config.gabW then
 
+-- W
 	if CanUseSpell(myHero,_W) == READY and Config.useW and Config.gabW then
 		local WPred = GetPredictionForPlayer(myHeroPos,target,GetMoveSpeed(target),300,300,GetCastRange(myHero,_W),250,false,false)
             if CanUseSpell(myHero, _W) == READY and WPred.HitChance == 1 and ValidTarget(target, GetCastRange(myHero,_W)) then
@@ -131,6 +195,14 @@ if Config.useW and Config.gabW then
 		local wQPred = GetPredictionForPlayer(vWPos,target,GetMoveSpeed(target),1700,250,GetCastRange(myHero,_Q),50,false,false)
             if CanUseSpell(myHero, _Q) == READY and wQPred.HitChance == 1 then
                 CastSkillShot(_Q,wQPred.PredPos.x,wQPred.PredPos.y,wQPred.PredPos.z)
+		end     
+	end	
+
+-- R _Q	
+	if CanUseSpell(myHero,_Q) == READY and Config.useQ then
+		local rQPred = GetPredictionForPlayer(vRPos,target,GetMoveSpeed(target),1700,250,GetCastRange(myHero,_Q),50,false,false)
+            if CanUseSpell(myHero, _Q) == READY and rQPred.HitChance == 1 then
+                CastSkillShot(_Q,rQPred.PredPos.x,rQPred.PredPos.y,rQPred.PredPos.z)
 		end     
 	end		
 			
@@ -149,6 +221,14 @@ if Config.useW and Config.gabW then
 				CastSpell(_E)
 			end
 	end	
+
+-- R _E	
+	if CanUseSpell(myHero,_E) == READY and Config.useE then
+		local rEPred = GetPredictionForPlayer(vRPos,target,GetMoveSpeed(target),1700,250,GetCastRange(myHero,_E),0,false,false)
+			if CanUseSpell(myHero, _E) == READY and rEPred.HitChance == 1 then
+				CastSpell(_E)
+			end
+	end	
 	
 -- E
 	if CanUseSpell(myHero,_E) == READY and ValidTarget(target, 200) and Config.useE then
@@ -159,6 +239,7 @@ end
 -- W Once Combo
 if Config.useW and not Config.gabW then
 
+-- W with ticker
 	if CanUseSpell(myHero,_W) == READY and GotBuff(myHero,"zedwhandler") == 0 and Config.useW then
 		 local WPred = GetPredictionForPlayer(myHeroPos,target,GetMoveSpeed(target),300,300,GetCastRange(myHero,_W),250,false,false)
 
@@ -187,6 +268,15 @@ if Config.useW and not Config.gabW then
                 CastSkillShot(_Q,wQPred.PredPos.x,wQPred.PredPos.y,wQPred.PredPos.z)
 		end     
 	end
+
+-- R _Q	
+	if CanUseSpell(myHero,_Q) == READY and Config.useQ then
+		local rQPred = GetPredictionForPlayer(vRPos,target,GetMoveSpeed(target),1700,250,GetCastRange(myHero,_Q),50,false,false)
+            if CanUseSpell(myHero, _Q) == READY and rQPred.HitChance == 1 then
+                CastSkillShot(_Q,rQPred.PredPos.x,rQPred.PredPos.y,rQPred.PredPos.z)
+		end     
+	end	
+	
 -- W _E
 	if CanUseSpell(myHero,_E) == READY and Config.useE and Config.useW then
 		local wEPred = GetPredictionForPlayer(vWPos,target,GetMoveSpeed(target),1700,250,GetCastRange(myHero,_E),0,false,false)
@@ -195,12 +285,20 @@ if Config.useW and not Config.gabW then
 			end
 	end
 
+-- R _E	
+	if CanUseSpell(myHero,_E) == READY and Config.useE then
+		local rEPred = GetPredictionForPlayer(vRPos,target,GetMoveSpeed(target),1700,250,GetCastRange(myHero,_E),0,false,false)
+			if CanUseSpell(myHero, _E) == READY and rEPred.HitChance == 1 then
+				CastSpell(_E)
+			end
+	end		
 	
 -- E
 	if CanUseSpell(myHero,_E) == READY and ValidTarget(target, 200) and Config.useE then
 		CastSpell(_E)
 	end
 end
+
 -- Manual W
 if not Config.useW and not Config.gabW then
 
@@ -219,6 +317,14 @@ if not Config.useW and not Config.gabW then
                 CastSkillShot(_Q,wQPred.PredPos.x,wQPred.PredPos.y,wQPred.PredPos.z)
 		end     
 	end
+
+-- R _Q	
+	if CanUseSpell(myHero,_Q) == READY and Config.useQ then
+		local rQPred = GetPredictionForPlayer(vRPos,target,GetMoveSpeed(target),1700,250,GetCastRange(myHero,_Q),50,false,false)
+            if CanUseSpell(myHero, _Q) == READY and rQPred.HitChance == 1 then
+                CastSkillShot(_Q,rQPred.PredPos.x,rQPred.PredPos.y,rQPred.PredPos.z)
+		end     
+	end	
 	
 -- W _E
 	if CanUseSpell(myHero,_E) == READY and Config.useE then
@@ -231,7 +337,15 @@ if not Config.useW and not Config.gabW then
 -- E
 	if CanUseSpell(myHero,_E) == READY and ValidTarget(target, 200) and Config.useE then
 		CastSpell(_E)
-	end	
+	end
+
+-- R _E	
+	if CanUseSpell(myHero,_E) == READY and Config.useE then
+		local rEPred = GetPredictionForPlayer(vRPos,target,GetMoveSpeed(target),1700,250,GetCastRange(myHero,_E),0,false,false)
+			if CanUseSpell(myHero, _E) == READY and rEPred.HitChance == 1 then
+				CastSpell(_E)
+			end
+	end		
 	
 end	
 end
