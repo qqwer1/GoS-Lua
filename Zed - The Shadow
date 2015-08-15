@@ -14,7 +14,7 @@ Config.addParam("useQ", "Use Q", SCRIPT_PARAM_ONOFF, true)
 Config.addParam("useE", "Use E", SCRIPT_PARAM_ONOFF, true)
 Config.addParam("gabW", "Use W to gapclose", SCRIPT_PARAM_ONOFF, true)
 
-DrawingsConfig = scriptConfig("Zed", "Drawings")
+DrawingsConfig = scriptConfig("Drawings", "Drawings")
 DrawingsConfig.addParam("DrawQ","Draw Q", SCRIPT_PARAM_ONOFF, true)
 DrawingsConfig.addParam("DrawW","Draw W", SCRIPT_PARAM_ONOFF, true)
 DrawingsConfig.addParam("DrawE","Draw E", SCRIPT_PARAM_ONOFF, true)
