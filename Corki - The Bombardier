@@ -1,0 +1,189 @@
+require('Inspired')
+require('IAC')
+
+-- #REKT Deftsu
+-- Doge
+
+ComboConfig = scriptConfig("Corki", "Combo - The Bombardier")
+ComboConfig.addParam("useQ", "Use Q in combo", SCRIPT_PARAM_ONOFF, true)
+ComboConfig.addParam("useE", "Use E in combo", SCRIPT_PARAM_ONOFF, true)
+ComboConfig.addParam("useR", "Use R in combo", SCRIPT_PARAM_ONOFF, true)
+ComboConfig.addParam("useSheen", "SheenProc weaving", SCRIPT_PARAM_ONOFF, true)
+ComboConfig.addParam("Combo", "Combo", SCRIPT_PARAM_KEYDOWN, string.byte(" "))
+
+DrawingsConfig = scriptConfig("Drawings", "Drawings:")
+DrawingsConfig.addParam("DrawQ","Draw Q", SCRIPT_PARAM_ONOFF, true)
+DrawingsConfig.addParam("DrawW","Draw W", SCRIPT_PARAM_ONOFF, true)
+DrawingsConfig.addParam("DrawE","Draw E", SCRIPT_PARAM_ONOFF, true)
+DrawingsConfig.addParam("DrawR","Draw R", SCRIPT_PARAM_ONOFF, true)
+DrawingsConfig.addParam("DrawDMG","DrawDmgOverHpBar", SCRIPT_PARAM_ONOFF, true)
+
+
+OnLoop (function (myHero)
+
+local myHeroPos = GetOrigin(myHero)
+local target = GetCurrentTarget()
+
+Killsteal()
+Drawings()
+
+if DrawingsConfig.DrawDMG then
+	DrawDmgOverHpBar(target,GetCurrentHP(target),DPS,0,0xff00ff00)
+end
+-- Items
+local Sheen = GetItemSlot(myHero,3057)
+local TonsOfDamage = GetItemSlot(myHero,3078)
+
+if ComboConfig.Combo then
+-- Combo - noSheen
+
+if ValidTarget(target,GetCastRange(myHero,_R)) then
+
+if not ComboConfig.useSheen then
+
+	local QPred = GetPredictionForPlayer(myHeroPos, target, GetMoveSpeed(target),1000, 250, GetCastRange(myHero,_Q), 250, false, true)
+	if QPred.HitChance == 1 and CanUseSpell(myHero,_Q) == READY and ComboConfig.useQ then
+		CastSkillShot(_Q, QPred.PredPos.x, QPred.PredPos.y, QPred.PredPos.z)
+	end
+	
+	local EPred = GetPredictionForPlayer(myHeroPos, target, GetMoveSpeed(target),5000, 150, GetCastRange(myHero,_E), 250, false, true)
+	if EPred.HitChance == 1 and CanUseSpell(myHero,_E) == READY and ComboConfig.useE then
+		CastSkillShot(_E, EPred.PredPos.x, EPred.PredPos.y, EPred.PredPos.z)
+	end
+if not GotBuff(myHero,"mbcheck2") then	
+	local RPred = GetPredictionForPlayer(myHeroPos, target, GetMoveSpeed(target),1670, 250, GetCastRange(myHero,_R), 75, true, true)
+	if RPred.HitChance == 1 and CanUseSpell(myHero,_R) == READY and ComboConfig.useR then
+		CastSkillShot(_R, RPred.PredPos.x, RPred.PredPos.y, RPred.PredPos.z)
+	end
+elseif GotBuff(myHero,"mbcheck2") then
+	local RPred = GetPredictionForPlayer(myHeroPos, target, GetMoveSpeed(target),1670, 250, GetCastRange(myHero,_R), 150, true, true)
+	if RPred.HitChance == 1 and CanUseSpell(myHero,_R) == READY and ComboConfig.useR then
+		CastSkillShot(_R, RPred.PredPos.x, RPred.PredPos.y, RPred.PredPos.z)
+	end
+end	
+end
+-- Combo SheenWeave
+
+if Sheen >= 1 or TonsOfDamage >= 1 and ComboConfig.useSheen then
+
+	if ValidTarget(target,GetRange(myHero)) and GotBuff(myHero,"sheen") == 1 then
+		
+	elseif ValidTarget(target,GetRange(myHero)) and GotBuff(myHero,"sheen") == 0 then
+	
+		local QPred = GetPredictionForPlayer(myHeroPos, target, GetMoveSpeed(target),1000, 250, GetCastRange(myHero,_Q), 250, false, true)
+			if QPred.HitChance == 1 and CanUseSpell(myHero,_Q) == READY and ComboConfig.useQ then
+				CastSkillShot(_Q, QPred.PredPos.x, QPred.PredPos.y, QPred.PredPos.z)
+			end
+	
+		local EPred = GetPredictionForPlayer(myHeroPos, target, GetMoveSpeed(target),5000, 150, GetCastRange(myHero,_E), 250, false, true)
+			if EPred.HitChance == 1 and CanUseSpell(myHero,_E) == READY and ComboConfig.useE then
+				CastSkillShot(_E, EPred.PredPos.x, EPred.PredPos.y, EPred.PredPos.z)
+			end
+		if not GotBuff(myHero,"mbcheck2") then	
+			local RPred = GetPredictionForPlayer(myHeroPos, target, GetMoveSpeed(target),1670, 250, GetCastRange(myHero,_R), 75, true, true)
+				if RPred.HitChance == 1 and CanUseSpell(myHero,_R) == READY and ComboConfig.useR then
+					CastSkillShot(_R, RPred.PredPos.x, RPred.PredPos.y, RPred.PredPos.z)
+				end
+		elseif GotBuff(myHero,"mbcheck2") then
+			local RPred = GetPredictionForPlayer(myHeroPos, target, GetMoveSpeed(target),1670, 250, GetCastRange(myHero,_R), 150, true, true)
+				if RPred.HitChance == 1 and CanUseSpell(myHero,_R) == READY and ComboConfig.useR then
+					CastSkillShot(_R, RPred.PredPos.x, RPred.PredPos.y, RPred.PredPos.z)
+				end
+		end
+		
+	elseif ValidTarget(target,GetCastRange(myHero,_R)) then
+		
+		local QPred = GetPredictionForPlayer(myHeroPos, target, GetMoveSpeed(target),1000, 250, GetCastRange(myHero,_Q), 250, false, true)
+			if QPred.HitChance == 1 and CanUseSpell(myHero,_Q) == READY and ComboConfig.useQ then
+				CastSkillShot(_Q, QPred.PredPos.x, QPred.PredPos.y, QPred.PredPos.z)
+			end
+	
+		local EPred = GetPredictionForPlayer(myHeroPos, target, GetMoveSpeed(target),5000, 150, GetCastRange(myHero,_E), 250, false, true)
+			if EPred.HitChance == 1 and CanUseSpell(myHero,_E) == READY and ComboConfig.useE then
+				CastSkillShot(_E, EPred.PredPos.x, EPred.PredPos.y, EPred.PredPos.z)
+			end
+		if not GotBuff(myHero,"mbcheck2") then	
+			local RPred = GetPredictionForPlayer(myHeroPos, target, GetMoveSpeed(target),1670, 250, GetCastRange(myHero,_R), 75, true, true)
+				if RPred.HitChance == 1 and CanUseSpell(myHero,_R) == READY and ComboConfig.useR then
+					CastSkillShot(_R, RPred.PredPos.x, RPred.PredPos.y, RPred.PredPos.z)
+				end
+		elseif GotBuff(myHero,"mbcheck2") then
+			local RPred = GetPredictionForPlayer(myHeroPos, target, GetMoveSpeed(target),1670, 250, GetCastRange(myHero,_R), 150, true, true)
+				if RPred.HitChance == 1 and CanUseSpell(myHero,_R) == READY and ComboConfig.useR then
+					CastSkillShot(_R, RPred.PredPos.x, RPred.PredPos.y, RPred.PredPos.z)
+				end
+		end
+
+	end	
+
+	
+elseif ValidTarget(target,GetCastRange(myHero,_R)) then
+		
+		local QPred = GetPredictionForPlayer(myHeroPos, target, GetMoveSpeed(target),1000, 250, GetCastRange(myHero,_Q), 250, false, true)
+			if QPred.HitChance == 1 and CanUseSpell(myHero,_Q) == READY and ComboConfig.useQ then
+				CastSkillShot(_Q, QPred.PredPos.x, QPred.PredPos.y, QPred.PredPos.z)
+			end
+	
+		local EPred = GetPredictionForPlayer(myHeroPos, target, GetMoveSpeed(target),5000, 150, GetCastRange(myHero,_E), 250, false, true)
+			if EPred.HitChance == 1 and CanUseSpell(myHero,_E) == READY and ComboConfig.useE then
+				CastSkillShot(_E, EPred.PredPos.x, EPred.PredPos.y, EPred.PredPos.z)
+			end
+		if not GotBuff(myHero,"mbcheck2") then	
+			local RPred = GetPredictionForPlayer(myHeroPos, target, GetMoveSpeed(target),1670, 250, GetCastRange(myHero,_R), 75, true, true)
+				if RPred.HitChance == 1 and CanUseSpell(myHero,_R) == READY and ComboConfig.useR then
+					CastSkillShot(_R, RPred.PredPos.x, RPred.PredPos.y, RPred.PredPos.z)
+				end
+		elseif GotBuff(myHero,"mbcheck2") then
+			local RPred = GetPredictionForPlayer(myHeroPos, target, GetMoveSpeed(target),1670, 250, GetCastRange(myHero,_R), 150, true, true)
+				if RPred.HitChance == 1 and CanUseSpell(myHero,_R) == READY and ComboConfig.useR then
+					CastSkillShot(_R, RPred.PredPos.x, RPred.PredPos.y, RPred.PredPos.z)
+				end
+		end
+end
+
+
+end
+end	
+end)
+
+function Killsteal()
+       for i,enemy in pairs(GetEnemyHeroes()) do
+			
+			if CanUseSpell(myHero,_Q) == READY then 
+				qDMG = CalcDamage(myHero, enemy, 0, (30*GetCastLevel(myHero,_Q)+50+(0.5*(GetBaseDamage(myHero) + GetBonusDmg(myHero)))+(0.5*GetBonusAP(myHero))))
+				local QPred = GetPredictionForPlayer(myHeroPos, target, GetMoveSpeed(target),1000, 250, GetCastRange(myHero,_Q), 250, false, true)
+				if CanUseSpell (myHero,_Q) == READY and QPred.HitChance == 1 and ValidTarget(enemy,GetCastRange(myHero,_Q)) and GetCurrentHP(enemy) < qDMG then
+					CastSkillShot(_Q, QPred.PredPos.x, QPred.PredPos.y, QPred.PredPos.z)
+				end
+			else
+				qDMG = 0
+			end
+			
+			if CanUseSpell(myHero,_R) == READY then
+				rDMG = CalcDamage(myHero, enemy, 0, (50*GetCastLevel(myHero,_R)+20+((0.1*(GetCastLevel(myHero,_R))+0.1)*(GetBaseDamage(myHero) + GetBonusDmg(myHero)))+(0.3*GetBonusAP(myHero))))
+				local RPred = GetPredictionForPlayer(myHeroPos, target, GetMoveSpeed(target),1670, 250, GetCastRange(myHero,_R), 75, true, true)
+				if CanUseSpell (myHero,_R) == READY and RPred.HitChance == 1 and ValidTarget(enemy,GetCastRange(myHero,_R)) and GetCurrentHP(enemy) < rDMG then
+					CastSkillShot(_R, RPred.PredPos.x, RPred.PredPos.y, RPred.PredPos.z)
+				end
+			else
+				rDMG = 0
+			end
+		DPS = qDMG + rDMG
+      end
+end
+
+function Drawings()
+myHeroPos = GetOrigin(myHero)
+if CanUseSpell(myHero, _Q) == READY and DrawingsConfig.DrawQ then DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,GetCastRange(myHero,_Q),1,100,0xff00ff00)
+	elseif CanUseSpell(myHero, _Q) == ONCOOLDOWN and DrawingsConfig.DrawQ then DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,GetCastRange(myHero,_Q),1,100,0xffff0000)
+	end
+if CanUseSpell(myHero, _W) == READY and DrawingsConfig.DrawW then DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,GetCastRange(myHero,_W),1,100,0xff00ff00)
+	elseif CanUseSpell(myHero, _W) == ONCOOLDOWN and DrawingsConfig.DrawW then DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,GetCastRange(myHero,_W),1,100,0xffff0000)
+	end
+if CanUseSpell(myHero, _E) == READY and DrawingsConfig.DrawE then DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,GetCastRange(myHero,_E),1,100,0xff00ff00) 
+	elseif CanUseSpell(myHero, _E) == ONCOOLDOWN and DrawingsConfig.DrawE then DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,GetCastRange(myHero,_E),1,100,0xffff0000)
+	end
+if CanUseSpell(myHero, _R) == READY and DrawingsConfig.DrawR then DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,GetCastRange(myHero,_R),2,100,0xff00ff00) 
+	elseif CanUseSpell(myHero, _R) == ONCOOLDOWN and DrawingsConfig.DrawR then DrawCircle(myHeroPos.x,myHeroPos.y,myHeroPos.z,GetCastRange(myHero,_R),1,100,0xffff0000)
+	end
+end
