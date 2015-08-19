@@ -22,7 +22,6 @@ local target = GetCurrentTarget()
 local Sheen = GetItemSlot(myHero,3057)
 local TonsOfDamage = GetItemSlot(myHero,3078)
 local Iceborn = GetItemSlot(myHero,3025)
--- itemfrozenfist = 1
 local Muramana = GetItemSlot(myHero,3042)
 local Manamune = GetItemSlot(myHero,3004)
 local Tear = GetItemSlot(myHero,3070)
