@@ -11,7 +11,6 @@ ComboConfig.addParam("tearStack", "Tear stacking (Beta)", SCRIPT_PARAM_ONOFF, fa
 ComboConfig.addParam("Combo", "Combo", SCRIPT_PARAM_KEYDOWN, string.byte(" "))
 ComboConfig.addParam("ksQ", "Use Q - KS", SCRIPT_PARAM_ONOFF, true)
 ComboConfig.addParam("ksR", "Use R - KS", SCRIPT_PARAM_ONOFF, true)
-ComboConfig.addParam("drawDMG", "Draw R-DMG", SCRIPT_PARAM_ONOFF, true)
 
 
 OnLoop (function (myHero)
@@ -22,7 +21,8 @@ local target = GetCurrentTarget()
 -- Items
 local Sheen = GetItemSlot(myHero,3057)
 local TonsOfDamage = GetItemSlot(myHero,3078)
--- local Iceborn = GetItemSlot(myHero,3025)
+local Iceborn = GetItemSlot(myHero,3025)
+-- itemfrozenfist = 1
 local Muramana = GetItemSlot(myHero,3042)
 local Manamune = GetItemSlot(myHero,3004)
 local Tear = GetItemSlot(myHero,3070)
@@ -60,7 +60,7 @@ end
 -- KS
 
 for i,enemy in pairs(GetEnemyHeroes()) do
-if CanUseSpell(myHero,R) == READY and ComboConfig.drawDMG then
+if CanUseSpell(myHero,R) == READY then
 local rDMG = CalcDamage(myHero, enemy, 0, (150*GetCastLevel(myHero,_R)+ 40 + (0.80*GetBonusAP(myHero)) + (0.90*(GetBaseDamage(myHero) + GetBonusDmg(myHero)))))
 	DrawDmgOverHpBar(enemy,GetCurrentHP(enemy),rDMG,0,0xff00ff00)
 end
@@ -124,11 +124,16 @@ end
 
 -- Combo SheenWeave
 
-if Sheen >= 1 or TonsOfDamage >= 1 and ComboConfig.useSheen then
+if Sheen >= 1 or TonsOfDamage >= 1 or Iceborn >= 1 and ComboConfig.useSheen then
 
-	if ValidTarget(target,GetRange(myHero)) and GotBuff(myHero,"sheen") == 1 then
+	if ValidTarget(target,GetRange(myHero)) and GotBuff(myHero,"sheen") == 1 or GotBuff(myHero,"itemfrozenfist") == 1 then
+	
+			local QPred = GetPredictionForPlayer(myHeroPos, target, GetMoveSpeed(target),2000, 250, GetCastRange(myHero,_Q), 60, true, false)
+				if QPred.HitChance == 1 and CanUseSpell(myHero,_Q) == READY and ComboConfig.useQ then
+					CastSkillShot(_Q, QPred.PredPos.x, QPred.PredPos.y, QPred.PredPos.z)
+				end
 		
-	elseif ValidTarget(target,GetRange(myHero)) and GotBuff(myHero,"sheen") == 0 then
+	elseif ValidTarget(target,GetRange(myHero)) and GotBuff(myHero,"sheen") == 0 or GotBuff(myHero,"itemfrozenfist") == 0 then
 
 			local QPred = GetPredictionForPlayer(myHeroPos, target, GetMoveSpeed(target),2000, 250, GetCastRange(myHero,_Q), 60, true, false)
 				if QPred.HitChance == 1 and CanUseSpell(myHero,_Q) == READY and ComboConfig.useQ then
