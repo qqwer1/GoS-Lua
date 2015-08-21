@@ -1,0 +1,65 @@
+require('Inspired')
+require('IAC')
+
+PrintChat("Tristana - The Gunner loaded.")
+PrintChat("by Noddy")
+
+ComboConfig = scriptConfig("Tristana", "Tristana - The Gunner")
+ComboConfig.addParam("useQ", "Use Q in combo", SCRIPT_PARAM_ONOFF, true)
+ComboConfig.addParam("useE", "Use E in combo", SCRIPT_PARAM_ONOFF, true)
+ComboConfig.addParam("Combo", "Combo", SCRIPT_PARAM_KEYDOWN, string.byte(" "))
+ComboConfig.addParam("ksR", "Use R - KS", SCRIPT_PARAM_ONOFF, true)
+ComboConfig.addParam("drawR", "Draw R-Damage", SCRIPT_PARAM_ONOFF, true)
+
+myIAC = IAC()
+
+OnLoop ( function (myHero)
+
+local myHeroPos = GetOrigin(myHero)
+local target = GetTarget(850, DAMAGE_PHYSICAL)
+
+-- Items
+local CutBlade = GetItemSlot(myHero,3144)
+local bork = GetItemSlot(myHero,3153)
+
+-- BORK & CutBlade
+if CutBlade >= 1 and ValidTarget(target,550) and ComboConfig.Combo then
+	CastTargetSpell(target, GetItemSlot(myHero,3144))
+elseif bork >= 1 and ValidTarget(target,550) and ComboConfig.Combo and (GetMaxHP(myHero) / GetCurrentHP(myHero)) >= 1.25 then 
+	CastTargetSpell(target,GetItemSlot(myHero,3153))
+end
+
+KSR()
+
+for i,enemy in pairs(GetEnemyHeroes()) do	
+	if CanUseSpell(myHero,_R) == READY and ComboConfig.drawR and ValidTarget(enemy,1500) then
+		DrawDmgOverHpBar(target,GetCurrentHP(target),CalcDamage(myHero, enemy, 0, 100*GetCastLevel(myHero,_R)+ 200 + (1.0*GetBonusAP(myHero))),0,0xff00ff00)
+	end	
+end
+
+
+
+if IWalkConfig.Combo then
+
+	if CanUseSpell(myHero,_E) == READY and ComboConfig.useE then
+		CastTargetSpell(target,_E)
+	end
+	if CanUseSpell(myHero,_Q) == READY and ValidTarget(target,850) and ComboConfig.useQ then
+		CastSpell(_Q)
+	end
+
+end
+end)
+
+function KSR()
+for i,enemy in pairs(GetEnemyHeroes()) do
+	if CanUseSpell(myHero,_R) == READY and ComboConfig.ksR and ValidTarget(enemy,GetCastRange(myHero,_R)) then
+		rDMG = CalcDamage(myHero, enemy, 0, 100*GetCastLevel(myHero,_R)+ 200 + (1.0*GetBonusAP(myHero)))
+			if GetCurrentHP(enemy) < rDMG then
+				CastTargetSpell(enemy,_R)
+			end	
+	end		
+end
+end
+
+-----------------------
