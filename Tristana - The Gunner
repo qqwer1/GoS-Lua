@@ -10,13 +10,16 @@ ComboConfig.addParam("useE", "Use E in combo", SCRIPT_PARAM_ONOFF, true)
 ComboConfig.addParam("Combo", "Combo", SCRIPT_PARAM_KEYDOWN, string.byte(" "))
 ComboConfig.addParam("ksR", "Use R - KS", SCRIPT_PARAM_ONOFF, true)
 ComboConfig.addParam("drawR", "Draw R-Damage", SCRIPT_PARAM_ONOFF, true)
+ComboConfig.addParam("ERKS", "Use R if E can kill", SCRIPT_PARAM_ONOFF, true)
 
 myIAC = IAC()
+
+eDMG = 0
 
 OnLoop ( function (myHero)
 
 local myHeroPos = GetOrigin(myHero)
-local target = GetTarget(850, DAMAGE_PHYSICAL)
+local target = GetTarget(1500, DAMAGE_PHYSICAL)
 
 -- Items
 local CutBlade = GetItemSlot(myHero,3144)
@@ -31,13 +34,37 @@ end
 
 KSR()
 
-for i,enemy in pairs(GetEnemyHeroes()) do	
-	if CanUseSpell(myHero,_R) == READY and ComboConfig.drawR and ValidTarget(enemy,1500) then
-		DrawDmgOverHpBar(target,GetCurrentHP(target),CalcDamage(myHero, enemy, 0, 100*GetCastLevel(myHero,_R)+ 200 + (1.0*GetBonusAP(myHero))),0,0xff00ff00)
-	end	
+for i,enemy in pairs(GetEnemyHeroes()) do
+if CanUseSpell(myHero,_R) == READY then
+if GotBuff(enemy,"tristanaechargesound") == 1 then
+eDMG = CalcDamage(myHero, enemy, (10*GetCastLevel(myHero,_E)+50+((0.15*(GetCastLevel(myHero,_E))+0.35)*(GetBaseDamage(myHero) + GetBonusDmg(myHero)))+(0.5*GetBonusAP(myHero))) + ((GotBuff(enemy,"tristanaecharge")-1)*(3*GetCastLevel(myHero,_E)+15+((0.045*(GetCastLevel(myHero,_E))+0.105)*(GetBaseDamage(myHero) + GetBonusDmg(myHero)))+(0.15*GetBonusAP(myHero)))), 0 )
+elseif GotBuff(enemy,"tristanaechargesound") == 0 then
+eDMG = 0
 end
 
+if CanUseSpell(myHero,_R) == READY then	
+	drRDMG = CalcDamage(myHero, enemy, 0, 100*GetCastLevel(myHero,_R)+ 200 + (1.0*GetBonusAP(myHero)))
+elseif CanUseSpell(myHero,_R) == NOTAVAILABLE then
+	drRDMG = 0
+end
 
+if ValidTarget(enemy,2000) then
+	if ComboConfig.drawR and ValidTarget(enemy,2000) and CanUseSpell(myHero,_R) == READY then
+		DrawDmgOverHpBar(enemy,GetCurrentHP(enemy),eDMG + CalcDamage(myHero, enemy, 0, 100*GetCastLevel(myHero,_R)+ 200 + (1.0*GetBonusAP(myHero))),0,0xff00ff00)
+	end
+end
+
+else
+
+if GotBuff(enemy,"tristanaechargesound") == 1 then
+eDMG = CalcDamage(myHero, enemy, (10*GetCastLevel(myHero,_E)+50+((0.15*(GetCastLevel(myHero,_E))+0.35)*(GetBaseDamage(myHero) + GetBonusDmg(myHero)))+(0.5*GetBonusAP(myHero))) + ((GotBuff(enemy,"tristanaecharge")-1)*(3*GetCastLevel(myHero,_E)+15+((0.045*(GetCastLevel(myHero,_E))+0.105)*(GetBaseDamage(myHero) + GetBonusDmg(myHero)))+(0.15*GetBonusAP(myHero)))), 0 )
+elseif GotBuff(enemy,"tristanaechargesound") == 0 then
+eDMG = 0
+end
+	
+	DrawDmgOverHpBar(enemy,GetCurrentHP(enemy),CalcDamage(myHero, enemy, eDMG, 0 ),0,0xff00ff00)
+end
+end
 
 if IWalkConfig.Combo then
 
@@ -53,13 +80,19 @@ end)
 
 function KSR()
 for i,enemy in pairs(GetEnemyHeroes()) do
+
+if ComboConfig.ERKS then
+if GotBuff(enemy,"tristanaechargesound") == 1 then
+eDMG = CalcDamage(myHero, enemy, (10*GetCastLevel(myHero,_E)+40+((0.15*(GetCastLevel(myHero,_E))+0.35)*(GetBaseDamage(myHero) + GetBonusDmg(myHero)))+(0.5*GetBonusAP(myHero))) + ((GotBuff(enemy,"tristanaecharge")-1)*(3*GetCastLevel(myHero,_E)+15+((0.045*(GetCastLevel(myHero,_E))+0.105)*(GetBaseDamage(myHero) + GetBonusDmg(myHero)))+(0.15*GetBonusAP(myHero)))), 0 )
+elseif GotBuff(enemy,"tristanaechargesound") == 0 then
+eDMG = 0
+end
+end
 	if CanUseSpell(myHero,_R) == READY and ComboConfig.ksR and ValidTarget(enemy,GetCastRange(myHero,_R)) then
 		rDMG = CalcDamage(myHero, enemy, 0, 100*GetCastLevel(myHero,_R)+ 200 + (1.0*GetBonusAP(myHero)))
-			if GetCurrentHP(enemy) < rDMG then
+			if GetCurrentHP(enemy) < rDMG+eDMG then
 				CastTargetSpell(enemy,_R)
 			end	
 	end		
 end
 end
-
------------------------
