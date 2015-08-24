@@ -1,12 +1,19 @@
+require('Inspired')
+
 --RecallUlt
 --    +
 --BaseUlt
+
 Config = scriptConfig("RecallUlt", "RecallUlt")
+Config.addParam("recallult", "Recall Ult (Beta)", SCRIPT_PARAM_ONOFF, true)
+Config.addParam("baseult", "Base Ult", SCRIPT_PARAM_ONOFF, true)
+
+PrintChat("RecallUlt loaded.")
 
 OnLoop (function (myHero)
 
+local myHero = GetMyHero()
 local target = GetCurrentTarget()
-myHero = GetMyHero()
 
 -- Team
 if GetTeam(myHero) == 100 then 
@@ -24,19 +31,20 @@ delay = 250
 colision = true
 dmg = function(target) return CalcDamage(myHero, target, 0, 175*GetCastLevel(myHero,_R)+ 75 + GetBonusAP(myHero)) end
 --Draven
-elseif GetObjectName(myHero) == "Draven" then 
+elseif GetObjectName(myHero) == "Draven" then
 speedChamp = 2000
 speedSpawn = 2000
 delay = 400
 colision = false
-dmg = function(target) return CalcDamage(myHero, target, 0, 40*GetCastLevel(myHero,_R)+ 30 + (0.44*GetBonusDMG(myHero))) end
+dmg = function(target) return CalcDamage(myHero, target, 0, 60*GetCastLevel(myHero,_R)+ 30 + (0.44*GetBonusDmg(myHero))) end
 --Ezreal
-elseif GetObjectName(myHero) == "Ezreal" then 
+elseif GetObjectName(myHero) == "Ezreal" then
 speedChamp = 2000
 speedSpawn = 2000
 delay = 1000
 colision = false
-dmg = function(target) return CalcDamage(myHero, target, 0, 45*GetCastLevel(myHero,_R)+ 60 + (0.27*GetBonusAP(myHero)) + (0.30*GetBonusDMG(myHero))) end
+dmg = function(target) return CalcDamage(myHero, target, 0, (150*GetCastLevel(myHero,_R)+ 40 + (0.80*GetBonusAP(myHero)) + (0.90*(GetBaseDamage(myHero) + GetBonusDmg(myHero))))) end
+-- dmg = function(target) return CalcDamage(myHero, target, 0, 45*GetCastLevel(myHero,_R)+ 60 + (0.27*GetBonusAP(myHero)) + (0.30*GetBonusDMG(myHero))) end
 --Jinx
 elseif GetObjectName(myHero) == "Jinx" then 
 speedChamp = (distanceChamp / (1 + ((distanceChamp-1500)/2500)))
@@ -46,29 +54,73 @@ colision = true
 dmg = function(target) return CalcDamage(myHero, target, ((GetMaxHP(target)-GetCurrentHP(target))*(0.2+0.05*GetCastLevel(myHero, _R))) + 100*GetCastLevel(myHero,_R) + 150 + GetBonusDmg(myHero)) end
 end
 
--- Detect Recall use R
-	if GotBuff(target,"recall") == 1 and CanUseSpell(myHero,_R) == READY and GetCurrentHP(target) < dmg then
+-- RECALL ULT
+if GotBuff(target,"recall") == 1 and Config.recallult then
+OnProcessRecall(function(Object,recallProc)
+	-- if GotBuff(Object,"recall") == 1 and CanUseSpell(myHero,_R) == READY and GetTeam(Object) ~= GetTeam(myHero) and GetCurrentHP(Object) > dmg(Object) then
+	if CanUseSpell(myHero,_R) == READY and GetTeam(Object) ~= GetTeam(myHero) and GetCurrentHP(Object) < dmg(Object) then
 
-		OnProcessRecall(function(Object,recallProc)
-		t = recallProc.totalTime - recallProc.passedTime
+		-- local t = recallProc.totalTime - recallProc.passedTime
+		local t = recallProc.totalTime
 
+		-- PrintChat("Time: "..t)
 	local myHeroPos = GetOrigin(myHero)
-	local targetPos = GetOrigin(target)
+	local targetPos = GetOrigin(Object)
+
+	distanceChamp = math.sqrt(math.pow((myHeroPos.x - targetPos.x),2) + math.pow((myHeroPos.y - targetPos.y),2) + math.pow((myHeroPos.z - targetPos.z),2))
+
+	tChamp = ((distanceChamp / speedChamp) + (delay/1000)) * 1000
+	
+		if tChamp < t then
+			-- PrintChat("RecallULT") --Debug
+			CastSkillShot(_R, targetPos.x, targetPos.y, targetPos.z)
+		end
+end		
+end)
+end
+
+
+-- Detect Recall use R BASEULT
+OnProcessRecall(function(Object,recallProc)
+	-- if GotBuff(Object,"recall") == 1 and CanUseSpell(myHero,_R) == READY and GetTeam(Object) ~= GetTeam(myHero) and GetCurrentHP(Object) > dmg(Object) then
+	if CanUseSpell(myHero,_R) == READY and GetTeam(Object) ~= GetTeam(myHero) and GetCurrentHP(Object) < dmg(Object) and Config.baseult then
+
+		-- local t = recallProc.totalTime - recallProc.passedTime
+		local t = recallProc.totalTime
+
+		-- PrintChat("Time: "..t)
+	local myHeroPos = GetOrigin(myHero)
+	local targetPos = GetOrigin(Object)
 	local spawnPos = enemyBasePos
 
 	distanceChamp = math.sqrt(math.pow((myHeroPos.x - targetPos.x),2) + math.pow((myHeroPos.y - targetPos.y),2) + math.pow((myHeroPos.z - targetPos.z),2))
 	distanceSpawn = math.sqrt(math.pow((myHeroPos.x - spawnPos.x),2) + math.pow((myHeroPos.y - spawnPos.y),2) + math.pow((myHeroPos.z - spawnPos.z),2))
 
-	tChamp = ((distanceChamp / speedChamp) + (delay/1000))
-	tSpawn = ((distanceSpawn / speedSpawn) + (delay/1000))
+	tChamp = ((distanceChamp / speedChamp) + (delay/1000)) * 1000
+	tSpawn = ((distanceSpawn / speedSpawn) + (delay/1000)) * 1000
 
-		if tChamp < t then
+	tt = t - tSpawn
+	-- PrintChat("Time Spawn: "..tSpawn)
+	-- PrintChat("TimeT: "..tt)
+		if tChamp < t and GotBuff(Object,"recall") == 1 then
+			-- print("BaseUlt on "..GetObjectName(Object), 2, 0xffff0000)
+			-- PrintChat("RecallULT") --Debug
 			CastSkillShot(_R, targetPos.x, targetPos.y, targetPos.z)
-			elseif tSpawn < t then
-				if tSpawn == t then
-					CastSkillShot(_R,spawnPos.x,spawnPos.y,spawnPos.z)
-				end
+			
+			
+		elseif tSpawn < t then
+		-- if tSpawn < t then
+					-- print("BaseUlt on "..GetObjectName(Object), 2, 0xffff0000)
+					-- PrintChat("BaseULT") --Debug
+					
+					DelayAction( function()
+						CastSkillShot(_R,spawnPos.x,spawnPos.y,spawnPos.z) end ,
+						tt)
 		end
+end		
 end)
-end
+
+
+
 end)
+
