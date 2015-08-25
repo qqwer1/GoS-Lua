@@ -1,3 +1,5 @@
+-- Creadits to: Inspired
+
 menuTable = {}
 currentPos = {x = 150, y = 250}
 MINION_ALLY, MINION_ENEMY, MINION_JUNGLE = GetTeam(GetMyHero()), GetTeam(GetMyHero()) == 100 and 200 or 100, 300
