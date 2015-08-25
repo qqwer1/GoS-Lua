@@ -1,3 +1,5 @@
+-- Creadits to: Inspired
+
 require('Inspired')
 
 DelayAction(function() 
