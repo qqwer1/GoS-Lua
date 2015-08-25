@@ -1,4 +1,4 @@
--- Creadits to: Inspired
+--Creadits to: Inspired
 
 menuTable = {}
 currentPos = {x = 150, y = 250}
