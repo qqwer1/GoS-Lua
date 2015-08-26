@@ -2,7 +2,7 @@ require('DLib')
 
 -- Credits to:
 -- Deftsu
--- Stole some of his code Kappa
+-- Slote some of his code Kappa
 
 delay(function() 
     notification("Corki - The Bombardier loaded. \nBy Noddy", 5000) 
@@ -54,7 +54,6 @@ local myHeroPos = GetOrigin(myHero)
 local target = GetCurrentTarget()
 
 Killsteal()
-Drawings()
 
 if DrawDMG.getValue() then
 	if CanUseSpell(myHero,_Q) == READY and ValidTarget(target, GetCastRange(myHero,_R)) then 
