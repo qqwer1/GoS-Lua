@@ -19,7 +19,7 @@ eDMG = 0
 OnLoop ( function (myHero)
 
 local myHeroPos = GetOrigin(myHero)
-local target = GetTarget(1500, DAMAGE_PHYSICAL)
+local target = GetTarget(GetCastRange(myHero,_R), DAMAGE_PHYSICAL)
 
 -- Items
 local CutBlade = GetItemSlot(myHero,3144)
@@ -62,7 +62,7 @@ elseif GotBuff(enemy,"tristanaechargesound") == 0 then
 eDMG = 0
 end
 	
-	DrawDmgOverHpBar(enemy,GetCurrentHP(enemy),CalcDamage(myHero, enemy, eDMG, 0 ),0,0xff00ff00)
+	DrawDmgOverHpBar(enemy,GetCurrentHP(enemy),eDMG,0,0xff00ff00)
 end
 end
 
