@@ -1,0 +1,153 @@
+require('DLib')
+
+delay(function() 
+    notification("Lucian - The Purifier loaded. \nBy Noddy", 5000) 
+end, 250)
+
+local root = menu.addItem(SubMenu.new("Lucian"))
+local Combo = root.addItem(SubMenu.new("Combo"))
+	local useQ = Combo.addItem(MenuBool.new("Use Q",true))
+	local useW = Combo.addItem(MenuBool.new("Use W",true))
+	local useE = Combo.addItem(MenuBool.new("Use E to mouse",true))
+	local useR = Combo.addItem(MenuBool.new("Use R",false))
+	local ComboActive = Combo.addItem(MenuKeyBind.new("Combo", 32))
+	
+local Drawings = root.addItem(SubMenu.new("Drawings"))
+	local DrawDMG = Drawings.addItem(MenuBool.new("Draw R damage",true))
+	local DrawQex = Drawings.addItem(MenuBool.new("Extended Q range",true))
+
+local Items = root.addItem(SubMenu.new("Items"))
+	local useCut = Items.addItem(MenuBool.new("Bilgewater Cutlass",true))
+	local useBork = Items.addItem(MenuBool.new("Blade of the Ruined King",true))
+	local useGhost = Items.addItem(MenuBool.new("Youmuu's Ghostblade",true))
+	local useRedPot = Items.addItem(MenuBool.new("Elixir of Wrath",true))
+	
+
+OnLoop (function (myHero)
+
+local myHeroPos = GetOrigin(myHero)
+local target = GetCurrentTarget()
+local mouse = GetMousePos()
+
+-- Items
+local CutBlade = GetItemSlot(myHero,3144)
+local bork = GetItemSlot(myHero,3153)
+local ghost = GetItemSlot(myHero,3142)
+local redpot = GetItemSlot(myHero,2140)
+
+if ComboActive.getValue() then
+	if CutBlade >= 1 and ValidTarget(target,550) and useCut.getValue() then
+		if CanUseSpell(myHero,GetItemSlot(myHero,3144)) == READY then
+			CastTargetSpell(target, GetItemSlot(myHero,3144))
+		end	
+	elseif bork >= 1 and ValidTarget(target,550) and (GetMaxHP(myHero) / GetCurrentHP(myHero)) >= 1.25 and useBork.getValue() then 
+		if CanUseSpell(myHero,GetItemSlot(myHero,3153)) == READY then
+			CastTargetSpell(target,GetItemSlot(myHero,3153))
+		end
+	end
+
+	if ghost >= 1 and ValidTarget(target,550) and useGhost.getValue() then
+		if CanUseSpell(myHero,GetItemSlot(myHero,3142)) == READY then
+			CastSpell(GetItemSlot(myHero,3142))
+		end
+	end
+	
+	if redpot >= 1 and ValidTarget(target,550) and useRedPot.getValue() then
+		if CanUseSpell(myHero,GetItemSlot(myHero,2140)) == READY then
+			CastSpell(GetItemSlot(myHero,2140))
+		end
+	end
+end
+
+if DrawDMG.getValue() and CanUseSpell(myHero,_R) == READY and ValidTarget(target, 1500) then
+	DPS = CalcDamage(myHero,target,(10*GetCastLevel(myHero,_R)+30+(0.25*(GetBaseDamage(myHero) + GetBonusDmg(myHero))) * (7 + (((150*GetCastLevel(myHero,_R)+500) + GetAttackSpeed(myHero)) / (22.4 - 2.49*(GetCastLevel(myHero,_R)))) * ((22.4 - 2.49*(GetCastLevel(myHero,_R))) / 100))),0)
+	DrawDmgOverHpBar(target,GetCurrentHP(target),DPS,0,0xff00ff00)
+end
+
+if DrawQex.getValue() then
+	DrawCircle(GetOrigin(myHero),1100,0,0,0xffffffff)
+end
+
+if ComboActive.getValue() then
+---------------------------
+
+----------------------------
+if GotBuff(myHero,"lucianpassivebuff") == 1 and ValidTarget(target, 500) then
+	AttackUnit(target)
+elseif GotBuff(myHero,"lucianpassivebuff") == 0 then
+
+if CanUseSpell(myHero,_Q) == READY and useQ.getValue() and GotBuff(myHero,"lucianpassivebuff") == 0 then
+		if ValidTarget(target, 700) then
+			CastTargetSpell(target,_Q)
+		end
+end	
+
+if CanUseSpell(myHero,_W) == READY and CanUseSpell(myHero,_Q) == ONCOOLDOWN and useW.getValue() and GotBuff(myHero,"lucianpassivebuff") == 0 then
+	WPred = GetPredictionForPlayer(myHeroPos, target, GetMoveSpeed(target),2000, 150, 650, 50, true, true)
+		if ValidTarget(target, GetCastRange(myHero,_W)) and WPred.HitChance == 1 then
+			CastSkillShot(_W, WPred.PredPos.x, WPred.PredPos.y, WPred.PredPos.z)
+		elseif ValidTarget(target, 500) and WPred.HitChance == 0 then
+			CastSkillShot(_W, WPred.PredPos.x, WPred.PredPos.y, WPred.PredPos.z)
+		end
+end
+
+if CanUseSpell(myHero,_E) == READY and CanUseSpell(myHero,_Q) == ONCOOLDOWN and CanUseSpell(myHero,_W) == ONCOOLDOWN and useE.getValue() and GotBuff(myHero,"lucianpassivebuff") == 0 then
+		if ValidTarget(target, 700) then
+			CastSkillShot(_E, mouse.x, mouse.y, mouse.z)
+		end
+end	
+
+if CanUseSpell(myHero,_R) == READY and GotBuff(myHero,"LucianR") == 0 and ValidTarget(target,1400) and useR.getValue() and GetCurrentHP(target) < CalcDamage(myHero,target,(10*GetCastLevel(myHero,_R)+30+(0.25*(GetBaseDamage(myHero) + GetBonusDmg(myHero))) * (7 + (((150*GetCastLevel(myHero,_R)+500) + GetAttackSpeed(myHero)) / (22.4 - 2.49*(GetCastLevel(myHero,_R)))) * ((22.4 - 2.49*(GetCastLevel(myHero,_R))) / 100))),0) then
+	local RPred = GetPredictionForPlayer(myHeroPos, target, GetMoveSpeed(target),3500, 250, 1500, 75, true, false)
+				if CanUseSpell (myHero,_R) == READY and RPred.HitChance == 1 and not IsInDistance(target, 650) and IsInDistance(target, 1400) and CanUseSpell(myHero,_Q) == ONCOOLDOWN then
+					CastSkillShot(_R, RPred.PredPos.x, RPred.PredPos.y, RPred.PredPos.z)
+				end
+end
+end
+end
+end)
+
+function CalcDamage(source, target, addmg, apdmg)
+    local ADDmg = addmg or 0
+    local APDmg = apdmg or 0
+    local ArmorPen = math.floor(GetArmorPenFlat(source))
+    local ArmorPenPercent = math.floor(GetArmorPenPercent(source)*100)/100
+    local Armor = GetArmor(target)*ArmorPenPercent-ArmorPen
+    local ArmorPercent = Armor > 0 and math.floor(Armor*100/(100+Armor))/100 or math.ceil(Armor*100/(100-Armor))/100
+    local MagicPen = math.floor(GetMagicPenFlat(source))
+    local MagicPenPercent = math.floor(GetMagicPenPercent(source)*100)/100
+    local MagicArmor = GetMagicResist(target)*MagicPenPercent-MagicPen
+    local MagicArmorPercent = MagicArmor > 0 and math.floor(MagicArmor*100/(100+MagicArmor))/100 or math.ceil(MagicArmor*100/(100-MagicArmor))/100
+    return (GotBuff(source,"exhausted")  > 0 and 0.4 or 1) * math.floor(ADDmg*(1-ArmorPercent))+math.floor(APDmg*(1-MagicArmorPercent))
+end
+
+function GetEnemyHeroes()
+  local result = {}
+  for _, obj in pairs(objectManager.heroes) do
+    if GetTeam(obj) ~= GetTeam(GetMyHero()) then
+      table.insert(result, obj)
+    end
+  end
+  return result
+end
+
+function ValidTarget(unit, range)
+    range = range or 25000
+    if unit == nil or GetOrigin(unit) == nil or IsImmune(unit,GetMyHero()) or IsDead(unit) or not IsVisible(unit) or GetTeam(unit) == GetTeam(GetMyHero()) or not IsInDistance(unit, range) then return false end
+    return true
+end
+
+function IsInDistance(p1,r)
+    return GetDistanceSqr(GetOrigin(p1)) < r*r
+end
+
+function GetDistanceSqr(p1,p2)
+    p2 = p2 or GetMyHeroPos()
+    local dx = p1.x - p2.x
+    local dz = (p1.z or p1.y) - (p2.z or p2.y)
+    return dx*dx + dz*dz
+end
+
+function GetMyHeroPos()
+    return GetOrigin(GetMyHero()) 
+end
