@@ -2,7 +2,6 @@ require('DLib')
 
 -- Credits to:
 -- Deftsu
--- Slote some of his code Kappa
 
 delay(function() 
     notification("Corki - The Bombardier loaded. \nBy Noddy", 5000) 
