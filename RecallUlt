@@ -6,13 +6,20 @@ require('Inspired')
 
 Config = scriptConfig("RecallUlt", "RecallUlt")
 Config.addParam("recallult", "Recall Ult (Beta)", SCRIPT_PARAM_ONOFF, true)
+Config.addParam("recalldraw", "Draw Ult Pos", SCRIPT_PARAM_ONOFF, true)
 Config.addParam("baseult", "Base Ult", SCRIPT_PARAM_ONOFF, true)
 
 PrintChat("RecallUlt loaded.")
 
+global_ticks = 0
+global_ticks1 = 0
+global_ticks2 = 0
+
+
 OnLoop (function (myHero)
 
 local myHero = GetMyHero()
+local myHeroPos = GetOrigin(myHero)
 local target = GetCurrentTarget()
 
 -- Team
@@ -47,80 +54,145 @@ dmg = function(target) return CalcDamage(myHero, target, 0, (150*GetCastLevel(my
 -- dmg = function(target) return CalcDamage(myHero, target, 0, 45*GetCastLevel(myHero,_R)+ 60 + (0.27*GetBonusAP(myHero)) + (0.30*GetBonusDMG(myHero))) end
 --Jinx
 elseif GetObjectName(myHero) == "Jinx" then 
-speedChamp = (distanceChamp / (1 + ((distanceChamp-1500)/2500)))
-speedSpawn = (distanceSpawn / (1 + ((distanceSpawn-1500)/2500)))
+speedChamp = 2000
+speedSpawn = (GetDistance(enemyBasePos) / (1 + (GetDistance(enemyBasePos)-1500)/2500))
 delay = 600
 colision = true
 dmg = function(target) return CalcDamage(myHero, target, ((GetMaxHP(target)-GetCurrentHP(target))*(0.2+0.05*GetCastLevel(myHero, _R))) + 100*GetCastLevel(myHero,_R) + 150 + GetBonusDmg(myHero)) end
 end
 
 -- RECALL ULT
-if GotBuff(target,"recall") == 1 and Config.recallult then
+
+-- if not IsVisible(target) then
+	-- TickerStart = GetTickCount()
+-- end
+
+if Config.recallult then
+for i,enemy in pairs(GetEnemyHeroes()) do
+	if Config.recallult then
+		Ticker = GetTickCount()
+		enemyPos1 = GetOrigin(enemy)
+		
+		if (global_ticks + 1000) < Ticker then
+		DelayAction( function ()
+		
+			if IsVisible(enemy) then
+			enemyPos2 = GetOrigin(enemy)
+
+			end
+			end
+		,1000)
+		
+		global_ticks = Ticker
+		
+		end
+		
+				x1 = enemyPos2.x - enemyPos1.x
+				y1 = enemyPos2.y - enemyPos1.y
+				z1 = enemyPos2.z - enemyPos1.z
+
+	end
+
+	
+-- Start Timer FOW
+Ticker1 = GetTickCount()
+
+	if (global_ticks1) < Ticker1 then
+		DelayAction( function ()
+
+			if not IsVisible(enemy) then
+				-- PrintChat("Start!")
+				TickerStart = GetTickCount()
+			elseif IsVisible(enemy) then
+				-- PrintChat("Start!1")
+				TickerStart = GetTickCount()
+			end
+			
+		 end , 0) 
+		global_ticks1 = Ticker1
+	
+	-- elseif IsVisible(enemy) then
+		-- TickerStart = GetTickCount()
+		-- PrintChat("Start! Visible!")
+	end	
+
+	
+	
+end
+end	
+-- end
+
 OnProcessRecall(function(Object,recallProc)
-	-- if GotBuff(Object,"recall") == 1 and CanUseSpell(myHero,_R) == READY and GetTeam(Object) ~= GetTeam(myHero) and GetCurrentHP(Object) > dmg(Object) then
-	if CanUseSpell(myHero,_R) == READY and GetTeam(Object) ~= GetTeam(myHero) and GetCurrentHP(Object) < dmg(Object) then
 
-		-- local t = recallProc.totalTime - recallProc.passedTime
-		local t = recallProc.totalTime
+if CanUseSpell(myHero,_R) == READY and GetTeam(Object) ~= GetTeam(myHero) and GetCurrentHP(Object) < dmg(Object) and Config.recallult then
 
-		-- PrintChat("Time: "..t)
+-- Ticker2 = GetTickCount()
+
+-- if (global_ticks2) < Ticker2 then
+		-- PrintChat("End!")
+		TickerEnd = GetTickCount()
+		s = TickerEnd - TickerStart
+		ssec = s / 1000
+		-- global_ticks2 = Ticker2
+		
+-- end
+	
+	
+	
+	local t = recallProc.totalTime
+
 	local myHeroPos = GetOrigin(myHero)
 	local targetPos = GetOrigin(Object)
-
-	distanceChamp = math.sqrt(math.pow((myHeroPos.x - targetPos.x),2) + math.pow((myHeroPos.y - targetPos.y),2) + math.pow((myHeroPos.z - targetPos.z),2))
+	
+	
+		EndPosX = targetPos.x + (-ssec*(x1))
+		EndPosY = targetPos.y + (-ssec*(y1))
+		EndPosZ = targetPos.z + (-ssec*(z1))
+	
+	-- PrintChat("TickerStart: "..TickerStart)
+	-- PrintChat("TickerEnd: "..TickerEnd)
+	-- PrintChat("ssec: "..ssec)
+	
+	distanceChamp = math.sqrt(math.pow((myHeroPos.x - EndPosX),2) + math.pow((myHeroPos.y - EndPosY),2) + math.pow((myHeroPos.z - EndPosZ),2))
 
 	tChamp = ((distanceChamp / speedChamp) + (delay/1000)) * 1000
 	
-		if tChamp < t then
+	
+		if tChamp < t and ssec < 3 then
 			-- PrintChat("RecallULT") --Debug
-			CastSkillShot(_R, targetPos.x, targetPos.y, targetPos.z)
+			CastSkillShot(_R, EndPosX, EndPosY, EndPosZ)
 		end
 end		
 end)
+
+
+if Config.recalldraw then
+DrawCircle(EndPosX,EndPosY,EndPosZ,25,1,100,0xff00ff00)
 end
 
 
--- Detect Recall use R BASEULT
+-- BASE ULT --------------------
 OnProcessRecall(function(Object,recallProc)
-	-- if GotBuff(Object,"recall") == 1 and CanUseSpell(myHero,_R) == READY and GetTeam(Object) ~= GetTeam(myHero) and GetCurrentHP(Object) > dmg(Object) then
+
 	if CanUseSpell(myHero,_R) == READY and GetTeam(Object) ~= GetTeam(myHero) and GetCurrentHP(Object) < dmg(Object) and Config.baseult then
 
-		-- local t = recallProc.totalTime - recallProc.passedTime
-		local t = recallProc.totalTime
-
-		-- PrintChat("Time: "..t)
+	local t = recallProc.totalTime
+		
 	local myHeroPos = GetOrigin(myHero)
-	local targetPos = GetOrigin(Object)
 	local spawnPos = enemyBasePos
 
-	distanceChamp = math.sqrt(math.pow((myHeroPos.x - targetPos.x),2) + math.pow((myHeroPos.y - targetPos.y),2) + math.pow((myHeroPos.z - targetPos.z),2))
 	distanceSpawn = math.sqrt(math.pow((myHeroPos.x - spawnPos.x),2) + math.pow((myHeroPos.y - spawnPos.y),2) + math.pow((myHeroPos.z - spawnPos.z),2))
 
-	tChamp = ((distanceChamp / speedChamp) + (delay/1000)) * 1000
 	tSpawn = ((distanceSpawn / speedSpawn) + (delay/1000)) * 1000
 
 	tt = t - tSpawn
-	-- PrintChat("Time Spawn: "..tSpawn)
-	-- PrintChat("TimeT: "..tt)
-		if tChamp < t and GotBuff(Object,"recall") == 1 then
-			-- print("BaseUlt on "..GetObjectName(Object), 2, 0xffff0000)
-			-- PrintChat("RecallULT") --Debug
-			CastSkillShot(_R, targetPos.x, targetPos.y, targetPos.z)
-			
-			
-		elseif tSpawn < t then
-		-- if tSpawn < t then
-					-- print("BaseUlt on "..GetObjectName(Object), 2, 0xffff0000)
-					-- PrintChat("BaseULT") --Debug
-					
+
+		if tSpawn < t then
 					DelayAction( function()
+						-- PrintChat("BASEULT") -- Debug
 						CastSkillShot(_R,spawnPos.x,spawnPos.y,spawnPos.z) end ,
 						tt)
 		end
 end		
 end)
-
-
-
 end)
-
