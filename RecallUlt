@@ -67,17 +67,17 @@ end
 	-- TickerStart = GetTickCount()
 -- end
 
-if Config.recallult then
-for i,enemy in pairs(GetEnemyHeroes()) do
+if Config.recallult and ValidTarget(target) and GetCurrentHP(target) < dmg(target) then
+-- for i,enemy in pairs(GetEnemyHeroes()) do
 	if Config.recallult then
 		Ticker = GetTickCount()
-		enemyPos1 = GetOrigin(enemy)
+		enemyPos1 = GetOrigin(target)
 		
 		if (global_ticks + 1000) < Ticker then
 		DelayAction( function ()
 		
-			if IsVisible(enemy) then
-			enemyPos2 = GetOrigin(enemy)
+			if IsVisible(target)  then
+			enemyPos2 = GetOrigin(target)
 
 			end
 			end
@@ -100,12 +100,12 @@ Ticker1 = GetTickCount()
 	if (global_ticks1) < Ticker1 then
 		DelayAction( function ()
 
-			if not IsVisible(enemy) then
+			if not IsVisible(target) and GetCurrentHP(target) < dmg(target) then
 				-- PrintChat("Start!")
 				TickerStart = GetTickCount()
-			elseif IsVisible(enemy) then
+			elseif IsVisible(target) and TickerStart == 0 and GetCurrentHP(target) < dmg(target) then
 				-- PrintChat("Start!1")
-				TickerStart = GetTickCount()
+				TickerStart = 0
 			end
 			
 		 end , 0) 
@@ -118,7 +118,7 @@ Ticker1 = GetTickCount()
 
 	
 	
-end
+-- end
 end	
 -- end
 
