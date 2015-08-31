@@ -4,9 +4,6 @@ require('Inspired')
 --    +
 --BaseUlt
 
-PrintChat("RecallUlt + BaseUlt loaded.")
-PrintChat("by Noddy")
-
 Config = scriptConfig("RecallUlt", "RecallUlt")
 Config.addParam("recallult", "Recall Ult (Beta)", SCRIPT_PARAM_ONOFF, true)
 Config.addParam("recalldraw", "Draw Ult Pos", SCRIPT_PARAM_ONOFF, true)
@@ -68,13 +65,9 @@ end
 
 -- RECALL ULT
 
--- if not IsVisible(target) then
-	-- TickerStart = GetTickCount()
--- end
 
-if Config.recallult and ValidTarget(target) and GetCurrentHP(target) < dmg(target) then
+if CanUseSpell(myHero,_R) == READY then Config.recallult and ValidTarget(target) and GetCurrentHP(target) < dmg(target) then
 
--- for i,enemy in pairs(GetEnemyHeroes()) do
 	if Config.recallult then
 		Ticker = GetTickCount()
 		enemyPos1 = GetOrigin(target)
@@ -117,10 +110,7 @@ Ticker1 = GetTickCount()
 			
 		 end , 0) 
 		global_ticks1 = Ticker1
-	
-	-- elseif IsVisible(enemy) then
-		-- TickerStart = GetTickCount()
-		-- PrintChat("Start! Visible!")
+
 	end	
 
 	
@@ -133,16 +123,11 @@ OnProcessRecall(function(Object,recallProc)
 
 if CanUseSpell(myHero,_R) == READY and GetTeam(Object) ~= GetTeam(myHero) and GetCurrentHP(Object) < dmg(Object) and Config.recallult then
 
--- Ticker2 = GetTickCount()
 
--- if (global_ticks2) < Ticker2 then
-		-- PrintChat("End!")
 		TickerEnd = GetTickCount()
 		s = TickerEnd - TickerStart
 		ssec = s / 1000
-		-- global_ticks2 = Ticker2
-		
--- end
+
 	
 	PrintChat("ssec: "..ssec)
 	
@@ -156,9 +141,6 @@ if CanUseSpell(myHero,_R) == READY and GetTeam(Object) ~= GetTeam(myHero) and Ge
 		EndPosY = targetPos.y + (-ssec*(y1))
 		EndPosZ = targetPos.z + (-ssec*(z1))
 	
-	-- PrintChat("TickerStart: "..TickerStart)
-	-- PrintChat("TickerEnd: "..TickerEnd)
-	-- PrintChat("ssec: "..ssec)
 	
 	distanceChamp = math.sqrt(math.pow((myHeroPos.x - EndPosX),2) + math.pow((myHeroPos.y - EndPosY),2) + math.pow((myHeroPos.z - EndPosZ),2))
 
