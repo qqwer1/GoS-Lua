@@ -129,7 +129,7 @@ if CanUseSpell(myHero,_R) == READY and GetTeam(Object) ~= GetTeam(myHero) and Ge
 		ssec = s / 1000
 
 	
-	PrintChat("ssec: "..ssec)
+	--PrintChat("ssec: "..ssec)
 	
 	local t = recallProc.totalTime
 
