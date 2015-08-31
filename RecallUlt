@@ -10,10 +10,10 @@ Config.addParam("recalldraw", "Draw Ult Pos", SCRIPT_PARAM_ONOFF, true)
 Config.addParam("baseult", "Base Ult", SCRIPT_PARAM_ONOFF, true)
 
 PrintChat("RecallUlt loaded.")
+PrintChat("by Noddy")
 
 global_ticks = 0
 global_ticks1 = 0
-global_ticks2 = 0
 
 local target = GetCurrentTarget()
 enemyPos2 = GetOrigin(target)
@@ -66,7 +66,7 @@ end
 -- RECALL ULT
 
 
-if CanUseSpell(myHero,_R) == READY then Config.recallult and ValidTarget(target) and GetCurrentHP(target) < dmg(target) then
+if CanUseSpell(myHero,_R) == READY and Config.recallult and ValidTarget(target) and GetCurrentHP(target) < dmg(target) then
 
 	if Config.recallult then
 		Ticker = GetTickCount()
