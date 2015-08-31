@@ -14,6 +14,7 @@ PrintChat("by Noddy")
 
 global_ticks = 0
 global_ticks1 = 0
+TickerStart = 0
 
 local target = GetCurrentTarget()
 enemyPos2 = GetOrigin(target)
@@ -68,6 +69,7 @@ end
 
 
 if CanUseSpell(myHero,_R) == READY and Config.recallult and ValidTarget(target) and GetCurrentHP(target) < dmg(target) then
+-- if Config.recallult and ValidTarget(target) then
 
 	if Config.recallult then
 		Ticker = GetTickCount()
@@ -108,9 +110,6 @@ Ticker1 = GetTickCount()
 			if not IsVisible(target) then
 				-- PrintChat("Start!")
 				TickerStart = GetTickCount()
-			-- elseif IsVisible(target) and TickerStart == 0 and GetCurrentHP(target) < dmg(target) then
-				-- PrintChat("Start!1")
-				-- TickerStart = 0
 			end
 			if IsVisible(target) and GotBuff(target,"recall") == 1 then
 				TickerStart = GetTickCount()
@@ -122,11 +121,9 @@ Ticker1 = GetTickCount()
 
 	end	
 
-	
-	
--- end
+
 end	
--- end
+
 
 OnProcessRecall(function(Object,recallProc)
 
@@ -156,7 +153,7 @@ if CanUseSpell(myHero,_R) == READY and GetTeam(Object) ~= GetTeam(myHero) and Ge
 	tChamp = ((distanceChamp / speedChamp) + (delay/1000)) * 1000
 	
 	
-		if tChamp < t and ssec < 3 then
+		if tChamp < t and ssec < 2.5 then
 			-- PrintChat("RecallULT") --Debug
 			CastSkillShot(_R, EndPosX, EndPosY, EndPosZ)
 		end
