@@ -66,6 +66,7 @@ end
 -- RECALL ULT
 
 
+
 if CanUseSpell(myHero,_R) == READY and Config.recallult and ValidTarget(target) and GetCurrentHP(target) < dmg(target) then
 
 	if Config.recallult then
@@ -75,17 +76,21 @@ if CanUseSpell(myHero,_R) == READY and Config.recallult and ValidTarget(target) 
 		if (global_ticks + 1000) < Ticker then
 		DelayAction( function ()
 		
-			if IsVisible(target)  then
+		
+			if IsVisible(target) then
 			enemyPos2 = GetOrigin(target)
-
+			-- PrintChat("enemyPos2")
 			end
-			end
+			end	
+			
 		,1000)
 		
 		global_ticks = Ticker
 		
 		end
-			
+		
+		
+		
 				x1 = enemyPos2.x - enemyPos1.x
 				y1 = enemyPos2.y - enemyPos1.y
 				z1 = enemyPos2.z - enemyPos1.z
@@ -97,15 +102,19 @@ if CanUseSpell(myHero,_R) == READY and Config.recallult and ValidTarget(target) 
 -- Start Timer FOW
 Ticker1 = GetTickCount()
 
-	if (global_ticks1) < Ticker1 then
+	if (global_ticks1) < Ticker1 and GetCurrentHP(target) < dmg(target) then
 		DelayAction( function ()
 
-			if not IsVisible(target) and GetCurrentHP(target) < dmg(target) then
+			if not IsVisible(target) then
 				-- PrintChat("Start!")
 				TickerStart = GetTickCount()
-			elseif IsVisible(target) and TickerStart == 0 and GetCurrentHP(target) < dmg(target) then
+			-- elseif IsVisible(target) and TickerStart == 0 and GetCurrentHP(target) < dmg(target) then
 				-- PrintChat("Start!1")
-				TickerStart = 0
+				-- TickerStart = 0
+			end
+			if IsVisible(target) and GotBuff(target,"recall") == 1 then
+				TickerStart = GetTickCount()
+				-- PrintChat("Start! Visible")
 			end
 			
 		 end , 0) 
@@ -129,7 +138,7 @@ if CanUseSpell(myHero,_R) == READY and GetTeam(Object) ~= GetTeam(myHero) and Ge
 		ssec = s / 1000
 
 	
-	--PrintChat("ssec: "..ssec)
+	-- PrintChat("ssec: "..ssec)
 	
 	local t = recallProc.totalTime
 
