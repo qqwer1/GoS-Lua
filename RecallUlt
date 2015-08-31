@@ -4,6 +4,9 @@ require('Inspired')
 --    +
 --BaseUlt
 
+PrintChat("RecallUlt + BaseUlt loaded.")
+PrintChat("by Noddy")
+
 Config = scriptConfig("RecallUlt", "RecallUlt")
 Config.addParam("recallult", "Recall Ult (Beta)", SCRIPT_PARAM_ONOFF, true)
 Config.addParam("recalldraw", "Draw Ult Pos", SCRIPT_PARAM_ONOFF, true)
@@ -15,6 +18,8 @@ global_ticks = 0
 global_ticks1 = 0
 global_ticks2 = 0
 
+local target = GetCurrentTarget()
+enemyPos2 = GetOrigin(target)
 
 OnLoop (function (myHero)
 
@@ -68,6 +73,7 @@ end
 -- end
 
 if Config.recallult and ValidTarget(target) and GetCurrentHP(target) < dmg(target) then
+
 -- for i,enemy in pairs(GetEnemyHeroes()) do
 	if Config.recallult then
 		Ticker = GetTickCount()
@@ -86,10 +92,11 @@ if Config.recallult and ValidTarget(target) and GetCurrentHP(target) < dmg(targe
 		global_ticks = Ticker
 		
 		end
-		
+			
 				x1 = enemyPos2.x - enemyPos1.x
 				y1 = enemyPos2.y - enemyPos1.y
 				z1 = enemyPos2.z - enemyPos1.z
+
 
 	end
 
@@ -137,7 +144,7 @@ if CanUseSpell(myHero,_R) == READY and GetTeam(Object) ~= GetTeam(myHero) and Ge
 		
 -- end
 	
-	
+	PrintChat("ssec: "..ssec)
 	
 	local t = recallProc.totalTime
 
