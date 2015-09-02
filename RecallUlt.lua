@@ -1,9 +1,5 @@
 require('Inspired')
 
---RecallUlt
---    +
---BaseUlt
-
 Config = scriptConfig("RecallUlt", "RecallUlt")
 Config.addParam("recallult", "Recall Ult (Beta)", SCRIPT_PARAM_ONOFF, true)
 -- Config.addParam("recalldraw", "Draw Ult Pos", SCRIPT_PARAM_ONOFF, false)
@@ -48,8 +44,8 @@ speedChamp = 2000
 speedSpawn = 2000
 delay = 1000
 colision = false
-dmg = function(target) return CalcDamage(myHero, target, 0, (150*GetCastLevel(myHero,_R)+ 40 + (0.80*GetBonusAP(myHero)) + (0.90*(GetBaseDamage(myHero) + GetBonusDmg(myHero))))) end
--- dmg = function(target) return CalcDamage(myHero, target, 0, 45*GetCastLevel(myHero,_R)+ 60 + (0.27*GetBonusAP(myHero)) + (0.90*(GetBaseDamage(myHero) + GetBonusDmg(myHero)))) end
+-- dmg = function(target) return CalcDamage(myHero, target, 0, (150*GetCastLevel(myHero,_R)+ 40 + (0.80*GetBonusAP(myHero)) + (0.90*(GetBaseDamage(myHero) + GetBonusDmg(myHero))))) end
+dmg = function(target) return CalcDamage(myHero, target, 0, 45*GetCastLevel(myHero,_R)+ 60 + (0.27*GetBonusAP(myHero)) + (0.90*(GetBaseDamage(myHero) + GetBonusDmg(myHero)))) end
 --Jinx
 elseif GetObjectName(myHero) == "Jinx" then 
 speedChamp = 2000
@@ -123,7 +119,7 @@ z1 = enemyPos2.z - enemyPos1.z
 		s = TickerEnd - TickerStart
 		ssec = s / 1000
 	
-	-- PrintChat("ssec: "..ssec)
+	PrintChat("ssec: "..ssec)
 	
 	if ssec < 3 then
 		PrintChat("RecallUlt on "..GetObjectName(Object))
