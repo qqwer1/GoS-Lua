@@ -110,6 +110,7 @@ if CanUseSpell(myHero,_R) == READY and GetTeam(Object) ~= GetTeam(myHero) and Ge
 
 enemyPos1 = GetOrigin(Object)
 
+if enemyPos2 ~= nil then
 x1 = enemyPos2.x - enemyPos1.x
 y1 = enemyPos2.y - enemyPos1.y
 z1 = enemyPos2.z - enemyPos1.z
@@ -145,7 +146,9 @@ z1 = enemyPos2.z - enemyPos1.z
 
 			-- PrintChat("RecallUlt on "..GetObjectName(Object))
 			CastSkillShot(_R, EndPosX, EndPosY, EndPosZ)
+			enemyPos2 = nil
 		end
+end		
 end		
 end)
 
