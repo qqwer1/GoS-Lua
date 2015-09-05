@@ -49,7 +49,8 @@ dmg = function(target) return CalcDamage(myHero, target, 0, 45*GetCastLevel(myHe
 --Jinx
 elseif GetObjectName(myHero) == "Jinx" then 
 speedChamp = 2000
-speedSpawn = (GetDistance(enemyBasePos) / (1 + (GetDistance(enemyBasePos)-1500)/2500))
+--speedSpawn = (GetDistance(enemyBasePos) / (1 + (GetDistance(enemyBasePos)-1500)/2500))
+speedSpawn = (GetDistance(enemyBasePos) / (1 + (GetDistance(enemyBasePos)-1700)/2600))
 delay = 600
 colision = true
 dmg = function(target) return CalcDamage(myHero, target, ((GetMaxHP(target)-GetCurrentHP(target))*(0.2+0.05*GetCastLevel(myHero, _R))) + 100*GetCastLevel(myHero,_R) + 150 + GetBonusDmg(myHero)) end
