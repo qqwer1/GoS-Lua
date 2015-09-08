@@ -1,5 +1,8 @@
 require('Inspired')
 
+PrintChat("ADC MAIN | Corki loaded.")
+PrintChat("by Noddy")
+
 mainMenu = Menu("ADC MAIN | Corki", "Corki")
 mainMenu:SubMenu("Combo", "Combo")
 mainMenu.Combo:Boolean("useQ", "Use Q in combo", true)
