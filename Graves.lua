@@ -8,9 +8,10 @@ mainMenu = Menu("ADC MAIN | Graves", "Graves")
 mainMenu:SubMenu("Combo", "Combo")
 mainMenu.Combo:Boolean("useQ", "Use Q in combo", true)
 mainMenu.Combo:Boolean("useW", "Use W in combo", true)
-mainMenu.Combo:Boolean("useE", "Use E in combo", true)
+mainMenu.Combo:Boolean("useE", "Use E to mouse", false)
 mainMenu.Combo:Boolean("useR", "Use R in combo", true)
 mainMenu.Combo:Boolean("Burst", "Burst-Combo", true)
+mainMenu.Combo:Boolean("BurstE", "Burst-E helper", true)
 mainMenu.Combo:Key("Combo1", "Combo", string.byte(" "))
 ---------------------------------------------------------------------------------
 mainMenu:SubMenu("Harass", "Harass")
@@ -20,6 +21,7 @@ mainMenu.Harass:Key("Harass1", "Harass", string.byte("C"))
 mainMenu:SubMenu("Killsteal", "Killsteal")
 mainMenu.Killsteal:Boolean("ksQ", "Use Q - KS", true)
 mainMenu.Killsteal:Boolean("ksR", "Use R - KS", true)
+mainMenu.Killsteal:Boolean("ksE", "KS-E helper", false)
 ---------------------------------------------------------------------------------
 mainMenu:SubMenu("Items", "Items")
 mainMenu.Items:Boolean("useCut", "Bilgewater Cutlass", true)
@@ -29,6 +31,7 @@ mainMenu.Items:Boolean("useRedPot", "Elixir of Wrath", true)
 ---------------------------------------------------------------------------------
 mainMenu:SubMenu("Drawings", "Drawings")
 mainMenu.Drawings:Boolean("drawR", "Draw R-Damage", true)
+mainMenu.Drawings:Boolean("drawBurst", "Draw Burst-Damage", true)
 
 
 
@@ -84,7 +87,13 @@ end
 -- Killsteal
 if mainMenu.Killsteal.ksQ:Value() then
 for i,enemy in pairs(GoS:GetEnemyHeroes()) do
-		if CanUseSpell(myHero,_Q) == READY and GoS:ValidTarget(enemy, 950) and mainMenu.Killsteal.ksQ:Value() and GetCurrentHP(enemy) < GoS:CalcDamage(myHero,enemy,(30*GetCastLevel(myHero,_Q)+30+(0.75*(GetBaseDamage(myHero) + GetBonusDmg(myHero)))),0) then
+		if CanUseSpell(myHero,_Q) == READY and GoS:ValidTarget(enemy, 1500) and mainMenu.Killsteal.ksQ:Value() and GetCurrentHP(enemy) < GoS:CalcDamage(myHero,enemy,(30*GetCastLevel(myHero,_Q)+30+(0.75*(GetBaseDamage(myHero) + GetBonusDmg(myHero)))),0) then
+			
+			if CanUseSpell(myHero,_E) == READY and not GoS:IsInDistance(enemy, 925) and mainMenu.Killsteal.ksE:Value() then
+				local targetPos = GetOrigin(enemy)
+				CastSkillShot(_E, targetPos.x, targetPos.y, targetPos.z)
+			end
+			
 			local QPred = GetPredictionForPlayer(myHeroPos,enemy,GetMoveSpeed(enemy),2000,250,925,50,false,false)
 			if QPred.HitChance == 1 then
 				CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
@@ -95,7 +104,13 @@ end
 
 if mainMenu.Killsteal.ksR:Value() then
 	for i,enemy in pairs(GoS:GetEnemyHeroes()) do
-		if CanUseSpell(myHero,_R) == READY and GoS:ValidTarget(enemy, 2000) and mainMenu.Killsteal.ksR:Value() and GetCurrentHP(enemy) < GoS:CalcDamage(myHero,enemy,(120*GetCastLevel(myHero,_R)+80+(1.2*GetBonusDmg(myHero))),0) then
+		if CanUseSpell(myHero,_R) == READY and GoS:ValidTarget(enemy, 2300) and mainMenu.Killsteal.ksR:Value() and GetCurrentHP(enemy) < GoS:CalcDamage(myHero,enemy,(120*GetCastLevel(myHero,_R)+80+(1.2*GetBonusDmg(myHero))),0) then
+			
+			if CanUseSpell(myHero,_E) == READY and not GoS:IsInDistance(enemy, 1800) and mainMenu.Killsteal.ksE:Value() then
+				local targetPos = GetOrigin(enemy)
+				CastSkillShot(_E, targetPos.x, targetPos.y, targetPos.z)
+			end			
+			
 			local RPred2 = GetPredictionForPlayer(myHeroPos,enemy,GetMoveSpeed(enemy),2100,250,1800,100,false,false)
 			if RPred2.HitChance == 1 then
 				CastSkillShot(_R,RPred2.PredPos.x,RPred2.PredPos.y,RPred2.PredPos.z)
@@ -107,6 +122,25 @@ end
 -- Combo
 if mainMenu.Combo.Combo1:Value() then
 
+-- Burstcombo
+if CanUseSpell(myHero,_Q) and CanUseSpell(myHero,_R) and GoS:ValidTarget(target,950) and mainMenu.Combo.Burst:Value() and GetCurrentHP(target) < DPS then
+	if GoS:IsInDistance(target, 550) then
+		local RPredBurst = GetPredictionForPlayer(myHeroPos,target,GetMoveSpeed(target),2100,250,1800,100,false,false)
+		local QPredBurst = GetPredictionForPlayer(myHeroPos,target,GetMoveSpeed(target),2000,250,925,50,false,false)
+			if CanUseSpell(myHero,_R) == READY and RPredBurst.HitChance == 1 and CanUseSpell(myHero,_Q) == READY and QPredBurst.HitChance == 1 then
+				CastSkillShot(_R,RPredBurst.PredPos.x,RPredBurst.PredPos.y,RPredBurst.PredPos.z)
+					GoS:DelayAction(function ()
+						CastSkillShot(_Q,QPredBurst.PredPos.x,QPredBurst.PredPos.y,QPredBurst.PredPos.z)
+					end, 50)
+			end
+	end
+	if not GoS:IsInDistance(target,550) and CanUseSpell(myHero,_E) == READY and mainMenu.Combo.BurstE:Value() then
+		local targetPos = GetOrigin(target)
+		CastSkillShot(_E, targetPos.x, targetPos.y, targetPos.z)
+	end	
+end
+
+-- Standart
 	if CanUseSpell(myHero,_E) == READY and GoS:ValidTarget(target, 950) and mainMenu.Combo.useE:Value() then
 		CastSkillShot(_E, mouse.x, mouse.y, mouse.z)
 	end
@@ -141,23 +175,6 @@ if mainMenu.Combo.Combo1:Value() then
 		end
 	end
 
--- Burstcombo
-if GoS:ValidTarget(target,950) and mainMenu.Combo.Burst:Value() and GetCurrentHP(target) < DPS then
-	if GoS:IsInDistance(target, 550) then
-		local RPredBurst = GetPredictionForPlayer(myHeroPos,target,GetMoveSpeed(target),2100,250,1800,100,false,false)
-		local QPredBurst = GetPredictionForPlayer(myHeroPos,target,GetMoveSpeed(target),2000,250,925,50,false,false)
-			if CanUseSpell(myHero,_R) == READY and RPredBurst.HitChance == 1 and CanUseSpell(myHero,_Q) == READY and QPredBurst.HitChance == 1 then
-				CastSkillShot(_R,RPredBurst.PredPos.x,RPredBurst.PredPos.y,RPredBurst.PredPos.z)
-					GoS:DelayAction(function ()
-						CastSkillShot(_Q,QPredBurst.PredPos.x,QPredBurst.PredPos.y,QPredBurst.PredPos.z)
-					end, 50)
-			end
-	end
-	if not GoS:IsInDistance(target,550) and CanUseSpell(myHero,_E) then
-		local targetPos = GetOrigin(target)
-		CastSkillShot(_E, targetPos.x, targetPos.y, targetPos.z)
-	end	
-end
 end
 
 -- Harass Q
@@ -191,6 +208,9 @@ if CanUseSpell(myHero,_Q) == READY and CanUseSpell(myHero,_R) == READY and GoS:V
 	end
 	
 	DPS = SKILLDPS + extraDMG
+	
+	if mainMenu.Drawings.drawBurst:Value() then
 		DrawDmgOverHpBar(target,GetCurrentHP(target),DPS,0,0xff00ff00)
+	end	
 end
 end)
