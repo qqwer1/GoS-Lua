@@ -150,7 +150,7 @@ if GoS:ValidTarget(target,950) and mainMenu.Combo.Burst:Value() and GetCurrentHP
 				CastSkillShot(_R,RPredBurst.PredPos.x,RPredBurst.PredPos.y,RPredBurst.PredPos.z)
 					GoS:DelayAction(function ()
 						CastSkillShot(_Q,QPredBurst.PredPos.x,QPredBurst.PredPos.y,QPredBurst.PredPos.z)
-					end, 0)
+					end, 50)
 			end
 	end
 	if not GoS:IsInDistance(target,550) and CanUseSpell(myHero,_E) then
