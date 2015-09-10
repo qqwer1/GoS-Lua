@@ -114,7 +114,7 @@ for i,enemy in pairs(GoS:GetEnemyHeroes()) do
 
 if mainMenu.Killsteal.ERKS:Value() then
 if GotBuff(enemy,"tristanaechargesound") == 1 then
-eDMG = GoS:CalcDamage(myHero, enemy, (10*GetCastLevel(myHero,_E)+40+((0.15*(GetCastLevel(myHero,_E))+0.35)*(GetBaseDamage(myHero) + GetBonusDmg(myHero)))+(0.5*GetBonusAP(myHero))) + ((GotBuff(enemy,"tristanaecharge")-1)*(3*GetCastLevel(myHero,_E)+15+((0.045*(GetCastLevel(myHero,_E))+0.105)*(GetBaseDamage(myHero) + GetBonusDmg(myHero)))+(0.15*GetBonusAP(myHero)))), 0 )
+eDMG = GoS:CalcDamage(myHero, enemy, (10*GetCastLevel(myHero,_E)+40+((0.15*(GetCastLevel(myHero,_E))+0.35)*(GetBaseDamage(myHero) + GetBonusDmg(myHero)))+(0.5*GetBonusAP(myHero))) + ((GotBuff(enemy,"tristanaecharge")-1)*(3*GetCastLevel(myHero,_E)+15+((0.045*(GetCastLevel(myHero,_E))+0.105)*(GetBaseDamage(myHero) + GetBonusDmg(myHero)))+(0.15*GetBonusAP(myHero)))), 0 ) - GetHPRegen(enemy)*4
 elseif GotBuff(enemy,"tristanaechargesound") == 0 then
 eDMG = 0
 end
