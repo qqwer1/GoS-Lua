@@ -23,13 +23,15 @@ mainMenu.Drawings:Boolean("drawPoison", "Draw Posion-Damage", true)
 mainMenu.Drawings:Boolean("drawE", "Draw E-Damage", true)
 mainMenu.Drawings:Boolean("drawR", "Draw R-Range", true)
 
+global_ticks = 0 
+p = 0
 
 OnUpdateBuff(function(Object,BuffName,Stacks)
 -- PrintChat(string.format("<font color='#00ff00'>Champion [%s] Updated: [%s] Stacks: [%d]</font>",GetObjectName(Object),BuffName,Stacks));
 for i,enemy in pairs(GoS:GetEnemyHeroes()) do
 	if GotBuff(enemy,"twitchdeadlyvenom") ~= nil and BuffName == "twitchdeadlyvenom" and GoS:ValidTarget(enemy,2000) then
 	-----------------------
-
+	p = 6
 	-----------------------
 if GetLevel(myHero) >= 1 and GetLevel(myHero) <= 4 then
 	pDMG = 12	
@@ -111,6 +113,29 @@ end
 if GoS:ValidTarget(target,2000) and GotBuff(target,"twitchdeadlyvenom") >= 1 and mainMenu.Drawings.drawPoison:Value() then
 	DrawDmgOverHpBar(target,GetCurrentHP(target),poisonDMG,0,0xff00ff00)
 end
+
+
+
+Ticker = GetTickCount()
+		
+if (global_ticks + 1000) < Ticker then
+	GoS:DelayAction( function ()	
+		if p ~= nil then
+			PrintChat(p)
+			p = p - 1
+		end
+			
+		if p == 0 then
+			PrintChat("Poison over!")
+			p = nil
+		end				
+	end			
+	,1000)	
+global_ticks = Ticker	
+end
+
+
+
 
 
 -- Drawing eDMG
