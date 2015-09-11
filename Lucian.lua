@@ -11,20 +11,16 @@ mainMenu.Combo:Boolean("useE", "Use E in combo", true)
 mainMenu.Combo:Boolean("useR", "Use R in combo", true)
 mainMenu.Combo:Key("Combo1", "Combo", string.byte(" "))
 ------------------------------------------------------	
-mainMenu:SubMenu("Draw", "Drawings")
-mainMenu.Draw:Boolean("DrawDMG","Draw R damage", true)
-mainMenu.Draw:Boolean("DrawQex","Extended Q range", true)
-mainMenu.Draw:Slider("Quality","Circle Quality", 100 , 1, 255, 1)
+mainMenu:SubMenu("Drawings", "Drawings")
+mainMenu.Drawings:Boolean("DrawDMG","Draw R damage", true)
+mainMenu.Drawings:Boolean("DrawQex","Extended Q range", true)
+mainMenu.Drawings:Slider("Quality","Circle Quality", 100 , 1, 255, 1)
 ------------------------------------------------------
 mainMenu:SubMenu("Items", "Items")
 mainMenu.Items:Boolean("useCut", "Bilgewater Cutlass", true)
 mainMenu.Items:Boolean("useBork", "Blade of the Ruined King", true)
 mainMenu.Items:Boolean("useGhost", "Youmuu's Ghostblade", true)
 mainMenu.Items:Boolean("useRedPot", "Elixir of Wrath", true)
-------------------------------------------------------
-mainMenu:SubMenu("Drawings", "Drawings")
-mainMenu.Drawings:Boolean("drawPoison", "Draw Posion-Damage", true)
-mainMenu.Drawings:Boolean("drawE", "Draw E-Damage", true)
 
 
 Passive = 0	
@@ -85,14 +81,14 @@ if mainMenu.Combo.Combo1:Value() then
 end
 
 
-if mainMenu.Draw.DrawDMG:Value() and CanUseSpell(myHero,_R) == READY and GoS:ValidTarget(target, 1500) then
+if mainMenu.Drawings.DrawDMG:Value() and CanUseSpell(myHero,_R) == READY and GoS:ValidTarget(target, 1500) then
 	DPS = GoS:CalcDamage(myHero,target,(10*GetCastLevel(myHero,_R)+30+(0.25*(GetBaseDamage(myHero) + GetBonusDmg(myHero))) * (7 + (((150*GetCastLevel(myHero,_R)+500) + GetAttackSpeed(myHero)) / (22.4 - 2.49*(GetCastLevel(myHero,_R)))) * ((22.4 - 2.49*(GetCastLevel(myHero,_R))) / 100))),0)
 	-- DPS = GoS:CalcDamage(myHero,target,(10*GetCastLevel(myHero,_R)+30+(0.25*(GetBaseDamage(myHero) + GetBonusDmg(myHero))))* (7 + (((150*GetCastLevel(myHero,_R)+500) + GetAttackSpeed(myHero)) / (22.4 - 2.49*(GetCastLevel(myHero,_R)))) * ((22.4 - 2.49*(GetCastLevel(myHero,_R))) / 100)),0) 
 	DrawDmgOverHpBar(target,GetCurrentHP(target),DPS,0,0xff00ff00)
 end
 
-if mainMenu.Draw.DrawQex:Value() then
-	DrawCircle(GetOrigin(myHero),1100,0,mainMenu.Draw.Quality:Value(),0xffffffff)
+if mainMenu.Drawings.DrawQex:Value() then
+	DrawCircle(GetOrigin(myHero),1100,0,mainMenu.Drawings.Quality:Value(),0xffffffff)
 end
 
 
