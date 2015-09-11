@@ -25,6 +25,8 @@ mainMenu.Drawings:Boolean("drawR", "Draw R-Range", true)
 
 global_ticks = 0 
 p = 0
+truepoisonDMG = 0
+-- poisonDMG = 0
 
 OnUpdateBuff(function(Object,BuffName,Stacks)
 -- PrintChat(string.format("<font color='#00ff00'>Champion [%s] Updated: [%s] Stacks: [%d]</font>",GetObjectName(Object),BuffName,Stacks));
@@ -32,6 +34,7 @@ for i,enemy in pairs(GoS:GetEnemyHeroes()) do
 	if GotBuff(enemy,"twitchdeadlyvenom") ~= nil and BuffName == "twitchdeadlyvenom" and GoS:ValidTarget(enemy,2000) then
 	-----------------------
 	p = 6
+	StacksP = Stacks
 	-----------------------
 if GetLevel(myHero) >= 1 and GetLevel(myHero) <= 4 then
 	pDMG = 12	
@@ -45,7 +48,7 @@ elseif 	GetLevel(myHero) >= 17 and GetLevel(myHero) <= 18 then
 	pDMG = 36
 end	
 	-----------------------
-		poisonDMG = pDMG * Stacks - GetHPRegen(enemy)
+		-- poisonDMG = pDMG * Stacks - GetHPRegen(enemy)*p
 		if CanUseSpell(myHero,_E) == READY then
 		eDMG = GoS:CalcDamage(myHero,enemy,(15*GetCastLevel(myHero,_E)+5+(5*GetCastLevel(myHero,_E)+10+(0.2*GetBonusAP(myHero)+0.25*GetBonusDmg(myHero)))*Stacks),0)
 		else
@@ -109,24 +112,27 @@ if mainMenu.Combo.Combo1:Value() and GoS:ValidTarget(target, 1500) then
 
 end	
 
--- Drawing poisonDMG
+-- Drawing PoisonDMG
 if GoS:ValidTarget(target,2000) and GotBuff(target,"twitchdeadlyvenom") >= 1 and mainMenu.Drawings.drawPoison:Value() then
-	DrawDmgOverHpBar(target,GetCurrentHP(target),poisonDMG,0,0xff00ff00)
+	-- True DMG
+	DrawDmgOverHpBar(target,GetCurrentHP(target),truepoisonDMG,0,0xff00ffff)
 end
 
-
+if p ~= nil and pDMG ~= nil and GoS:ValidTarget(target) and GotBuff(target,"twitchdeadlyvenom") >= 1 and mainMenu.Drawings.drawPoison:Value() then
+	truepoisonDMG = ((pDMG/6) * StacksP - GetHPRegen(target)*p)*p
+end
 
 Ticker = GetTickCount()
 		
 if (global_ticks + 1000) < Ticker then
 	GoS:DelayAction( function ()	
 		if p ~= nil then
-			PrintChat(p)
+			-- PrintChat("True: "..truepoisonDMG)
 			p = p - 1
 		end
 			
 		if p == 0 then
-			PrintChat("Poison over!")
+			-- PrintChat("Poison over!")
 			p = nil
 		end				
 	end			
@@ -134,15 +140,17 @@ if (global_ticks + 1000) < Ticker then
 global_ticks = Ticker	
 end
 
-
-
-
-
 -- Drawing eDMG
 if CanUseSpell(myHero,_E) and GoS:ValidTarget(target,2000) and GotBuff(target,"twitchdeadlyvenom") >= 1 and mainMenu.Drawings.drawE:Value() and eDMG ~= nil then
 	DrawDmgOverHpBar(target,GetCurrentHP(target),eDMG,0,0xff00ff00)
 end
 
+
+--------------- DRAWINGS
+if mainMenu.Drawings.drawPoison:Value() and mainMenu.Drawings.drawE:Value() and GoS:ValidTarget(target,2000) and GotBuff(target,"twitchdeadlyvenom") >= 1 then
+
+
+end
 
 -- Killsteal E
 if mainMenu.Killsteal.ksE:Value() and eDMG ~= nil then
