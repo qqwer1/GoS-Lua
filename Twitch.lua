@@ -119,7 +119,7 @@ if GoS:ValidTarget(target,2000) and GotBuff(target,"twitchdeadlyvenom") >= 1 and
 end
 
 if p ~= nil and pDMG ~= nil and GoS:ValidTarget(target) and GotBuff(target,"twitchdeadlyvenom") >= 1 and mainMenu.Drawings.drawPoison:Value() then
-	truepoisonDMG = ((pDMG/6) * StacksP - GetHPRegen(target)*p)*p
+	truepoisonDMG = (((pDMG/6) * StacksP ) * p -(GetHPRegen(target)* p ))
 end
 
 Ticker = GetTickCount()
@@ -128,6 +128,7 @@ if (global_ticks + 1000) < Ticker then
 	GoS:DelayAction( function ()	
 		if p ~= nil then
 			-- PrintChat("True: "..truepoisonDMG)
+			-- PrintChat("p: "..p)
 			p = p - 1
 		end
 			
