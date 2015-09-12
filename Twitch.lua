@@ -22,8 +22,14 @@ mainMenu:SubMenu("Drawings", "Drawings")
 mainMenu.Drawings:Boolean("drawPoison", "Draw Posion-Damage", true)
 mainMenu.Drawings:Boolean("drawE", "Draw E-Damage", true)
 mainMenu.Drawings:Boolean("drawR", "Draw R-Range", true)
+------------------------------------------------------
+mainMenu:SubMenu("Misc", "Misc")
+mainMenu.Misc:Boolean("iR", "Invisible Recall", true)
+mainMenu.Misc:Key("recall", "Recall Key", string.byte("T"))
+
 
 global_ticks = 0 
+
 p = 0
 truepoisonDMG = 0
 -- poisonDMG = 0
@@ -48,13 +54,7 @@ elseif 	GetLevel(myHero) >= 17 and GetLevel(myHero) <= 18 then
 	pDMG = 36
 end	
 	-----------------------
-		-- poisonDMG = pDMG * Stacks - GetHPRegen(enemy)*p
-		if CanUseSpell(myHero,_E) == READY then
-		eDMG = GoS:CalcDamage(myHero,enemy,(15*GetCastLevel(myHero,_E)+5+(5*GetCastLevel(myHero,_E)+10+(0.2*GetBonusAP(myHero)+0.25*GetBonusDmg(myHero)))*Stacks),0)
-		else
-		eDMG = 0
-		end
-	end
+end
 	
 end	
 end)
@@ -135,12 +135,13 @@ if (global_ticks + 1000) < Ticker then
 global_ticks = Ticker	
 end
 
-if CanUseSpell(myHero,_E) == READY then
-	eDMG = GoS:CalcDamage(myHero,target,(15*GetCastLevel(myHero,_E)+5+(5*GetCastLevel(myHero,_E)+10+(0.2*GetBonusAP(myHero)+0.25*GetBonusDmg(myHero)))*StacksP),0)
+if GoS:ValidTarget(target, 2000) then
+if CanUseSpell(myHero,_E) == READY and GotBuff(target,"twitchdeadlyvenom") >= 1 then
+	eDMG = GoS:CalcDamage(myHero,target,(15*GetCastLevel(myHero,_E)+5+(5*GetCastLevel(myHero,_E)+10+(0.2*GetBonusAP(myHero)+0.25*GetBonusDmg(myHero)))*GotBuff(target,"twitchdeadlyvenom")),0)
 else
 	eDMG = 0
 end
-
+end
 --------------- DRAWINGS
 if mainMenu.Drawings.drawPoison:Value() or mainMenu.Drawings.drawE:Value() and GoS:ValidTarget(target,2000) and GotBuff(target,"twitchdeadlyvenom") >= 1 then
 	
@@ -170,8 +171,16 @@ for i,enemy in pairs(GoS:GetEnemyHeroes()) do
 	end
 end	
 
-
-
-
+-- Recall
+if mainMenu.Misc.iR:Value() then
+	if CanUseSpell(myHero,_Q) == READY then
+		if mainMenu.Misc.recall:Value() then
+			CastSpell(_Q)
+				GoS:DelayAction(function()
+				CastSpell(RECALL)
+				end, 10)
+		end
+	end
+end
 
 end)
