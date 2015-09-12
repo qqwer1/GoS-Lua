@@ -112,13 +112,7 @@ if mainMenu.Combo.Combo1:Value() and GoS:ValidTarget(target, 1500) then
 
 end	
 
--- Drawing PoisonDMG
-if GoS:ValidTarget(target,2000) and GotBuff(target,"twitchdeadlyvenom") >= 1 and mainMenu.Drawings.drawPoison:Value() then
-	-- True DMG
-	DrawDmgOverHpBar(target,GetCurrentHP(target),truepoisonDMG,0,0xff00ffff)
-end
-
-if p ~= nil and pDMG ~= nil and GoS:ValidTarget(target) and GotBuff(target,"twitchdeadlyvenom") >= 1 and mainMenu.Drawings.drawPoison:Value() then
+if p ~= nil and pDMG ~= nil and StacksP ~= nil and GoS:ValidTarget(target) and GotBuff(target,"twitchdeadlyvenom") >= 1 and mainMenu.Drawings.drawPoison:Value() then
 	truepoisonDMG = (((pDMG/6) * StacksP ) * p -(GetHPRegen(target)* p ))
 end
 
@@ -141,16 +135,30 @@ if (global_ticks + 1000) < Ticker then
 global_ticks = Ticker	
 end
 
--- Drawing eDMG
-if CanUseSpell(myHero,_E) and GoS:ValidTarget(target,2000) and GotBuff(target,"twitchdeadlyvenom") >= 1 and mainMenu.Drawings.drawE:Value() and eDMG ~= nil then
-	DrawDmgOverHpBar(target,GetCurrentHP(target),eDMG,0,0xff00ff00)
+if CanUseSpell(myHero,_E) == READY then
+	eDMG = GoS:CalcDamage(myHero,target,(15*GetCastLevel(myHero,_E)+5+(5*GetCastLevel(myHero,_E)+10+(0.2*GetBonusAP(myHero)+0.25*GetBonusDmg(myHero)))*StacksP),0)
+else
+	eDMG = 0
 end
 
-
 --------------- DRAWINGS
-if mainMenu.Drawings.drawPoison:Value() and mainMenu.Drawings.drawE:Value() and GoS:ValidTarget(target,2000) and GotBuff(target,"twitchdeadlyvenom") >= 1 then
-
-
+if mainMenu.Drawings.drawPoison:Value() or mainMenu.Drawings.drawE:Value() and GoS:ValidTarget(target,2000) and GotBuff(target,"twitchdeadlyvenom") >= 1 then
+	
+	if CanUseSpell(myHero,_E) == READY and mainMenu.Drawings.drawE:Value() and mainMenu.Drawings.drawPoison:Value() and eDMG ~= nil and p ~= nil and pDMG ~= nil then
+	DrawDmgOverHpBar(target,GetCurrentHP(target),eDMG,0,0xff00ff00)
+	DrawDmgOverHpBar(target,GetCurrentHP(target)-eDMG,truepoisonDMG,0,0xffff00ff)
+	elseif CanUseSpell(myHero,_E) == ONCOOLDOWN and mainMenu.Drawings.drawE:Value() and mainMenu.Drawings.drawPoison:Value() and p ~= nil and pDMG ~= nil then
+	DrawDmgOverHpBar(target,GetCurrentHP(target),truepoisonDMG,0,0xffff00ff)
+	end
+	
+	if CanUseSpell(myHero,_E) == READY and mainMenu.Drawings.drawE:Value() and not mainMenu.Drawings.drawPoison:Value() and eDMG ~= nil then
+	DrawDmgOverHpBar(target,GetCurrentHP(target),eDMG,0,0xff00ff00)
+	end
+	
+	if mainMenu.Drawings.drawPoison:Value() and not mainMenu.Drawings.drawE:Value() then
+	DrawDmgOverHpBar(target,GetCurrentHP(target),truepoisonDMG,0,0xffff00ff)
+	end
+	
 end
 
 -- Killsteal E
