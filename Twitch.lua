@@ -6,11 +6,12 @@ PrintChat("by Noddy")
 mainMenu = Menu("ADC MAIN | Twitch", "Twitch")
 mainMenu:SubMenu("Combo", "Combo")
 mainMenu.Combo:Boolean("useW", "Use W in combo", true)
-mainMenu.Combo:Boolean("useE", "Use E at 6 Stacks", true)
+mainMenu.Combo:Boolean("useE", "E at max stacks", true)
 mainMenu.Combo:Key("Combo1", "Combo", string.byte(" "))
 ------------------------------------------------------
 mainMenu:SubMenu("Killsteal", "Killsteal")
 mainMenu.Killsteal:Boolean("ksE", "Use E - KS", true)
+mainMenu.Killsteal:Boolean("ksEp", "Poison + E - KS", true)
 ------------------------------------------------------
 mainMenu:SubMenu("Items", "Items")
 mainMenu.Items:Boolean("useCut", "Bilgewater Cutlass", true)
@@ -22,20 +23,17 @@ mainMenu:SubMenu("Drawings", "Drawings")
 mainMenu.Drawings:Boolean("drawPoison", "Draw Posion-Damage", true)
 mainMenu.Drawings:Boolean("drawE", "Draw E-Damage", true)
 mainMenu.Drawings:Boolean("drawR", "Draw R-Range", true)
+mainMenu.Drawings:Slider("Quality","Circle Quality", 100 , 1, 255, 1)
 ------------------------------------------------------
 mainMenu:SubMenu("Misc", "Misc")
 mainMenu.Misc:Boolean("iR", "Invisible Recall", true)
 mainMenu.Misc:Key("recall", "Recall Key", string.byte("T"))
 
-
 global_ticks = 0 
-
 p = 0
 truepoisonDMG = 0
--- poisonDMG = 0
 
 OnUpdateBuff(function(Object,BuffName,Stacks)
--- PrintChat(string.format("<font color='#00ff00'>Champion [%s] Updated: [%s] Stacks: [%d]</font>",GetObjectName(Object),BuffName,Stacks));
 for i,enemy in pairs(GoS:GetEnemyHeroes()) do
 	if GotBuff(enemy,"twitchdeadlyvenom") ~= nil and BuffName == "twitchdeadlyvenom" and GoS:ValidTarget(enemy,2000) then
 	-----------------------
@@ -58,7 +56,6 @@ end
 	
 end	
 end)
-
 
 OnLoop(function(myHero)
 
@@ -112,6 +109,7 @@ if mainMenu.Combo.Combo1:Value() and GoS:ValidTarget(target, 1500) then
 
 end	
 
+-- Posion-Damage
 if p ~= nil and pDMG ~= nil and StacksP ~= nil and GoS:ValidTarget(target) and GotBuff(target,"twitchdeadlyvenom") >= 1 and mainMenu.Drawings.drawPoison:Value() then
 	truepoisonDMG = (((pDMG/6) * StacksP ) * p -(GetHPRegen(target)* p ))
 end
@@ -121,13 +119,10 @@ Ticker = GetTickCount()
 if (global_ticks + 1000) < Ticker then
 	GoS:DelayAction( function ()	
 		if p ~= nil then
-			-- PrintChat("True: "..truepoisonDMG)
-			-- PrintChat("p: "..p)
 			p = p - 1
 		end
 			
 		if p == 0 then
-			-- PrintChat("Poison over!")
 			p = nil
 		end				
 	end			
@@ -142,34 +137,44 @@ else
 	eDMG = 0
 end
 end
---------------- DRAWINGS
+-- DRAWINGS
 if mainMenu.Drawings.drawPoison:Value() or mainMenu.Drawings.drawE:Value() and GoS:ValidTarget(target,2000) and GotBuff(target,"twitchdeadlyvenom") >= 1 then
 	
-	if CanUseSpell(myHero,_E) == READY and mainMenu.Drawings.drawE:Value() and mainMenu.Drawings.drawPoison:Value() and eDMG ~= nil and p ~= nil and pDMG ~= nil then
+	if GoS:ValidTarget(target,2000) and CanUseSpell(myHero,_E) == READY and mainMenu.Drawings.drawE:Value() and mainMenu.Drawings.drawPoison:Value() and eDMG ~= nil and p ~= nil and pDMG ~= nil then
 	DrawDmgOverHpBar(target,GetCurrentHP(target),eDMG,0,0xff00ff00)
 	DrawDmgOverHpBar(target,GetCurrentHP(target)-eDMG,truepoisonDMG,0,0xffff00ff)
 	elseif CanUseSpell(myHero,_E) == ONCOOLDOWN and mainMenu.Drawings.drawE:Value() and mainMenu.Drawings.drawPoison:Value() and p ~= nil and pDMG ~= nil then
 	DrawDmgOverHpBar(target,GetCurrentHP(target),truepoisonDMG,0,0xffff00ff)
 	end
 	
-	if CanUseSpell(myHero,_E) == READY and mainMenu.Drawings.drawE:Value() and not mainMenu.Drawings.drawPoison:Value() and eDMG ~= nil then
+	if GoS:ValidTarget(target,2000) and CanUseSpell(myHero,_E) == READY and mainMenu.Drawings.drawE:Value() and not mainMenu.Drawings.drawPoison:Value() and eDMG ~= nil then
 	DrawDmgOverHpBar(target,GetCurrentHP(target),eDMG,0,0xff00ff00)
 	end
 	
-	if mainMenu.Drawings.drawPoison:Value() and not mainMenu.Drawings.drawE:Value() then
+	if GoS:ValidTarget(target,2000) and mainMenu.Drawings.drawPoison:Value() and not mainMenu.Drawings.drawE:Value() then
 	DrawDmgOverHpBar(target,GetCurrentHP(target),truepoisonDMG,0,0xffff00ff)
 	end
 	
 end
+-- Draw R
+-- if mainMenu.Drawings.drawR:Value() and CanUseSpell(myHero,_R) == READY and GoS:ValidTarget(target,2000) then
+if mainMenu.Drawings.drawR:Value() and GoS:ValidTarget(target,2000) then
+	DrawCircle(GetOrigin(myHero),850,0,mainMenu.Drawings.Quality:Value(),ARGB(100,33,139,6))
+end
+
 
 -- Killsteal E
 if mainMenu.Killsteal.ksE:Value() and eDMG ~= nil then
 for i,enemy in pairs(GoS:GetEnemyHeroes()) do
 		if CanUseSpell(myHero,_E) == READY and GoS:ValidTarget(enemy, 1200) and GetCurrentHP(enemy) < eDMG and mainMenu.Killsteal.ksE:Value() then
 			CastSpell(_E)
-		end	
-	end
+		end
+		
+		if CanUseSpell(myHero,_E) == READY and GoS:ValidTarget(enemy, 1200) and GetCurrentHP(enemy) < eDMG + truepoisonDMG and mainMenu.Killsteal.ksE:Value() and mainMenu.Killsteal.ksEp:Value() then
+			CastSpell(_E)
+		end
 end	
+end
 
 -- Recall
 if mainMenu.Misc.iR:Value() then
