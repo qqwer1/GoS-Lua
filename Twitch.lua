@@ -85,7 +85,7 @@ if mainMenu.Combo.Combo1:Value() then
 		end
 	end
 	
-	if redpot >= 1 and GoS:ValidTarget(target,550) and mainMenu.Items.useRedPot:Value() then
+	if redpot >= 1 and GoS:ValidTarget(target,GetRange(myHero)) and mainMenu.Items.useRedPot:Value() then
 		if CanUseSpell(myHero,GetItemSlot(myHero,2140)) == READY then
 			CastSpell(GetItemSlot(myHero,2140))
 		end
