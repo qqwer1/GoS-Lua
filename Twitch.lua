@@ -38,7 +38,6 @@ for i,enemy in pairs(GoS:GetEnemyHeroes()) do
 	if GotBuff(enemy,"twitchdeadlyvenom") ~= nil and BuffName == "twitchdeadlyvenom" and GoS:ValidTarget(enemy,2000) then
 	-----------------------
 	p = 6
-	StacksP = Stacks
 	-----------------------
 if GetLevel(myHero) >= 1 and GetLevel(myHero) <= 4 then
 	pDMG = 12	
@@ -80,7 +79,7 @@ if mainMenu.Combo.Combo1:Value() then
 		end
 	end
 
-	if ghost >= 1 and GoS:ValidTarget(target,550) and mainMenu.Items.useGhost:Value() then
+	if ghost >= 1 and GoS:ValidTarget(target,GetRange(myHero)) and mainMenu.Items.useGhost:Value() then
 		if CanUseSpell(myHero,GetItemSlot(myHero,3142)) == READY then
 			CastSpell(GetItemSlot(myHero,3142))
 		end
@@ -110,8 +109,8 @@ if mainMenu.Combo.Combo1:Value() and GoS:ValidTarget(target, 1500) then
 end	
 
 -- Posion-Damage
-if p ~= nil and pDMG ~= nil and StacksP ~= nil and GoS:ValidTarget(target) and GotBuff(target,"twitchdeadlyvenom") >= 1 and mainMenu.Drawings.drawPoison:Value() then
-	truepoisonDMG = (((pDMG/6) * StacksP ) * p -(GetHPRegen(target)* p ))
+if p ~= nil and pDMG ~= nil and GoS:ValidTarget(target) and GotBuff(target,"twitchdeadlyvenom") >= 1 and mainMenu.Drawings.drawPoison:Value() then
+	truepoisonDMG = (((pDMG/6) * GotBuff(target,"twitchdeadlyvenom")) * p -(GetHPRegen(target)* p ))
 end
 
 Ticker = GetTickCount()
@@ -130,6 +129,7 @@ if (global_ticks + 1000) < Ticker then
 global_ticks = Ticker	
 end
 
+	
 if GoS:ValidTarget(target, 2000) then
 if CanUseSpell(myHero,_E) == READY and GotBuff(target,"twitchdeadlyvenom") >= 1 then
 	eDMG = GoS:CalcDamage(myHero,target,(15*GetCastLevel(myHero,_E)+5+(5*GetCastLevel(myHero,_E)+10+(0.2*GetBonusAP(myHero)+0.25*GetBonusDmg(myHero)))*GotBuff(target,"twitchdeadlyvenom")),0)
@@ -137,6 +137,7 @@ else
 	eDMG = 0
 end
 end
+
 -- DRAWINGS
 if mainMenu.Drawings.drawPoison:Value() or mainMenu.Drawings.drawE:Value() and GoS:ValidTarget(target,2000) and GotBuff(target,"twitchdeadlyvenom") >= 1 then
 	
