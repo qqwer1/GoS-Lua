@@ -157,8 +157,7 @@ if mainMenu.Drawings.drawPoison:Value() or mainMenu.Drawings.drawE:Value() and G
 	
 end
 -- Draw R
--- if mainMenu.Drawings.drawR:Value() and CanUseSpell(myHero,_R) == READY and GoS:ValidTarget(target,2000) then
-if mainMenu.Drawings.drawR:Value() and GoS:ValidTarget(target,2000) then
+if mainMenu.Drawings.drawR:Value() and CanUseSpell(myHero,_R) == READY and GoS:ValidTarget(target,2000) then
 	DrawCircle(GetOrigin(myHero),850,0,mainMenu.Drawings.Quality:Value(),ARGB(100,33,139,6))
 end
 
