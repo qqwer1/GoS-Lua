@@ -1,5 +1,7 @@
 require('Inspired')
 
+PrintChat("Diana - The moonwalker loaded.")
+PrintChat("by Noddy")
 
 mainMenu = Menu("Diana", "Diana")
 mainMenu:SubMenu("Combo", "Combo")
