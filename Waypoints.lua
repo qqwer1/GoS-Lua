@@ -1,10 +1,34 @@
 require('Inspired')
 
 Config = scriptConfig("Waypoint", "Waypoint")
+Config.addParam("hitchancelow", "LowHitChance", SCRIPT_PARAM_ONOFF, true)
+global_ticks = 0
 
+OnProcessWaypoint(function(Object)
+if Object == GetMyHero() then
+Ticker = GetTickCount()
+if place ~= nil then
+	if (global_ticks + 2000) < Ticker then
+	-- PrintChat("-------------")
+	place = nil
+	global_ticks = Ticker
+	end
+end	
+if place2 ~= nil then
+	place2 = nil
+end	
+if place3 ~= nil then
+	place3 = nil
+end	
+if place4 ~= nil then
+	place4 = nil
+end	
+end
+end)
 
 OnProcessWaypoint(function(Object,waypointProc)
 
+DelayAction (function()
 if Object == GetMyHero() then
 	if waypointProc.index == 1 then
 		place = waypointProc.position;
@@ -19,6 +43,9 @@ if Object == GetMyHero() then
 		place4 = waypointProc.position;
 		end	
 	end
+end
+, 0)
+
 	
 end)
 
@@ -27,7 +54,7 @@ end)
 OnLoop(function(myHero)
 
 if place ~= nil then
-	DrawCircle(wayPoints,100,0,0,ARGB(255,255,255,255));
+	DrawCircle(place,100,0,0,ARGB(255,255,255,255));
 	end
 if place2 ~= nil then
 	DrawCircle(place2,100,0,0,ARGB(255,255,255,255));
@@ -84,27 +111,31 @@ elseif place2 ~= nil then
 	
 end
 
-ssec = 7
+ssec = 4
 
 USER = KeyIsDown(82) --R
 	if USER == true then
 	
 if totalTime ~= nil then
 if place4 ~= nil and time123 ~= nil then
-PrintChat("time123: "..time123)
+-- PrintChat("time123: "..time123)
 end
 if place3 ~= nil and time12 ~= nil then
 PrintChat("time12: "..time12)
 end
 if place2 ~= nil and time01 ~= nil then
-PrintChat("time01: "..time01)
+-- PrintChat("time01: "..time01)
 end
 end
 
+if ssec ~= nil then
+-- PrintChat("1") -- true
 if ssec < 10 then --Done
+-- PrintChat("2") -- True
 if totalTime ~= nil then
-	if totalTime >= ssec then
-	
+-- PrintChat("3") -- true
+	-- if totalTime <= ssec then
+	-- PrintChat("Calculation!")
 	if time123 ~= nil then
 		if time123 <= ssec then
 		    MoveTime = ssec - time123
@@ -112,28 +143,122 @@ if totalTime ~= nil then
 		    PrintChat("MoveTime: "..MoveTime)
 		end	
 	end
+	
+	
+-- 3 Waypoints	
 	if time12 ~= nil then
-		if time12 <= ssec then
-		    MoveTime = ssec - time12
-		    PrintChat("Time2")
-		    PrintChat("MoveTime: "..MoveTime)
+------------------------------------
+	if place4 == nil then
+------------------------------------	
+		if time12 >= ssec then
+		
+------------------------------------		
+			if time1 >= ssec then
+			vector1 = VectorWay(place,place2)
+			-- PrintChat("Movespeed: "..movespd)
+			MoveTime = time1 - ssec
+		
+			EndPosX = place.x + (-MoveTime*(vector1.x / -time1))
+			EndPosY = place.y + (-MoveTime*(vector1.y / -time1))
+			EndPosZ = place.z + (-MoveTime*(vector1.z / -time1))
+			EndPos = Vector(EndPosX,EndPosY,EndPosZ)
+				PrintChat("HighHitChance12_1")
+			end
+		
+-------------------
+			
+			
+			if time12 >= ssec then
+			vector2 = VectorWay(place2,place3)
+			-- PrintChat("Movespeed: "..movespd)
+			MoveTime = time2 - ssec
+		
+			EndPosX = place2.x + (-MoveTime*(vector2.x / -time2))
+			EndPosY = place2.y + (-MoveTime*(vector2.y / -time2))
+			EndPosZ = place2.z + (-MoveTime*(vector2.z / -time2))
+			EndPos = Vector(EndPosX,EndPosY,EndPosZ)
+				PrintChat("HighHitChance12_3")
+			end
+		
+			if Config.hitchancelow then
+			if time12 < ssec then
+			vector2 = VectorWay(place2,place3)
+			-- PrintChat("vector1x: "..vector1.x)
+			MoveTime = time2 - ssec
+		
+			EndPosX = place2.x + (-MoveTime*(vector2.x / -time2))
+			EndPosY = place2.y + (-MoveTime*(vector2.y / -time2))
+			EndPosZ = place2.z + (-MoveTime*(vector2.z / -time2))
+			EndPos = Vector(EndPosX,EndPosY,EndPosZ)
+				PrintChat("LowHitChance12_4")
+			end
+			end			
+			-- end
+			
+			DelayAction ( function ()
+				place3 = nil
+				place4 = nil
+			end , 1000)
+			
 		end
+		
 	end
+------------------------------------
+	end
+
+	
+-- DO NOT TOUCH IT WORKS! Kappa 
 	if time01 ~= nil then
-		if time01 <= ssec then
-		    MoveTime = ssec - time01
-		    PrintChat("Time1")
-		    PrintChat("MoveTime: "..MoveTime)
+	--------------------------------
+	if place3 == nil then
+	if place4 == nil then
+	--------------------------------
+		if time01 >= ssec then
+	
+	--------------------------------	
+		vector1 = VectorWay(place,place2)
+		MoveTime = time01 - ssec
+		
+		EndPosX = place.x + (-MoveTime*(vector1.x / -time01))
+		EndPosY = place.y + (-MoveTime*(vector1.y / -time01))
+		EndPosZ = place.z + (-MoveTime*(vector1.z / -time01))
+		EndPos = Vector(EndPosX,EndPosY,EndPosZ)
+		    PrintChat("HighHitChance1")
 		end
-	end		
-		if 0 <= ssec then
+		if Config.hitchancelow then
+		if time01 < ssec then
+		vector1 = VectorWay(place,place2)
+		-- PrintChat("vector1x: "..vector1.x)
+		MoveTime = time01 - ssec
+		
+		EndPosX = place.x + (-MoveTime*(vector1.x / -time01))
+		EndPosY = place.y + (-MoveTime*(vector1.y / -time01))
+		EndPosZ = place.z + (-MoveTime*(vector1.z / -time01))
+		EndPos = Vector(EndPosX,EndPosY,EndPosZ)
+		    PrintChat("LowHitChance1")
+		end
+		end
+		
+		
+		DelayAction ( function ()
+			place3 = nil
+			place4 = nil
+		end , 1000)	
+		------------------
+		end
+		end
+		------------------
+	end
+-- ^^^^^^^^	
+		if 0 == ssec then
 		    MoveTime = ssec
 		    PrintChat("Time0")
 		    PrintChat("MoveTime: "..MoveTime)
 		end    
 	elseif totalTime < ssec then
 	
-	end	
+	-- end	
+end
 end
 end
 
@@ -156,7 +281,11 @@ end
 		-- EndPosX = place3.x + (-ssec*(vector3.x))
 		-- EndPosY = place3.y + (-ssec*(vector3.y))
 		-- EndPosZ = place3.z + (-ssec*(vector3.z))
-	-- end	
+	-- end
+if EndPosX ~= nil then	
+	-- PrintChat("EndPosX: "..EndPosX)
+	DrawCircle(EndPos,25,0,0,ARGB(255,0,255,0));
+end	
 end)
 
 -- DistanceBetween2Points
