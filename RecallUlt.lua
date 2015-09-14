@@ -1,4 +1,4 @@
-require('InspiredNew')
+require('Inspired')
 
 recallMenu = Menu("RecallUlt", "RecallUlt1")
 recallMenu:SubMenu("recallult", "Recall Ult (Beta)")
