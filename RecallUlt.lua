@@ -29,6 +29,7 @@ end
 -- Champ List 
 --Ashe
 if GetObjectName(myHero) == "Ashe" then 
+skillrange = 50000
 speedChamp = 1600
 speedSpawn = 1600
 delay = 250
@@ -36,6 +37,7 @@ colision = true
 dmg = function(target) return GoS:CalcDamage(myHero, target, 0, 175*GetCastLevel(myHero,_R)+ 75 + GetBonusAP(myHero)) end
 --Draven
 elseif GetObjectName(myHero) == "Draven" then
+skillrange = 50000
 speedChamp = 2000
 speedSpawn = 2000
 delay = 400
@@ -43,6 +45,7 @@ colision = false
 dmg = function(target) return GoS:CalcDamage(myHero, target, 0, 60*GetCastLevel(myHero,_R)+ 30 + (0.44*GetBonusDmg(myHero)+GetBaseDamage(myHero))) end
 --Ezreal
 elseif GetObjectName(myHero) == "Ezreal" then
+skillrange = 50000
 speedChamp = 2000
 speedSpawn = 2000
 delay = 1000
