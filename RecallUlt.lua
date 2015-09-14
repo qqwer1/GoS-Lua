@@ -1,4 +1,4 @@
-require('Inspired')
+require('InspiredNew')
 
 mainMenu = Menu("RecallUlt", "RecallUlt1")
 mainMenu:SubMenu("recallult", "Recall Ult (Beta)")
@@ -51,12 +51,37 @@ colision = false
 dmg = function(target) return GoS:CalcDamage(myHero, target, 0, 45*GetCastLevel(myHero,_R)+ 60 + (0.27*GetBonusAP(myHero)) + (0.90*(GetBaseDamage(myHero) + GetBonusDmg(myHero)))) end
 --Jinx
 elseif GetObjectName(myHero) == "Jinx" then 
+skillrange = 50000
 speedChamp = 2000
 speedSpawn = (GoS:GetDistance(enemyBasePos) / (1 + (GoS:GetDistance(enemyBasePos)-1700)/2600))
 -- speedSpawn = (GoS:GetDistance(enemyBasePos) / (1 + (GoS:GetDistance(enemyBasePos)-1700)/2600))
 delay = 600
 colision = true
 dmg = function(target) return GoS:CalcDamage(myHero, target, ((GetMaxHP(target)-GetCurrentHP(target))*(0.2+0.05*GetCastLevel(myHero, _R))) + 100*GetCastLevel(myHero,_R) + 150 + GetBonusDmg(myHero)) end
+--Gangplank
+elseif GetObjectName(myHero) == "Gangplank" then
+skillrange = 50000
+speedChamp = 500000
+speedSpawn = 500000
+delay = 0
+colision = false
+dmg = function(target) return GoS:CalcDamage(myHero, target, 0, 20*GetCastLevel(myHero,_R)+ 30 + 0.1*GetBonusAP(myHero)) end
+--Lux
+elseif GetObjectName(myHero) == "Lux" then
+skillrange = 3340
+speedChamp = 33400
+speedSpawn = 33400
+delay = 500
+colision = false
+dmg = function(target) return GoS:CalcDamage(myHero, target, 0, 100*GetCastLevel(myHero,_R)+ 200 + 0.75*GetBonusAP(myHero)) end
+--Ziggs
+elseif GetObjectName(myHero) == "Ziggs" then
+skillrange = 5400
+speedChamp = skillrange/3.5
+speedSpawn = skillrange/3.5
+delay = 0
+colision = false
+dmg = function(target) return GoS:CalcDamage(myHero, target, 0, 100*GetCastLevel(myHero,_R)+ 100 + 0.72*GetBonusAP(myHero)) end
 end
 
 -- RECALL ULT
@@ -160,7 +185,7 @@ z1 = enemyPos2.z - enemyPos1.z
 	tChamp = ((distanceChamp / speedChamp) + (delay/1000)) * 1000
 	
 	
-		if tChamp < t and ssec < 3 then
+		if tChamp < t and ssec < 3 and distanceChamp <= skillrange then
 
 			-- PrintChat("RecallUlt on "..GetObjectName(Object))
 			CastSkillShot(_R, EndPosX, EndPosY, EndPosZ)
@@ -183,11 +208,12 @@ if recallProc.isStart == true then
 	local myHeroPos = GetOrigin(myHero)
 	
 	tSpawn = ((GoS:GetDistance(enemyBasePos) / speedSpawn) + (delay/1000)) * 1000
+	distanceSpawn = GoS:GetDistance(enemyBasePos)
 	-- PrintChat("t: "..t)
 	-- PrintChat("tSpawn: "..tSpawn)
 	tt = t - tSpawn
 
-		if (tSpawn+delay) < t then
+		if (tSpawn+delay) < t and distanceSpawn <= skillrange then
 					-- PrintChat("BaseUlt on "..GetObjectName(Object))
 					GoS:DelayAction( function()
 						CastSkillShot(_R,enemyBasePos.x,enemyBasePos.y,enemyBasePos.z) end
