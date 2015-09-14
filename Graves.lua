@@ -89,7 +89,7 @@ if mainMenu.Killsteal.ksQ:Value() then
 for i,enemy in pairs(GoS:GetEnemyHeroes()) do
 		if CanUseSpell(myHero,_Q) == READY and GoS:ValidTarget(enemy, 1500) and mainMenu.Killsteal.ksQ:Value() and GetCurrentHP(enemy) < GoS:CalcDamage(myHero,enemy,(30*GetCastLevel(myHero,_Q)+30+(0.75*(GetBaseDamage(myHero) + GetBonusDmg(myHero)))),0) then
 			
-			if CanUseSpell(myHero,_E) == READY and not GoS:IsInDistance(enemy, 925) and mainMenu.Killsteal.ksE:Value() then
+			if GoS:ValidTarget(enemy,1500) and CanUseSpell(myHero,_E) == READY and not GoS:IsInDistance(enemy, 925) and mainMenu.Killsteal.ksE:Value() then
 				local targetPos = GetOrigin(enemy)
 				CastSkillShot(_E, targetPos.x, targetPos.y, targetPos.z)
 			end
@@ -106,7 +106,7 @@ if mainMenu.Killsteal.ksR:Value() then
 	for i,enemy in pairs(GoS:GetEnemyHeroes()) do
 		if CanUseSpell(myHero,_R) == READY and GoS:ValidTarget(enemy, 2300) and mainMenu.Killsteal.ksR:Value() and GetCurrentHP(enemy) < GoS:CalcDamage(myHero,enemy,(120*GetCastLevel(myHero,_R)+80+(1.2*GetBonusDmg(myHero))),0) then
 			
-			if CanUseSpell(myHero,_E) == READY and not GoS:IsInDistance(enemy, 1800) and mainMenu.Killsteal.ksE:Value() then
+			if GoS:ValidTarget(enemy,2300) and CanUseSpell(myHero,_E) == READY and not GoS:IsInDistance(enemy, 1800) and mainMenu.Killsteal.ksE:Value() then
 				local targetPos = GetOrigin(enemy)
 				CastSkillShot(_E, targetPos.x, targetPos.y, targetPos.z)
 			end			
@@ -124,7 +124,7 @@ if mainMenu.Combo.Combo1:Value() then
 
 -- Burstcombo
 if CanUseSpell(myHero,_Q) and CanUseSpell(myHero,_R) and GoS:ValidTarget(target,950) and mainMenu.Combo.Burst:Value() and GetCurrentHP(target) < DPS then
-	if GoS:IsInDistance(target, 550) then
+	if GoS:ValidTarget(target, 950) and GoS:IsInDistance(target, 550) then
 		local RPredBurst = GetPredictionForPlayer(myHeroPos,target,GetMoveSpeed(target),2100,250,1800,100,false,false)
 		local QPredBurst = GetPredictionForPlayer(myHeroPos,target,GetMoveSpeed(target),2000,250,925,50,false,false)
 			if CanUseSpell(myHero,_R) == READY and RPredBurst.HitChance == 1 and CanUseSpell(myHero,_Q) == READY and QPredBurst.HitChance == 1 then
@@ -134,7 +134,7 @@ if CanUseSpell(myHero,_Q) and CanUseSpell(myHero,_R) and GoS:ValidTarget(target,
 					end, 50)
 			end
 	end
-	if not GoS:IsInDistance(target,550) and CanUseSpell(myHero,_E) == READY and mainMenu.Combo.BurstE:Value() then
+	if GoS:ValidTarget(target,950) and not GoS:IsInDistance(target,550) and CanUseSpell(myHero,_E) == READY and mainMenu.Combo.BurstE:Value() then
 		local targetPos = GetOrigin(target)
 		CastSkillShot(_E, targetPos.x, targetPos.y, targetPos.z)
 	end	
@@ -168,7 +168,7 @@ end
 		end
 	end
 	--R 2
-	if CanUseSpell(myHero,_R) == READY and mainMenu.Combo.useR:Value() and not GoS:IsInDistance(target, 1000) and GoS:IsInDistance(target,1800) and GetCurrentHP(target) < GoS:CalcDamage(myHero,target,(120*GetCastLevel(myHero,_R)+80+(1.2*GetBonusDmg(myHero))),0) then
+	if GoS:ValidTarget(target,2000) and CanUseSpell(myHero,_R) == READY and mainMenu.Combo.useR:Value() and not GoS:IsInDistance(target, 1000) and GoS:IsInDistance(target,1800) and GetCurrentHP(target) < GoS:CalcDamage(myHero,target,(120*GetCastLevel(myHero,_R)+80+(1.2*GetBonusDmg(myHero))),0) then
 		local RPred2 = GetPredictionForPlayer(myHeroPos,target,GetMoveSpeed(target),2100,250,1800,100,false,false)
 		if RPred2.HitChance == 1 then
 			CastSkillShot(_R,RPred2.PredPos.x,RPred2.PredPos.y,RPred2.PredPos.z)
