@@ -40,6 +40,10 @@ end
 -- Items
 local Sheen = GetItemSlot(myHero,3057)
 local TonsOfDamage = GetItemSlot(myHero,3078)
+local CutBlade = GetItemSlot(myHero,3144)
+local bork = GetItemSlot(myHero,3153)
+local ghost = GetItemSlot(myHero,3142)
+local redpot = GetItemSlot(myHero,2140)
 
 -- Use Items
 if mainMenu.Combo.Combo1:Value() then
