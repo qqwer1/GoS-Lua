@@ -11,6 +11,12 @@ mainMenu.Combo:Boolean("useR", "Use R in combo", true)
 mainMenu.Combo:Boolean("useSheen", "SheenProc weaving", true)
 mainMenu.Combo:Key("Combo1", "Combo", string.byte(" "))
 ------------------------------------------
+mainMenu:SubMenu("Items", "Items")
+mainMenu.Items:Boolean("useCut", "Bilgewater Cutlass", true)
+mainMenu.Items:Boolean("useBork", "Blade of the Ruined King", true)
+mainMenu.Items:Boolean("useGhost", "Youmuu's Ghostblade", true)
+mainMenu.Items:Boolean("useRedPot", "Elixir of Wrath", true)
+------------------------------------------
 mainMenu:SubMenu("Drawings", "Drawings")
 mainMenu.Drawings:Boolean("DrawQ","Draw Q", true)
 mainMenu.Drawings:Boolean("DrawW","Draw W", true)
@@ -34,6 +40,31 @@ end
 -- Items
 local Sheen = GetItemSlot(myHero,3057)
 local TonsOfDamage = GetItemSlot(myHero,3078)
+
+-- Use Items
+if mainMenu.Combo.Combo1:Value() then
+	if CutBlade >= 1 and GoS:ValidTarget(target,550) and mainMenu.Items.useCut:Value() then
+		if CanUseSpell(myHero,GetItemSlot(myHero,3144)) == READY then
+			CastTargetSpell(target, GetItemSlot(myHero,3144))
+		end	
+	elseif bork >= 1 and GoS:ValidTarget(target,550) and (GetMaxHP(myHero) / GetCurrentHP(myHero)) >= 1.25 and mainMenu.Items.useBork:Value() then 
+		if CanUseSpell(myHero,GetItemSlot(myHero,3153)) == READY then
+			CastTargetSpell(target,GetItemSlot(myHero,3153))
+		end
+	end
+
+	if ghost >= 1 and GoS:ValidTarget(target,550) and mainMenu.Items.useGhost:Value() then
+		if CanUseSpell(myHero,GetItemSlot(myHero,3142)) == READY then
+			CastSpell(GetItemSlot(myHero,3142))
+		end
+	end
+	
+	if redpot >= 1 and GoS:ValidTarget(target,550) and mainMenu.Items.useRedPot:Value() then
+		if CanUseSpell(myHero,GetItemSlot(myHero,2140)) == READY then
+			CastSpell(GetItemSlot(myHero,2140))
+		end
+	end
+end
 
 if mainMenu.Combo.Combo1:Value() then
 -- Combo - noSheen
