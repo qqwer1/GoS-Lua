@@ -45,17 +45,13 @@ OnProcessSpell(function(unit, spell)
 if unit and unit == myHero and spell then
     if spell.name:lower():find("attack") then
 		if mainMenu.Combo.Combo1:Value() then
-		MoveToXYZ(GetMousePos())
+		-- MoveToXYZ(GetMousePos())
 		-- PrintChat("Jump!")
 		end
 	end
 	if spell.name:lower():find("kalistamysticshot") then
-		-- MyPos = (GetOrigin(myHero))
-		-- PrintChat("X: "..MyPos.x)
-		-- PrintChat("Y: "..MyPos.y)
-		-- PrintChat("Z: "..MyPos.z)
 		if mainMenu.Combo.Combo1:Value() then
-		MoveToXYZ(GetMousePos())
+		-- MoveToXYZ(GetMousePos())
 		-- PrintChat("JumpQ!")
 		end
 	end
@@ -149,7 +145,7 @@ end)
 -- Use Q
 function useQ()
 for i,enemy in pairs(GoS:GetEnemyHeroes()) do
-if CanUseSpell(myHero,_Q) == READY and GoS:ValidTarget(enemy,GetCastRange(myHero,_Q)) and GetCurrentMana(myHero) > GetCastMana(myHero,_Q,GetCastLevel(myHero,_Q)) + 40 then
+if CanUseSpell(myHero,_Q) == READY and IsTargetable(enemy) and GoS:ValidTarget(enemy,GetCastRange(myHero,_Q)) and GetCurrentMana(myHero) > GetCastMana(myHero,_Q,GetCastLevel(myHero,_Q)) + 40 then
 	local QPred = GetPredictionForPlayer(GoS:myHeroPos(),enemy,GetMoveSpeed(enemy),1500,250,1150,50,true,false)
 		if QPred.HitChance == 1 then
 			CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
@@ -161,7 +157,7 @@ end
 -- KillSteal E
 function ksE()
 for i,enemy in pairs(GoS:GetEnemyHeroes()) do
-	if CanUseSpell(myHero,_E) == READY and GotBuff(enemy,"kalistaexpungemarker") >= 1 and GoS:ValidTarget(enemy,GetCastRange(myHero,_E)) and GetCurrentHP(enemy)+GetDmgShield(enemy) < GoS:CalcDamage(myHero, enemy, 10*GetCastLevel(myHero,_E)+10+(0.6*(GetBaseDamage(myHero)+GetBonusDmg(myHero))) + (((({[1]=10,[2]=14,[3]=19,[4]=25,[5]=32})[GetCastLevel(myHero,_E)])+((0.025*GetCastLevel(myHero,_E)+0.175)*(GetBaseDamage(myHero)+GetBonusDmg(myHero))))*(GotBuff(enemy,"kalistaexpungemarker")-1)),0) then
+	if CanUseSpell(myHero,_E) == READY and GotBuff(enemy,"kalistaexpungemarker") >= 1 and IsTargetable(enemy) and GoS:ValidTarget(enemy,GetCastRange(myHero,_E)) and GetCurrentHP(enemy)+GetDmgShield(enemy) < GoS:CalcDamage(myHero, enemy, 10*GetCastLevel(myHero,_E)+10+(0.6*(GetBaseDamage(myHero)+GetBonusDmg(myHero))) + (((({[1]=10,[2]=14,[3]=19,[4]=25,[5]=32})[GetCastLevel(myHero,_E)])+((0.025*GetCastLevel(myHero,_E)+0.175)*(GetBaseDamage(myHero)+GetBonusDmg(myHero))))*(GotBuff(enemy,"kalistaexpungemarker")-1)),0) then
 		CastSpell(_E)
 	end
 end
@@ -169,7 +165,7 @@ end
 -- KillSteal Q
 function ksQ()
 for i,enemy in pairs(GoS:GetEnemyHeroes()) do
-	if CanUseSpell(myHero,_Q) == READY and GoS:ValidTarget(enemy,GetCastRange(myHero,_Q)) and GetCurrentHP(enemy)+GetDmgShield(enemy) < GoS:CalcDamage(myHero, enemy, 60*GetCastLevel(myHero,_Q)-50+(GetBaseDamage(myHero)+GetBonusDmg(myHero)),0) then
+	if CanUseSpell(myHero,_Q) == READY and IsTargetable(enemy) and GoS:ValidTarget(enemy,GetCastRange(myHero,_Q)) and GetCurrentHP(enemy)+GetDmgShield(enemy) < GoS:CalcDamage(myHero, enemy, 60*GetCastLevel(myHero,_Q)-50+(GetBaseDamage(myHero)+GetBonusDmg(myHero)),0) then
 		local QPred = GetPredictionForPlayer(GoS:myHeroPos(),enemy,GetMoveSpeed(enemy),1500,250,1150,50,true,false)
 			if QPred.HitChance == 1 then
 			CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
@@ -178,12 +174,13 @@ for i,enemy in pairs(GoS:GetEnemyHeroes()) do
 end
 end
 
--- Thanks to Deftsu 
+-- Thanks to Deftsu CopyPasta all day long Kappa
 function farmE()
 local minionX = 0
     for _,minion in pairs(GoS:GetAllMinions(MINION_ENEMY)) do
 		if CanUseSpell(myHero,_E) == READY and GotBuff(minion,"kalistaexpungemarker") >= 1 and GoS:ValidTarget(minion,GetCastRange(myHero,_E)) and GetCurrentHP(minion) + GetDmgShield(minion) < GoS:CalcDamage(myHero, minion, 10*GetCastLevel(myHero,_E)+10+(0.6*(GetBaseDamage(myHero)+GetBonusDmg(myHero))) + (((({[1]=10,[2]=14,[3]=19,[4]=25,[5]=32})[GetCastLevel(myHero,_E)])+((0.025*GetCastLevel(myHero,_E)+0.175)*(GetBaseDamage(myHero)+GetBonusDmg(myHero))))*(GotBuff(minion,"kalistaexpungemarker")-1)),0) then
 			minionX = minionX + 1
+			-- PrintChat(minionX)
 		end
 				if CanUseSpell(myHero,_E) == READY and minionX >= mainMenu.Farm.farmEx:Value() then
 					CastSpell(_E)
@@ -200,7 +197,7 @@ local minionXe = 0
 			minionXe = minionXe + 1
 		end
 			for i,enemy in pairs(GoS:GetEnemyHeroes()) do
-				if CanUseSpell(myHero,_E) == READY and minionXe >= 1 and GoS:ValidTarget(enemy,GetCastRange(myHero,_E)) and GotBuff(enemy,"kalistaexpungemarker") >= mainMenu.Combo.useExS:Value() then
+				if CanUseSpell(myHero,_E) == READY and minionXe >= 1 and IsTargetable(enemy) and GoS:ValidTarget(enemy,GetCastRange(myHero,_E)) and GotBuff(enemy,"kalistaexpungemarker") >= mainMenu.Combo.useExS:Value() then
 					CastSpell(_E)
 					minionXe = 0
 				end
