@@ -8,15 +8,16 @@ mainMenu:SubMenu("Combo", "Combo")
 mainMenu.Combo:Boolean("useQ", "Use Q in combo", true)
 mainMenu.Combo:Boolean("useE", "Use E if killable", true)
 mainMenu.Combo:Boolean("useEx", "Use E with reset", true)
-mainMenu.Combo:Slider("useExS","E reset on X spears", 5 , 1, 20, 1)
+mainMenu.Combo:Slider("useExS","E reset on X spears", 5, 1, 20, 1)
 mainMenu.Combo:Boolean("useEao", "Use E out of range", true)
-mainMenu.Combo:Slider("useExaoS","E out of range on X spears", 8 , 1, 40, 1)
+mainMenu.Combo:Slider("useExaoS","E out of range on X spears", 10, 1, 40, 1)
 -- mainMenu.Combo:Boolean("useR", "Use R in combo", false)
 mainMenu.Combo:Key("Combo1", "Combo", string.byte(" "))
 ---------------------------------------------------------------------------------
 mainMenu:SubMenu("Harass", "Harass")
 mainMenu.Harass:Boolean("hQ", "Use Q", true)
-mainMenu.Harass:Boolean("hE", "Use E", true)
+mainMenu.Harass:Boolean("hE", "Use E with reset", true)
+mainMenu.Combo:Slider("hExS","E reset on X spears", 3, 1, 20, 1)
 mainMenu.Harass:Key("Harass1", "Harass", string.byte("C"))
 ---------------------------------------------------------------------------------
 mainMenu:SubMenu("Killsteal", "Killsteal")
@@ -39,14 +40,14 @@ mainMenu.Drawings:Boolean("drawE", "Draw E-Damage", true)
 
 
 --DOTO:
--- Q, E ,  R(semi auto) on T
+--R(semi auto) on T
 
 OnProcessSpell(function(unit, spell)
 if unit and unit == myHero and spell then
 	   if spell.name:lower():find("kalistadummyspell") then
-		-- PrintChat("?")
 		minionXe = 0
 		minionX = 0
+		minionXeh = 0
 	end
 end
 end)
@@ -120,7 +121,9 @@ if mainMenu.Harass.Harass1:Value() then
 if mainMenu.Harass.hQ:Value() then
 useQ()
 end
-
+if mainMenu.Harass.hE:Value() then
+hEx()
+end
 end -- Harass]
 
 -- Draw E Damage
@@ -234,6 +237,23 @@ local minionXe = 0
 				if CanUseSpell(myHero,_E) == READY and minionXe >= 1 and IsTargetable(enemy) and not GoS:IsInDistance(enemy,GetRange(myHero)) and GoS:ValidTarget(enemy,GetCastRange(myHero,_E)) and GotBuff(enemy,"kalistaexpungemarker") >= 1 then
 					CastSpell(_E)
 					minionXe = 0
+				end			
+			end		
+	end
+end
+
+
+-- E Harass
+function hEx()
+local minionXeh = 0
+    for _,minion in pairs(GoS:GetAllMinions(MINION_ENEMY)) do
+		if CanUseSpell(myHero,_E) == READY and GotBuff(minion,"kalistaexpungemarker") >= 1 and GoS:ValidTarget(minion,GetCastRange(myHero,_E)) and GetCurrentHP(minion) + GetDmgShield(minion) < GoS:CalcDamage(myHero, minion, 10*GetCastLevel(myHero,_E)+10+(0.6*(GetBaseDamage(myHero)+GetBonusDmg(myHero))) + (((({[1]=10,[2]=14,[3]=19,[4]=25,[5]=32})[GetCastLevel(myHero,_E)])+((0.025*GetCastLevel(myHero,_E)+0.175)*(GetBaseDamage(myHero)+GetBonusDmg(myHero))))*(GotBuff(minion,"kalistaexpungemarker")-1)),0) then
+			minionXeh = minionXeh + 1
+		end
+			for i,enemy in pairs(GoS:GetEnemyHeroes()) do
+				if CanUseSpell(myHero,_E) == READY and minionXeh >= 1 and IsTargetable(enemy) and GoS:ValidTarget(enemy,GetRange(myHero)) and GotBuff(enemy,"kalistaexpungemarker") >= mainMenu.Combo.hExS:Value() then
+					CastSpell(_E)
+					minionXeh = 0
 				end			
 			end		
 	end
