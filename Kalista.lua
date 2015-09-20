@@ -11,7 +11,7 @@ mainMenu.Combo:Boolean("useEx", "Use E with reset", true)
 mainMenu.Combo:Slider("useExS","E reset on X spears", 5, 1, 20, 1)
 mainMenu.Combo:Boolean("useEao", "Use E out of range", true)
 mainMenu.Combo:Slider("useExaoS","E out of range on X spears", 10, 1, 40, 1)
-mainMenu.Combo:Key("useR", "Use R - Press T", string.byte("T"))
+mainMenu.Combo:Key("useR", "Semi Auto R", string.byte("T"))
 mainMenu.Combo:Key("Combo1", "Combo", string.byte(" "))
 ---------------------------------------------------------------------------------
 mainMenu:SubMenu("Harass", "Harass")
@@ -34,6 +34,11 @@ mainMenu:SubMenu("Farm", "Farm")
 mainMenu.Farm:Boolean("farmE", "Use E", true)
 mainMenu.Farm:Slider("farmEx","Use on X minions", 2 , 1, 10, 1)
 mainMenu.Farm:Key("Farm1", "Farm", string.byte("V"))
+---------------------------------------------------------------------------------
+mainMenu:SubMenu("Misc", "Misc")
+mainMenu.Misc:Boolean("Jungle", "Jungle Steal", true)
+mainMenu.Misc:Boolean("saveAlly", "Use R to save your ally", true)
+mainMenu.Misc:Slider("AllyHP","Save Ally % HP", 15, 1, 100, 1)
 ---------------------------------------------------------------------------------
 mainMenu:SubMenu("Drawings", "Drawings")
 mainMenu.Drawings:Boolean("drawE", "Draw E-Damage", true)
@@ -110,7 +115,7 @@ end -- Combo]
 -- Semi Auto R
 if mainMenu.Combo.useR:Value() then
 for _, ally in pairs(GoS:GetAllyHeroes()) do
-	if CanUseSpell(myHero,_R) == READY and GotBuff(ally,"kalistacoopstrikeally") > 0 and GoS:ValidTarget(target, 1200) then
+	if CanUseSpell(myHero,_R) == READY and GotBuff(ally,"kalistacoopstrikeally") == 1 and GoS:ValidTarget(target, 1200) then
 		local extraDelay = (GoS:GetDistance(ally) / 1500) * 1000
 		local RPred = GetPredictionForPlayer(GoS:myHeroPos(),target,GetMoveSpeed(target),1500,100+extraDelay,1250,150,false,true)
 		if RPred.HitChance == 1 then
@@ -153,8 +158,23 @@ if mainMenu.Farm.Farm1:Value() and mainMenu.Farm.farmE.Value() then
 farmE()
 end
 -- Save Ally
-
-
+if mainMenu.Misc.saveAlly:Value() then
+	for _, ally in pairs(GoS:GetAllyHeroes()) do
+		for i,enemy in pairs(GoS:GetEnemyHeroes()) do
+			if CanUseSpell(myHero,_R) == READY and GotBuff(ally,"kalistacoopstrikeally") == 1 and 100*GetCurrentHP(ally)/GetMaxHP(ally) <= mainMenu.Misc.AllyHP:Value() and GoS:GetDistance(ally, enemy) <= 700 then
+				CastSpell(_R)
+			end
+		end
+	end
+end
+-- JungleSteal
+if mainMenu.Misc.Jungle:Value() then
+for _,mob in pairs(GoS:GetAllMinions(MINION_JUNGLE)) do
+	if CanUseSpell(myHero,_E) == READY and GotBuff(mob,"kalistaexpungemarker") >= 1 and GoS:ValidTarget(mob,GetCastRange(myHero,_E)) and GetCurrentHP(mob) < GoS:CalcDamage(myHero, mob, 10*GetCastLevel(myHero,_E)+10+(0.6*(GetBaseDamage(myHero)+GetBonusDmg(myHero))) + (((({[1]=10,[2]=14,[3]=19,[4]=25,[5]=32})[GetCastLevel(myHero,_E)])+((0.025*GetCastLevel(myHero,_E)+0.175)*(GetBaseDamage(myHero)+GetBonusDmg(myHero))))*(GotBuff(mob,"kalistaexpungemarker")-1)),0) then
+		CastSpell(_E)
+	end
+end
+end
 
 end)
 
