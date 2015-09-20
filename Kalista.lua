@@ -11,13 +11,13 @@ mainMenu.Combo:Boolean("useEx", "Use E with reset", true)
 mainMenu.Combo:Slider("useExS","E reset on X spears", 5, 1, 20, 1)
 mainMenu.Combo:Boolean("useEao", "Use E out of range", true)
 mainMenu.Combo:Slider("useExaoS","E out of range on X spears", 10, 1, 40, 1)
--- mainMenu.Combo:Boolean("useR", "Use R in combo", false)
+mainMenu.Combo:Key("useR", "Use R - Press T", string.byte("T"))
 mainMenu.Combo:Key("Combo1", "Combo", string.byte(" "))
 ---------------------------------------------------------------------------------
 mainMenu:SubMenu("Harass", "Harass")
 mainMenu.Harass:Boolean("hQ", "Use Q", true)
 mainMenu.Harass:Boolean("hE", "Use E with reset", true)
-mainMenu.Combo:Slider("hExS","E reset on X spears", 3, 1, 20, 1)
+mainMenu.Harass:Slider("hExS","E reset on X spears", 3, 1, 20, 1)
 mainMenu.Harass:Key("Harass1", "Harass", string.byte("C"))
 ---------------------------------------------------------------------------------
 mainMenu:SubMenu("Killsteal", "Killsteal")
@@ -38,9 +38,7 @@ mainMenu.Farm:Key("Farm1", "Farm", string.byte("V"))
 mainMenu:SubMenu("Drawings", "Drawings")
 mainMenu.Drawings:Boolean("drawE", "Draw E-Damage", true)
 
-
---DOTO:
---R(semi auto) on T
+--TODO: Save Ally & JungleSteal
 
 OnProcessSpell(function(unit, spell)
 if unit and unit == myHero and spell then
@@ -51,7 +49,6 @@ if unit and unit == myHero and spell then
 	end
 end
 end)
-
 
 OnLoop(function (myHero)
 
@@ -108,12 +105,20 @@ if mainMenu.Combo.useEao:Value() then
 useEao()
 end
 
-
-
-
-
-
 end -- Combo]
+
+-- Semi Auto R
+if mainMenu.Combo.useR:Value() then
+for _, ally in pairs(GoS:GetAllyHeroes()) do
+	if CanUseSpell(myHero,_R) == READY and GotBuff(ally,"kalistacoopstrikeally") > 0 and GoS:ValidTarget(target, 1200) then
+		local extraDelay = (GoS:GetDistance(ally) / 1500) * 1000
+		local RPred = GetPredictionForPlayer(GoS:myHeroPos(),target,GetMoveSpeed(target),1500,100+extraDelay,1250,150,false,true)
+		if RPred.HitChance == 1 then
+			CastSpell(_R)	
+		end	
+	end
+end
+end
 
 -- [Harass
 if mainMenu.Harass.Harass1:Value() then
@@ -147,6 +152,9 @@ end
 if mainMenu.Farm.Farm1:Value() and mainMenu.Farm.farmE.Value() then
 farmE()
 end
+-- Save Ally
+
+
 
 end)
 
@@ -159,18 +167,15 @@ if CanUseSpell(myHero,_Q) == READY and IsTargetable(enemy) and GoS:ValidTarget(e
 		OnProcessSpell(function(unit, spell)
 			if unit and unit == myHero and spell then
 				if spell.name:lower():find("attack") then
-					-- PrintChat(spell.windUpTime*1000)
 						GoS:DelayAction(function()
 						local QPred = GetPredictionForPlayer(GoS:myHeroPos(),enemy,GetMoveSpeed(enemy),2000,350,1150,70,true,false)
-							if QPred.HitChance == 1 and CanUseSpell(myHero,_Q) == READY and mainMenu.Combo.useQ:Value() and mainMenu.Combo.Combo1:Value() then
+							if QPred.HitChance == 1 and CanUseSpell(myHero,_Q) == READY and mainMenu.Combo.useQ:Value() and mainMenu.Combo.Combo1:Value() and IsTargetable(enemy) and GoS:ValidTarget(enemy,GetCastRange(myHero,_Q)) then
 								CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
-								-- PrintChat("Combo Q")
 							end
-							if QPred.HitChance == 1 and CanUseSpell(myHero,_Q) == READY and mainMenu.Harass.hQ:Value() and mainMenu.Harass.Harass1:Value() then
+							if QPred.HitChance == 1 and CanUseSpell(myHero,_Q) == READY and mainMenu.Harass.hQ:Value() and mainMenu.Harass.Harass1:Value() and IsTargetable(enemy) and GoS:ValidTarget(enemy,GetCastRange(myHero,_Q)) then
 								CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
-								-- PrintChat("Harass Q")
 							end								
-					end , spell.windUpTime*1000)
+					end , spell.windUpTime*1000 + GetLatency())
 				end
 			end
 		end)
@@ -194,6 +199,7 @@ for i,enemy in pairs(GoS:GetEnemyHeroes()) do
 	end
 end
 end
+
 -- KillSteal Q
 function ksQ()
 for i,enemy in pairs(GoS:GetEnemyHeroes()) do
@@ -242,7 +248,6 @@ local minionXe = 0
 	end
 end
 
-
 -- E Harass
 function hEx()
 local minionXeh = 0
@@ -251,7 +256,7 @@ local minionXeh = 0
 			minionXeh = minionXeh + 1
 		end
 			for i,enemy in pairs(GoS:GetEnemyHeroes()) do
-				if CanUseSpell(myHero,_E) == READY and minionXeh >= 1 and IsTargetable(enemy) and GoS:ValidTarget(enemy,GetRange(myHero)) and GotBuff(enemy,"kalistaexpungemarker") >= mainMenu.Combo.hExS:Value() then
+				if CanUseSpell(myHero,_E) == READY and minionXeh >= 1 and IsTargetable(enemy) and GoS:ValidTarget(enemy,GetRange(myHero)) and GotBuff(enemy,"kalistaexpungemarker") >= mainMenu.Harass.hExS:Value() then
 					CastSpell(_E)
 					minionXeh = 0
 				end			
