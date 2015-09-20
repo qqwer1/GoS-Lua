@@ -8,7 +8,7 @@ mainMenu:SubMenu("Combo", "Combo")
 mainMenu.Combo:Boolean("useQ", "Use Q in combo", true)
 mainMenu.Combo:Boolean("useE", "Use E if killable", true)
 mainMenu.Combo:Boolean("useEx", "Use E with reset", true)
-mainMenu.Combo:Slider("useExS","E reset on X spears", 3 , 1, 20, 1)
+mainMenu.Combo:Slider("useExS","E reset on X spears", 5 , 1, 20, 1)
 -- mainMenu.Combo:Boolean("useR", "Use R in combo", false)
 mainMenu.Combo:Key("Combo1", "Combo", string.byte(" "))
 ---------------------------------------------------------------------------------
@@ -40,23 +40,6 @@ mainMenu.Drawings:Boolean("drawE", "Draw E-Damage", true)
 -- Q, E ,  R(semi auto) on T
 -- E if minion killable + E on enemy (x stacks) done
 -- E if auto of range of Q range + Q cooldown
-
-OnProcessSpell(function(unit, spell)
-if unit and unit == myHero and spell then
-    if spell.name:lower():find("attack") then
-		if mainMenu.Combo.Combo1:Value() then
-		-- MoveToXYZ(GetMousePos())
-		-- PrintChat("Jump!")
-		end
-	end
-	if spell.name:lower():find("kalistamysticshot") then
-		if mainMenu.Combo.Combo1:Value() then
-		-- MoveToXYZ(GetMousePos())
-		-- PrintChat("JumpQ!")
-		end
-	end
-end
-end)
 
 OnLoop(function (myHero)
 
@@ -176,8 +159,8 @@ end
 
 -- Thanks to Deftsu CopyPasta all day long Kappa
 function farmE()
-local minionX = 0
     for _,minion in pairs(GoS:GetAllMinions(MINION_ENEMY)) do
+	local minionX = 0
 		if CanUseSpell(myHero,_E) == READY and GotBuff(minion,"kalistaexpungemarker") >= 1 and GoS:ValidTarget(minion,GetCastRange(myHero,_E)) and GetCurrentHP(minion) + GetDmgShield(minion) < GoS:CalcDamage(myHero, minion, 10*GetCastLevel(myHero,_E)+10+(0.6*(GetBaseDamage(myHero)+GetBonusDmg(myHero))) + (((({[1]=10,[2]=14,[3]=19,[4]=25,[5]=32})[GetCastLevel(myHero,_E)])+((0.025*GetCastLevel(myHero,_E)+0.175)*(GetBaseDamage(myHero)+GetBonusDmg(myHero))))*(GotBuff(minion,"kalistaexpungemarker")-1)),0) then
 			minionX = minionX + 1
 			-- PrintChat(minionX)
@@ -197,10 +180,14 @@ local minionXe = 0
 			minionXe = minionXe + 1
 		end
 			for i,enemy in pairs(GoS:GetEnemyHeroes()) do
-				if CanUseSpell(myHero,_E) == READY and minionXe >= 1 and IsTargetable(enemy) and GoS:ValidTarget(enemy,GetCastRange(myHero,_E)) and GotBuff(enemy,"kalistaexpungemarker") >= mainMenu.Combo.useExS:Value() then
+				if CanUseSpell(myHero,_E) == READY and minionXe >= 1 and IsTargetable(enemy) and GoS:ValidTarget(enemy,GetRange(myHero)) and GotBuff(enemy,"kalistaexpungemarker") >= mainMenu.Combo.useExS:Value() then
 					CastSpell(_E)
 					minionXe = 0
 				end
+				if CanUseSpell(myHero,_E) == READY and minionXe >= 1 and IsTargetable(enemy) and not GoS:IsInDistance(enemy,GetRange(myHero)) and GoS:ValidTarget(enemy,GetCastRange(myHero,_E)) and GotBuff(enemy,"kalistaexpungemarker") >= 1 then
+					CastSpell(_E)
+					minionXe = 0
+				end			
 			end		
 	end
 end
