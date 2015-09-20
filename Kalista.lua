@@ -9,6 +9,8 @@ mainMenu.Combo:Boolean("useQ", "Use Q in combo", true)
 mainMenu.Combo:Boolean("useE", "Use E if killable", true)
 mainMenu.Combo:Boolean("useEx", "Use E with reset", true)
 mainMenu.Combo:Slider("useExS","E reset on X spears", 5 , 1, 20, 1)
+mainMenu.Combo:Boolean("useEao", "Use E out of range", true)
+mainMenu.Combo:Slider("useExaoS","E out of range on X spears", 5 , 1, 40, 1)
 -- mainMenu.Combo:Boolean("useR", "Use R in combo", false)
 mainMenu.Combo:Key("Combo1", "Combo", string.byte(" "))
 ---------------------------------------------------------------------------------
@@ -38,8 +40,17 @@ mainMenu.Drawings:Boolean("drawE", "Draw E-Damage", true)
 
 --DOTO:
 -- Q, E ,  R(semi auto) on T
--- E if minion killable + E on enemy (x stacks) done
--- E if auto of range of Q range + Q cooldown
+
+OnProcessSpell(function(unit, spell)
+if unit and unit == myHero and spell then
+	   if spell.name:lower():find("kalistadummyspell") then
+		-- PrintChat("?")
+		minionXe = 0
+		minionX = 0
+	end
+end
+end)
+
 
 OnLoop(function (myHero)
 
@@ -91,15 +102,17 @@ end
 if mainMenu.Combo.useEx:Value() then
 useEx()
 end
-
-
-
-
-
-
+-- E out of range
+if mainMenu.Combo.useEao:Value() then
+useEao()
 end
 
 
+
+
+
+
+end -- Combo
 
 -- Draw E Damage
 if mainMenu.Drawings.drawE:Value() then
@@ -129,7 +142,7 @@ end)
 function useQ()
 for i,enemy in pairs(GoS:GetEnemyHeroes()) do
 if CanUseSpell(myHero,_Q) == READY and IsTargetable(enemy) and GoS:ValidTarget(enemy,GetCastRange(myHero,_Q)) and GetCurrentMana(myHero) > GetCastMana(myHero,_Q,GetCastLevel(myHero,_Q)) + 40 then
-	local QPred = GetPredictionForPlayer(GoS:myHeroPos(),enemy,GetMoveSpeed(enemy),1500,250,1150,50,true,false)
+	local QPred = GetPredictionForPlayer(GoS:myHeroPos(),enemy,GetMoveSpeed(enemy),2000,350,1150,70,true,false)
 		if QPred.HitChance == 1 then
 			CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
 		end	
@@ -149,7 +162,7 @@ end
 function ksQ()
 for i,enemy in pairs(GoS:GetEnemyHeroes()) do
 	if CanUseSpell(myHero,_Q) == READY and IsTargetable(enemy) and GoS:ValidTarget(enemy,GetCastRange(myHero,_Q)) and GetCurrentHP(enemy)+GetDmgShield(enemy) < GoS:CalcDamage(myHero, enemy, 60*GetCastLevel(myHero,_Q)-50+(GetBaseDamage(myHero)+GetBonusDmg(myHero)),0) then
-		local QPred = GetPredictionForPlayer(GoS:myHeroPos(),enemy,GetMoveSpeed(enemy),1500,250,1150,50,true,false)
+		local QPred = GetPredictionForPlayer(GoS:myHeroPos(),enemy,GetMoveSpeed(enemy),2000,350,1150,70,true,false)
 			if QPred.HitChance == 1 then
 			CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
 			end	
@@ -159,11 +172,12 @@ end
 
 -- Thanks to Deftsu CopyPasta all day long Kappa
 function farmE()
-    for _,minion in pairs(GoS:GetAllMinions(MINION_ENEMY)) do
 	local minionX = 0
+	
+    for _,minion in pairs(GoS:GetAllMinions(MINION_ENEMY)) do
 		if CanUseSpell(myHero,_E) == READY and GotBuff(minion,"kalistaexpungemarker") >= 1 and GoS:ValidTarget(minion,GetCastRange(myHero,_E)) and GetCurrentHP(minion) + GetDmgShield(minion) < GoS:CalcDamage(myHero, minion, 10*GetCastLevel(myHero,_E)+10+(0.6*(GetBaseDamage(myHero)+GetBonusDmg(myHero))) + (((({[1]=10,[2]=14,[3]=19,[4]=25,[5]=32})[GetCastLevel(myHero,_E)])+((0.025*GetCastLevel(myHero,_E)+0.175)*(GetBaseDamage(myHero)+GetBonusDmg(myHero))))*(GotBuff(minion,"kalistaexpungemarker")-1)),0) then
 			minionX = minionX + 1
-			-- PrintChat(minionX)
+			
 		end
 				if CanUseSpell(myHero,_E) == READY and minionX >= mainMenu.Farm.farmEx:Value() then
 					CastSpell(_E)
@@ -190,4 +204,16 @@ local minionXe = 0
 				end			
 			end		
 	end
+end
+
+-- E if out of range
+function useEao()
+local target = GetCurrentTarget()
+if GoS:ValidTarget(target,GetCastRange(myHero,_E)) then
+if CanUseSpell(myHero,_E) == READY and GetMoveSpeed(myHero) < GetMoveSpeed(target) and not GoS:IsInDistance(target,GetRange(myHero)+200) and IsTargetable(target) and GoS:ValidTarget(target,GetCastRange(myHero,_E)) and GotBuff(target,"kalistaexpungemarker") >= mainMenu.Combo.useExaoS:Value() then
+	CastSpell(_E)
+elseif CanUseSpell(myHero,_E) == READY and GetMoveSpeed(myHero) >= GetMoveSpeed(target) and not GoS:IsInDistance(target,GetCastRange(myHero,_E)-100) and IsTargetable(target) and GoS:ValidTarget(target,GetCastRange(myHero,_E)) and GotBuff(target,"kalistaexpungemarker") >= mainMenu.Combo.useExaoS:Value() then		
+	CastSpell(_E)
+end
+end
 end
