@@ -10,14 +10,14 @@ mainMenu.Combo:Boolean("useE", "Use E if killable", true)
 mainMenu.Combo:Boolean("useEx", "Use E with reset", true)
 mainMenu.Combo:Slider("useExS","E reset on X spears", 5 , 1, 20, 1)
 mainMenu.Combo:Boolean("useEao", "Use E out of range", true)
-mainMenu.Combo:Slider("useExaoS","E out of range on X spears", 5 , 1, 40, 1)
+mainMenu.Combo:Slider("useExaoS","E out of range on X spears", 8 , 1, 40, 1)
 -- mainMenu.Combo:Boolean("useR", "Use R in combo", false)
 mainMenu.Combo:Key("Combo1", "Combo", string.byte(" "))
 ---------------------------------------------------------------------------------
--- mainMenu:SubMenu("Harass", "Harass")
--- mainMenu.Harass:Boolean("hQ", "Use Q", true)
--- mainMenu.Harass:Boolean("hE", "Use E", true)
--- mainMenu.Harass:Key("Harass1", "Harass", string.byte("C"))
+mainMenu:SubMenu("Harass", "Harass")
+mainMenu.Harass:Boolean("hQ", "Use Q", true)
+mainMenu.Harass:Boolean("hE", "Use E", true)
+mainMenu.Harass:Key("Harass1", "Harass", string.byte("C"))
 ---------------------------------------------------------------------------------
 mainMenu:SubMenu("Killsteal", "Killsteal")
 mainMenu.Killsteal:Boolean("ksQ", "Use Q - KS", true)
@@ -88,7 +88,7 @@ if mainMenu.Combo.Combo1:Value() then
 	end
 end
 
--- Combo
+-- [Combo
 if mainMenu.Combo.Combo1:Value() then
 -- Q
 if mainMenu.Combo.useQ:Value() then
@@ -112,7 +112,16 @@ end
 
 
 
-end -- Combo
+end -- Combo]
+
+-- [Harass
+if mainMenu.Harass.Harass1:Value() then
+-- Q
+if mainMenu.Harass.hQ:Value() then
+useQ()
+end
+
+end -- Harass]
 
 -- Draw E Damage
 if mainMenu.Drawings.drawE:Value() then
@@ -142,10 +151,34 @@ end)
 function useQ()
 for i,enemy in pairs(GoS:GetEnemyHeroes()) do
 if CanUseSpell(myHero,_Q) == READY and IsTargetable(enemy) and GoS:ValidTarget(enemy,GetCastRange(myHero,_Q)) and GetCurrentMana(myHero) > GetCastMana(myHero,_Q,GetCastLevel(myHero,_Q)) + 40 then
+	
+	if GoS:IsInDistance(enemy,GetRange(myHero)+100) then
+		OnProcessSpell(function(unit, spell)
+			if unit and unit == myHero and spell then
+				if spell.name:lower():find("attack") then
+					-- PrintChat(spell.windUpTime*1000)
+						GoS:DelayAction(function()
+						local QPred = GetPredictionForPlayer(GoS:myHeroPos(),enemy,GetMoveSpeed(enemy),2000,350,1150,70,true,false)
+							if QPred.HitChance == 1 and CanUseSpell(myHero,_Q) == READY and mainMenu.Combo.useQ:Value() and mainMenu.Combo.Combo1:Value() then
+								CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
+								-- PrintChat("Combo Q")
+							end
+							if QPred.HitChance == 1 and CanUseSpell(myHero,_Q) == READY and mainMenu.Harass.hQ:Value() and mainMenu.Harass.Harass1:Value() then
+								CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
+								-- PrintChat("Harass Q")
+							end								
+					end , spell.windUpTime*1000)
+				end
+			end
+		end)
+		
+	elseif not GoS:IsInDistance(enemy,GetRange(myHero)) then
 	local QPred = GetPredictionForPlayer(GoS:myHeroPos(),enemy,GetMoveSpeed(enemy),2000,350,1150,70,true,false)
-		if QPred.HitChance == 1 then
+		if QPred.HitChance == 1 and CanUseSpell(myHero,_Q) == READY then
 			CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
 		end	
+	end	
+	
 end
 end
 end
