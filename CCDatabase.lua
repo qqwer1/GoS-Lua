@@ -1,8 +1,16 @@
 
 CC = {
-["Aatrox"] 			= 	{ {["slot"] = _Q , ["spellName"] = "AatroxQ"			, ["spellType"] = "circular" 	, ["projectileSpeed"] = 450	, ["spellDelay"] = 250	, ["spellRange"] = 650	, ["spellRadius"] = 285	, ["collision"] = false	}, 
-					{  ["slot"] = _E , ["spellName"] = "AatroxE"			, ["spellType"] = "line" 	, ["projectileSpeed"] = 1200	, ["spellDelay"] = 250	, ["spellRange"] = 1075	, ["spellRadius"] = 100	, ["collision"] = false	} },
-["Ahri"] 			= 	{ {["slot"] = _E , ["spellName"] = "AhriSeduce"			, ["spellType"] = "line" 	, ["projectileSpeed"] = 1550	, ["spellDelay"] = 250	, ["spellRange"] = 1000	, ["spellRadius"] = 60	, ["collision"] = true	} }, 
+["Aatrox"] 		= { {["slot"] = _Q , ["spellName"] = "AatroxQ"				, ["spellType"] = "circular" 	, ["projectileSpeed"] = 450		, ["spellDelay"] = 250	, ["spellRange"] = 650		, ["spellRadius"] = 285		, ["collision"] = false	}, 
+			    {["slot"] = _E , ["spellName"] = "AatroxE"				, ["spellType"] = "line" 	, ["projectileSpeed"] = 1200		, ["spellDelay"] = 250	, ["spellRange"] = 1075		, ["spellRadius"] = 100		, ["collision"] = false	} },
+["Ahri"] 		= { {["slot"] = _E , ["spellName"] = "AhriSeduce"			, ["spellType"] = "line" 	, ["projectileSpeed"] = 1550		, ["spellDelay"] = 250	, ["spellRange"] = 1000		, ["spellRadius"] = 60		, ["collision"] = true	} }, 
+["Alistar"] 		= { {["slot"] = _Q , ["spellName"] = "Pulverize"			, ["spellType"] = "circular" 	, ["projectileSpeed"] = math.huge	, ["spellDelay"] = 250	, ["spellRange"] = 365		, ["spellRadius"] = 365		, ["collision"] = false	} }, --
+		 	 -- {["slot"] = _W , ["spellName"] = "---------"			, ["spellType"] = "target" 	, ["projectileSpeed"] = 1000~		, ["spellDelay"] = 250	, ["spellRange"] = 650		, ["spellRadius"] = 0		, ["collision"] = false	} },
+["Amumu"] 		= { {["slot"] = _Q , ["spellName"] = "BandageToss"			, ["spellType"] = "line" 	, ["projectileSpeed"] = 2000		, ["spellDelay"] = 250	, ["spellRange"] = 1100		, ["spellRadius"] = 80		, ["collision"] = true	}, 
+		       	    {["slot"] = _R , ["spellName"] = "CurseoftheSadMummy"		, ["spellType"] = "circular" 	, ["projectileSpeed"] = math.huge	, ["spellDelay"] = 250	, ["spellRange"] = 560		, ["spellRadius"] = 560		, ["collision"] = false	} },
+["Anivia"] 		= { {["slot"] = _Q , ["spellName"] = "FlashFrostSpell"			, ["spellType"] = "line" 	, ["projectileSpeed"] = 850		, ["spellDelay"] = 250	, ["spellRange"] = 1250		, ["spellRadius"] = 110		, ["collision"] = false	} }, 
+["Ashe"] 		= { {["slot"] = _R , ["spellName"] = "EnchantedCrystalArrow"		, ["spellType"] = "line" 	, ["projectileSpeed"] = 1600		, ["spellDelay"] = 250	, ["spellRange"] = 25000	, ["spellRadius"] = 130		, ["collision"] = false	} }, -- ChampCollision
+["Bard"] 		= { {["slot"] = _Q , ["spellName"] = "BardQ"				, ["spellType"] = "line" 	, ["projectileSpeed"] = 1600		, ["spellDelay"] = 250	, ["spellRange"] = 950		, ["spellRadius"] = 60		, ["collision"] = true	} }, -- 2x Collide
+
 
 }
 
@@ -10,11 +18,11 @@ CC = {
 CC = {
 -- ["Aatrox"] 				= {_Q,_E},
 -- ["Ahri"] 				= {_E},
-["Alistar"]				= {_Q,_W},
-["Amumu"] 				= {_Q,_R},
-["Anivia"] 				= {_Q},
-["Ashe"] 				= {_R},
-["Bard"] 				= {_Q},
+-- ["Alistar"]				= {_Q,_W},
+-- ["Amumu"] 				= {_Q,_R},
+-- ["Anivia"] 				= {_Q},
+-- ["Ashe"] 				= {_R},
+-- ["Bard"] 				= {_Q},
 ["Blitzcrank"] 			= {_Q,_E},
 ["Braum"] 				= {_Q,_R},
 ["Cassiopeia"] 			= {_R},
