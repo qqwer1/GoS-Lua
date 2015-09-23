@@ -1,8 +1,8 @@
 
 CC = {
-["Aatrox"] 				= { {["slot"] = _Q , ["spellName"] = "AatroxQ"				, ["spellType"] = "circular" 	, ["projectileSpeed"] = 450		, ["spellDelay"] = 250	, ["spellRange"] = 650		, ["spellRadius"] = 285		, ["collision"] = false	}, 
-						    {["slot"] = _E , ["spellName"] = "AatroxE"				, ["spellType"] = "line" 		, ["projectileSpeed"] = 1200	, ["spellDelay"] = 250	, ["spellRange"] = 1075		, ["spellRadius"] = 100		, ["collision"] = false	} },
-["Ahri"] 				= { {["slot"] = _E , ["spellName"] = "AhriSeduce"			, ["spellType"] = "line" 	 	, ["projectileSpeed"] = 1550	, ["spellDelay"] = 250	, ["spellRange"] = 1000		, ["spellRadius"] = 60		, ["collision"] = true	} }, 
+["Aatrox"] 			= 	{ {["slot"] = _Q , ["spellName"] = "AatroxQ"			, ["spellType"] = "circular" 	, ["projectileSpeed"] = 450	, ["spellDelay"] = 250	, ["spellRange"] = 650	, ["spellRadius"] = 285	, ["collision"] = false	}, 
+					{  ["slot"] = _E , ["spellName"] = "AatroxE"			, ["spellType"] = "line" 	, ["projectileSpeed"] = 1200	, ["spellDelay"] = 250	, ["spellRange"] = 1075	, ["spellRadius"] = 100	, ["collision"] = false	} },
+["Ahri"] 			= 	{ {["slot"] = _E , ["spellName"] = "AhriSeduce"			, ["spellType"] = "line" 	, ["projectileSpeed"] = 1550	, ["spellDelay"] = 250	, ["spellRange"] = 1000	, ["spellRadius"] = 60	, ["collision"] = true	} }, 
 
 }
 
