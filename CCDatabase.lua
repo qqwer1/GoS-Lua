@@ -1,15 +1,30 @@
 
 CC = {
-["Aatrox"] 		= { {["slot"] = _Q , ["spellName"] = "AatroxQ"				, ["spellType"] = "circular" 	, ["projectileSpeed"] = 450		, ["spellDelay"] = 250	, ["spellRange"] = 650		, ["spellRadius"] = 285		, ["collision"] = false	}, 
-			    {["slot"] = _E , ["spellName"] = "AatroxE"				, ["spellType"] = "line" 	, ["projectileSpeed"] = 1200		, ["spellDelay"] = 250	, ["spellRange"] = 1075		, ["spellRadius"] = 100		, ["collision"] = false	} },
-["Ahri"] 		= { {["slot"] = _E , ["spellName"] = "AhriSeduce"			, ["spellType"] = "line" 	, ["projectileSpeed"] = 1550		, ["spellDelay"] = 250	, ["spellRange"] = 1000		, ["spellRadius"] = 60		, ["collision"] = true	} }, 
-["Alistar"] 		= { {["slot"] = _Q , ["spellName"] = "Pulverize"			, ["spellType"] = "circular" 	, ["projectileSpeed"] = math.huge	, ["spellDelay"] = 250	, ["spellRange"] = 365		, ["spellRadius"] = 365		, ["collision"] = false	} }, --
-		 	 -- {["slot"] = _W , ["spellName"] = "---------"			, ["spellType"] = "target" 	, ["projectileSpeed"] = 1000~		, ["spellDelay"] = 250	, ["spellRange"] = 650		, ["spellRadius"] = 0		, ["collision"] = false	} },
-["Amumu"] 		= { {["slot"] = _Q , ["spellName"] = "BandageToss"			, ["spellType"] = "line" 	, ["projectileSpeed"] = 2000		, ["spellDelay"] = 250	, ["spellRange"] = 1100		, ["spellRadius"] = 80		, ["collision"] = true	}, 
-		       	    {["slot"] = _R , ["spellName"] = "CurseoftheSadMummy"		, ["spellType"] = "circular" 	, ["projectileSpeed"] = math.huge	, ["spellDelay"] = 250	, ["spellRange"] = 560		, ["spellRadius"] = 560		, ["collision"] = false	} },
-["Anivia"] 		= { {["slot"] = _Q , ["spellName"] = "FlashFrostSpell"			, ["spellType"] = "line" 	, ["projectileSpeed"] = 850		, ["spellDelay"] = 250	, ["spellRange"] = 1250		, ["spellRadius"] = 110		, ["collision"] = false	} }, 
-["Ashe"] 		= { {["slot"] = _R , ["spellName"] = "EnchantedCrystalArrow"		, ["spellType"] = "line" 	, ["projectileSpeed"] = 1600		, ["spellDelay"] = 250	, ["spellRange"] = 25000	, ["spellRadius"] = 130		, ["collision"] = false	} }, -- ChampCollision
-["Bard"] 		= { {["slot"] = _Q , ["spellName"] = "BardQ"				, ["spellType"] = "line" 	, ["projectileSpeed"] = 1600		, ["spellDelay"] = 250	, ["spellRange"] = 950		, ["spellRadius"] = 60		, ["collision"] = true	} }, -- 2x Collide
+["Aatrox"] 				= { {["slot"] = _Q , ["spellName"] = "AatroxQ"						, ["spellType"] = "circular" 	, ["projectileSpeed"] = 450			, ["spellDelay"] = 250	, ["spellRange"] = 650		, ["spellRadius"] = 285		, ["collision"] = false	}, 
+							{["slot"] = _E , ["spellName"] = "AatroxE"						, ["spellType"] = "line" 		, ["projectileSpeed"] = 1200		, ["spellDelay"] = 250	, ["spellRange"] = 1075		, ["spellRadius"] = 100		, ["collision"] = false	} },
+["Ahri"] 				= { {["slot"] = _E , ["spellName"] = "AhriSeduce"					, ["spellType"] = "line" 	 	, ["projectileSpeed"] = 1550		, ["spellDelay"] = 250	, ["spellRange"] = 1000		, ["spellRadius"] = 60		, ["collision"] = true	} }, 
+["Alistar"] 			= { {["slot"] = _Q , ["spellName"] = "Pulverize"					, ["spellType"] = "circular" 	, ["projectileSpeed"] = math.huge	, ["spellDelay"] = 250	, ["spellRange"] = 365		, ["spellRadius"] = 365		, ["collision"] = false	} }, --
+							-- {["slot"] = _W , ["spellName"] = "---------"					, ["spellType"] = "target" 		, ["projectileSpeed"] = 1000~		, ["spellDelay"] = 250	, ["spellRange"] = 650		, ["spellRadius"] = 0		, ["collision"] = false	} },
+["Amumu"] 				= { {["slot"] = _Q , ["spellName"] = "BandageToss"					, ["spellType"] = "line" 	 	, ["projectileSpeed"] = 2000		, ["spellDelay"] = 250	, ["spellRange"] = 1100		, ["spellRadius"] = 80		, ["collision"] = true	}, 
+							{["slot"] = _R , ["spellName"] = "CurseoftheSadMummy"			, ["spellType"] = "circular" 	, ["projectileSpeed"] = math.huge	, ["spellDelay"] = 250	, ["spellRange"] = 560		, ["spellRadius"] = 560		, ["collision"] = false	} },
+["Anivia"] 				= { {["slot"] = _Q , ["spellName"] = "FlashFrostSpell"				, ["spellType"] = "line" 	 	, ["projectileSpeed"] = 850			, ["spellDelay"] = 250	, ["spellRange"] = 1250		, ["spellRadius"] = 110		, ["collision"] = false	} }, 
+["Ashe"] 				= { {["slot"] = _R , ["spellName"] = "EnchantedCrystalArrow"		, ["spellType"] = "line" 	 	, ["projectileSpeed"] = 1600		, ["spellDelay"] = 250	, ["spellRange"] = 25000	, ["spellRadius"] = 130		, ["collision"] = false	} }, -- ChampCollision
+["Bard"] 				= { {["slot"] = _Q , ["spellName"] = "BardQ"						, ["spellType"] = "line" 	 	, ["projectileSpeed"] = 1600		, ["spellDelay"] = 250	, ["spellRange"] = 950		, ["spellRadius"] = 60		, ["collision"] = true	} }, -- 2x Collide
+["Blitzcrank"] 			= { {["slot"] = _Q , ["spellName"] = "RocketGrab"					, ["spellType"] = "line" 	 	, ["projectileSpeed"] = 1800		, ["spellDelay"] = 250	, ["spellRange"] = 1050		, ["spellRadius"] = 70		, ["collision"] = true	} },
+							-- {["slot"] = _E , ["spellName"] = "---------"					, ["spellType"] = "target" 	 	, ["projectileSpeed"] = math.huge	, ["spellDelay"] = 250	, ["spellRange"] = 350		, ["spellRadius"] = 350		, ["collision"] = true	} },
+["Braum"] 				= { {["slot"] = _Q , ["spellName"] = "BraumQ"						, ["spellType"] = "line" 	 	, ["projectileSpeed"] = 1200		, ["spellDelay"] = 250	, ["spellRange"] = 1000		, ["spellRadius"] = 100		, ["collision"] = true	},
+							{["slot"] = _R , ["spellName"] = "BraumRWrapper"				, ["spellType"] = "line" 	 	, ["projectileSpeed"] = 1125		, ["spellDelay"] = 500	, ["spellRange"] = 1250		, ["spellRadius"] = 100		, ["collision"] = false	} },
+["Cassiopeia"] 			= { {["slot"] = _R , ["spellName"] = "CassiopeiaPetrifyingGaze"		, ["spellType"] = "line" 	 	, ["projectileSpeed"] = math.huge	, ["spellDelay"] = 500	, ["spellRange"] = 825		, ["spellRadius"] = 100		, ["collision"] = false	} },
+["ChoGath"] 			= { {["slot"] = _Q , ["spellName"] = "Rupture"						, ["spellType"] = "circular" 	, ["projectileSpeed"] = math.huge	, ["spellDelay"] = 1200	, ["spellRange"] = 950		, ["spellRadius"] = 250		, ["collision"] = false	} },
+["Darius"] 				= { {["slot"] = _E , ["spellName"] = "DariusAxeGrabCone"			, ["spellType"] = "line" 		, ["projectileSpeed"] = math.huge	, ["spellDelay"] = 320	, ["spellRange"] = 570		, ["spellRadius"] = 50		, ["collision"] = false	} },
+["Diana"] 				= { {["slot"] = _E , ["spellName"] = "DianaVortex"					, ["spellType"] = "circular" 	, ["projectileSpeed"] = math.huge	, ["spellDelay"] = 250	, ["spellRange"] = 350		, ["spellRadius"] = 350		, ["collision"] = false	} },
+["DrMundo"] 			= { {["slot"] = _Q , ["spellName"] = "InfectedCleaverMissileCast"	, ["spellType"] = "line" 		, ["projectileSpeed"] = 2000		, ["spellDelay"] = 250	, ["spellRange"] = 1050		, ["spellRadius"] = 60		, ["collision"] = true	} },
+["Draven"] 				= { {["slot"] = _E , ["spellName"] = "DravenDoubleShot"				, ["spellType"] = "line" 		, ["projectileSpeed"] = 1400		, ["spellDelay"] = 250	, ["spellRange"] = 1100		, ["spellRadius"] = 130		, ["collision"] = false	} },
+["Elise"] 				= { {["slot"] = _E , ["spellName"] = "EliseHumanE"					, ["spellType"] = "line" 		, ["projectileSpeed"] = 1600		, ["spellDelay"] = 250	, ["spellRange"] = 1100		, ["spellRadius"] = 70		, ["collision"] = true	} },
+["Evelynn"] 			= { {["slot"] = _R , ["spellName"] = "EvelynnR"						, ["spellType"] = "circular" 	, ["projectileSpeed"] = math.huge	, ["spellDelay"] = 250	, ["spellRange"] = 650		, ["spellRadius"] = 350		, ["collision"] = false	} },
+["FiddleSticks"] 		= { {["slot"] = _Q , ["spellName"] = "Terrify"						, ["spellType"] = "target" 		, ["projectileSpeed"] = math.huge	, ["spellDelay"] = 250	, ["spellRange"] = 575		, ["spellRadius"] = 0		, ["collision"] = false	} },
+["Fizz"] 				= { {["slot"] = _R , ["spellName"] = "FizzMarinerDoom"				, ["spellType"] = "line" 		, ["projectileSpeed"] = 1350		, ["spellDelay"] = 250	, ["spellRange"] = 1275		, ["spellRadius"] = 120		, ["collision"] = false	} },
+
 
 
 }
@@ -23,18 +38,18 @@ CC = {
 -- ["Anivia"] 				= {_Q},
 -- ["Ashe"] 				= {_R},
 -- ["Bard"] 				= {_Q},
-["Blitzcrank"] 			= {_Q,_E},
-["Braum"] 				= {_Q,_R},
-["Cassiopeia"] 			= {_R},
-["ChoGath"]				= {_Q},
-["Darius"] 				= {_W,_E},
-["Diana"]				= {_E},
-["DrMundo"] 			= {_Q},
-["Draven"] 				= {_E},
-["Elise"] 				= {_E},
-["Evelynn"] 			= {_R},
-["Fiddlesticks"] 		= {_Q},
-["Fizz"] 				= {_R},
+-- ["Blitzcrank"] 			= {_Q,_E},
+-- ["Braum"] 				= {_Q,_R},
+-- ["Cassiopeia"] 			= {_R},
+-- ["ChoGath"]				= {_Q},
+-- ["Darius"] 				= {_E},
+-- ["Diana"]				= {_E},
+-- ["DrMundo"] 				= {_Q},
+-- ["Draven"] 				= {_E},
+-- ["Elise"] 				= {_E},
+-- ["Evelynn"] 				= {_R},
+-- ["FiddleSticks"] 		= {_Q},
+-- ["Fizz"] 				= {_R},
 ["Galio"] 				= {_Q,_R},
 ["Gnar"] 				= {_Q,_W,_R},
 ["Gragas"] 				= {_E,_R},
