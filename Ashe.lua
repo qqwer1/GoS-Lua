@@ -7,9 +7,15 @@ mainMenu = Menu("ADC MAIN | Ashe", "Ashe")
 mainMenu:SubMenu("Combo", "Combo")
 mainMenu.Combo:Boolean("useQ", "Use Q in combo", true)
 mainMenu.Combo:Boolean("useW", "Use W in combo", true)
---mainMenu.Combo:Boolean("useE", "Use E in combo", true)
+mainMenu.Combo:Boolean("useE", "Use E in combo", true)
 mainMenu.Combo:Boolean("useR", "Use R in combo", true)
 mainMenu.Combo:Key("Combo1", "Combo", string.byte(" "))
+------------------------------------------------------	
+mainMenu:SubMenu("Harass", "Harass")
+mainMenu.Harass:Boolean("useQ", "Use Q in harass", true)
+mainMenu.Harass:Boolean("useW", "Use W in harass", true)
+mainMenu.Harass:Slider("Mana","Mana", 60 , 0, 100, 1)
+mainMenu.Harass:Key("Harass1", "Harass", string.byte("C"))
 ------------------------------------------------------	
 mainMenu:SubMenu("Killsteal", "Killsteal")
 mainMenu.Killsteal:Boolean("ksW", "Use W - KS", true)
@@ -27,6 +33,7 @@ mainMenu.Items:Boolean("useGhost", "Youmuu's Ghostblade", true)
 mainMenu.Items:Boolean("useRedPot", "Elixir of Wrath", true)
 
 local baseSpeed = GetBaseAttackSpeed(GetMyHero())
+local global_ticks = 0
 
 OnLoop(function (myHero)
 
@@ -72,7 +79,7 @@ end
 -- DMG
 if mainMenu.Combo.useR:Value() then
 	if CanUseSpell(myHero,_R) == READY and GoS:ValidTarget(target, 2000) then
-		local aaDMG = GoS:CalcDamage(myHero,target,((baseSpeed * GetAttackSpeed(myHero)) * (GetBaseDamage(myHero) + GetBonusDmg(myHero))),0) * 2
+		local aaDMG = GoS:CalcDamage(myHero,target,((baseSpeed * GetAttackSpeed(myHero)) * (GetBaseDamage(myHero) + GetBonusDmg(myHero))),0) * 1.5
 		local rDMG = GoS:CalcDamage(myHero,target,0, 175*GetCastLevel(myHero,_R)+ 75 + GetBonusAP(myHero))
 		
 			if CanUseSpell(myHero,_W) == READY and mainMenu.Combo.useW:Value() and GoS:ValidTarget(target, 2000) then
@@ -89,6 +96,21 @@ if mainMenu.Combo.useR:Value() then
 	else
 		DPS = 0
 	end
+end
+
+-- E Pos
+if mainMenu.Combo.useE:Value() then
+Ticker = GetTickCount()
+	if (global_ticks + 10) < Ticker then
+	
+		GoS:DelayAction( function ()
+			if not IsVisible(target) then
+				targetPos = GetOrigin(target)
+			end		
+		 end , 10) 
+		global_ticks = Ticker
+
+	end	
 end
 
 -- Combo
@@ -117,7 +139,30 @@ if CanUseSpell(myHero,_Q) == READY and mainMenu.Combo.useQ:Value() and GoS:Valid
 	CastSpell(_Q)
 end
 
+-- E
+if CanUseSpell(myHero,_E) == READY and mainMenu.Combo.useE:Value() and targetPos ~= nil and GoS:GetDistance(targetPos) < 1400 then
+	CastSkillShot(_E,targetPos)
+	targetPos = nil
+end
+
 end -- Combo
+
+-- Harass
+if mainMenu.Harass.Harass1:Value() and 100*GetCurrentMana(myHero)/GetMaxMana(myHero) >= mainMenu.Harass.Mana:Value() then
+-- W
+if CanUseSpell(myHero,_W) == READY and mainMenu.Harass.useW:Value() and GoS:ValidTarget(target,1200) and IsTargetable(target) then
+	local WPred = GetPredictionForPlayer(myHeroPos,target,GetMoveSpeed(target),1600,250,1200,20,true,false)
+		if WPred.HitChance == 1 then
+			CastSkillShot(_W,WPred.PredPos.x,WPred.PredPos.y,WPred.PredPos.z)
+		end
+end
+
+-- Q
+if CanUseSpell(myHero,_Q) == READY and mainMenu.Harass.useQ:Value() and GoS:ValidTarget(target,650) and IsTargetable(target) and GotBuff(myHero,"asheqcastready") == 5 then
+	CastSpell(_Q)
+end
+
+end -- Harass
 
 -- KSW
 if mainMenu.Killsteal.ksW:Value() then
@@ -145,3 +190,4 @@ end
 
 
 end)
+
