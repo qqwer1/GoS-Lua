@@ -5,7 +5,7 @@ CC = {
 ["Ahri"] 				= { slot = _E , spellName = "AhriSeduce"					, spellType = "line" 	 	, projectileSpeed = 1550		, spellDelay = 250	, spellRange = 1000		, spellRadius = 60		, collision = true	}, 
 ["Alistar"] 			= { slot = _Q , spellName = "Pulverize"						, spellType = "circular" 	, projectileSpeed = math.huge	, spellDelay = 250	, spellRange = 365		, spellRadius = 365		, collision = false	},
 ["Amumu"] 				= { slot = _Q , spellName = "BandageToss"					, spellType = "line" 	 	, projectileSpeed = 2000		, spellDelay = 250	, spellRange = 1100		, spellRadius = 80		, collision = true	}, 
-["Amumu"] 				= { slot = _R , spellName = "CurseoftheSadMummy"			, spellType = "aoe" 	 	, projectileSpeed = math.huge	, spellDelay = 250	, spellRange = 560		, spellRadius = 560		, collision = false	},
+["Amumu"] 				= { slot = _R , spellName = "CurseoftheSadMummy"			, spellType = "aoe" 	 	, projectileSpeed = math.huge	, spellDelay = 250	, spellRange = 560		, spellRadius = 560		, collision = false	}, --check spellDelay
 ["Anivia"] 				= { slot = _Q , spellName = "FlashFrostSpell"				, spellType = "line" 	 	, projectileSpeed = 850			, spellDelay = 250	, spellRange = 1250		, spellRadius = 110		, collision = false	}, 
 ["Ashe"] 				= { slot = _R , spellName = "EnchantedCrystalArrow"			, spellType = "line" 	 	, projectileSpeed = 1600		, spellDelay = 250	, spellRange = 25000	, spellRadius = 130		, collision = false	}, -- ChampCollision
 ["Bard"] 				= { slot = _Q , spellName = "BardQ"							, spellType = "line" 	 	, projectileSpeed = 1600		, spellDelay = 250	, spellRange = 950		, spellRadius = 60		, collision = true	}, -- 2x Collide
@@ -22,6 +22,16 @@ CC = {
 ["Evelynn"] 			= { slot = _R , spellName = "EvelynnR"						, spellType = "circular" 	, projectileSpeed = math.huge	, spellDelay = 250	, spellRange = 650		, spellRadius = 350		, collision = false },
 ["FiddleSticks"] 		= { slot = _Q , spellName = "Terrify"						, spellType = "target" 		, projectileSpeed = math.huge	, spellDelay = 250	, spellRange = 575		, spellRadius = 0		, collision = false },
 ["Fizz"] 				= { slot = _R , spellName = "FizzMarinerDoom"				, spellType = "line" 		, projectileSpeed = 1350		, spellDelay = 250	, spellRange = 1275		, spellRadius = 120		, collision = false },
+["Galio"] 				= { slot = _Q , spellName = "GalioResoluteSmite"			, spellType = "circular" 	, projectileSpeed = 1200		, spellDelay = 250	, spellRange = 1040		, spellRadius = 235		, collision = false },
+["Galio"] 				= { slot = _R , spellName = "GalioIdolOfDurand"				, spellType = "aoe" 		, projectileSpeed = math.huge	, spellDelay = 250	, spellRange = 600		, spellRadius = 600		, collision = false }, --check spellDelay
+["Gnar"] 				= { slot = _Q , spellName = "gnarbigq"						, spellType = "line" 		, projectileSpeed = 2000		, spellDelay = 500	, spellRange = 1150		, spellRadius = 90		, collision = true  },
+["Gnar"] 				= { slot = _Q , spellName = "GnarQ"							, spellType = "line" 		, projectileSpeed = 2400		, spellDelay = 250	, spellRange = 1185		, spellRadius = 60		, collision = true  },
+["Gnar"] 				= { slot = _W , spellName = "gnarbigw"						, spellType = "line" 		, projectileSpeed = math.huge	, spellDelay = 600	, spellRange = 600		, spellRadius = 100		, collision = false },
+["Gnar"] 				= { slot = _R , spellName = "GnarR"							, spellType = "aoe" 		, projectileSpeed = math.huge	, spellDelay = 250	, spellRange = 500		, spellRadius = 500		, collision = false },
+["Gragas"] 				= { slot = _E , spellName = "GragasE"						, spellType = "line" 		, projectileSpeed = 1200		, spellDelay = 0	, spellRange = 950		, spellRadius = 200		, collision = true  },
+["Gragas"] 				= { slot = _R , spellName = "GragasR"						, spellType = "circular" 	, projectileSpeed = 1750		, spellDelay = 250	, spellRange = 1050		, spellRadius = 350		, collision = false },
+["Hecarim"] 			= { slot = _R , spellName = "HecarimUlt"					, spellType = "circular" 	, projectileSpeed = 1100		, spellDelay = 10	, spellRange = 1500		, spellRadius = 300		, collision = false },
+["Heimerdinger"] 		= { slot = _E , spellName = "HeimerdingerE"					, spellType = "circular" 	, projectileSpeed = 1750		, spellDelay = 350	, spellRange = 925		, spellRadius = 135		, collision = false },
 
 ["Lux"] 				= { slot = _Q , spellName = "LuxLightBinding"				, spellType = "line" 		, projectileSpeed = 1200		, spellDelay = 250	, spellRange = 1300		, spellRadius = 70		, collision = true	}
 
@@ -52,11 +62,11 @@ CC = {
 -- ["Evelynn"] 				= {_R},
 -- ["FiddleSticks"] 		= {_Q},
 -- ["Fizz"] 				= {_R},
-["Galio"] 				= {_Q,_R},
-["Gnar"] 				= {_Q,_W,_R},
-["Gragas"] 				= {_E,_R},
-["Hecarim"] 			= {_R},
-["Heimerdinger"] 		= {_E},
+-- ["Galio"] 				= {_Q,_R},
+-- ["Gnar"] 				= {_Q,_W,_R},
+-- ["Gragas"] 				= {_E,_R},
+-- ["Hecarim"] 				= {_R},
+-- ["Heimerdinger"] 		= {_E},
 ["Irelia"] 				= {_E},
 ["Janna"] 				= {_Q,_W},
 ["Karma"] 				= {_Q,_W},
