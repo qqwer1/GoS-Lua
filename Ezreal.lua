@@ -63,7 +63,7 @@ end
 -- KS
 
 for i,enemy in pairs(GoS:GetEnemyHeroes()) do
-if CanUseSpell(myHero,R) == READY then
+if CanUseSpell(myHero,_R) == READY then
 local rDMG = GoS:CalcDamage(myHero, enemy, 0, (150*GetCastLevel(myHero,_R)+ 40 + (0.80*GetBonusAP(myHero)) + (0.90*(GetBaseDamage(myHero) + GetBonusDmg(myHero)))))
 	DrawDmgOverHpBar(enemy,GetCurrentHP(enemy),rDMG,0,0xff00ff00)
 end
