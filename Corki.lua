@@ -34,7 +34,7 @@ local target = GetCurrentTarget()
 Killsteal()
 Drawings()
 
-if mainMenu.Drawings.DrawDMG:Value() then
+if mainMenu.Drawings.DrawDMG:Value() and DPS ~= nil then
 	DrawDmgOverHpBar(target,GetCurrentHP(target),DPS,0,0xff00ff00)
 end
 -- Items
