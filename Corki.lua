@@ -115,12 +115,12 @@ if Sheen >= 1 or TonsOfDamage >= 1 and mainMenu.Combo.useSheen:Value() then
 			if EPred.HitChance == 1 and CanUseSpell(myHero,_E) == READY and mainMenu.Combo.useE:Value() then
 				CastSkillShot(_E, EPred.PredPos.x, EPred.PredPos.y, EPred.PredPos.z)
 			end
-		if not GotBuff(myHero,"mbcheck2") then	
+		if not GotBuff(myHero,"mbcheck2") == 1 then	
 			local RPred = GetPredictionForPlayer(myHeroPos, target, GetMoveSpeed(target),1670, 250, GetCastRange(myHero,_R), 75, true, true)
 				if RPred.HitChance == 1 and CanUseSpell(myHero,_R) == READY and mainMenu.Combo.useR:Value() then
 					CastSkillShot(_R, RPred.PredPos.x, RPred.PredPos.y, RPred.PredPos.z)
 				end
-		elseif GotBuff(myHero,"mbcheck2") then
+		elseif GotBuff(myHero,"mbcheck2") == 1 then
 			local RPred = GetPredictionForPlayer(myHeroPos, target, GetMoveSpeed(target),1670, 250, GetCastRange(myHero,_R), 150, true, true)
 				if RPred.HitChance == 1 and CanUseSpell(myHero,_R) == READY and mainMenu.Combo.useR:Value() then
 					CastSkillShot(_R, RPred.PredPos.x, RPred.PredPos.y, RPred.PredPos.z)
@@ -138,12 +138,12 @@ if Sheen >= 1 or TonsOfDamage >= 1 and mainMenu.Combo.useSheen:Value() then
 			if EPred.HitChance == 1 and CanUseSpell(myHero,_E) == READY and mainMenu.Combo.useE:Value() then
 				CastSkillShot(_E, EPred.PredPos.x, EPred.PredPos.y, EPred.PredPos.z)
 			end
-		if not GotBuff(myHero,"mbcheck2") then	
+		if not GotBuff(myHero,"mbcheck2") == 1 then	
 			local RPred = GetPredictionForPlayer(myHeroPos, target, GetMoveSpeed(target),1670, 250, GetCastRange(myHero,_R), 75, true, true)
 				if RPred.HitChance == 1 and CanUseSpell(myHero,_R) == READY and mainMenu.Combo.useR:Value() then
 					CastSkillShot(_R, RPred.PredPos.x, RPred.PredPos.y, RPred.PredPos.z)
 				end
-		elseif GotBuff(myHero,"mbcheck2") then
+		elseif GotBuff(myHero,"mbcheck2") == 1 then
 			local RPred = GetPredictionForPlayer(myHeroPos, target, GetMoveSpeed(target),1670, 250, GetCastRange(myHero,_R), 150, true, true)
 				if RPred.HitChance == 1 and CanUseSpell(myHero,_R) == READY and mainMenu.Combo.useR:Value() then
 					CastSkillShot(_R, RPred.PredPos.x, RPred.PredPos.y, RPred.PredPos.z)
@@ -164,12 +164,12 @@ elseif GoS:ValidTarget(target,GetCastRange(myHero,_R)) then
 			if EPred.HitChance == 1 and CanUseSpell(myHero,_E) == READY and mainMenu.Combo.useE:Value() then
 				CastSkillShot(_E, EPred.PredPos.x, EPred.PredPos.y, EPred.PredPos.z)
 			end
-		if not GotBuff(myHero,"mbcheck2") then	
+		if not GotBuff(myHero,"mbcheck2") == 1 then	
 			local RPred = GetPredictionForPlayer(myHeroPos, target, GetMoveSpeed(target),1670, 250, GetCastRange(myHero,_R), 75, true, true)
 				if RPred.HitChance == 1 and CanUseSpell(myHero,_R) == READY and mainMenu.Combo.useR:Value() then
 					CastSkillShot(_R, RPred.PredPos.x, RPred.PredPos.y, RPred.PredPos.z)
 				end
-		elseif GotBuff(myHero,"mbcheck2") then
+		elseif GotBuff(myHero,"mbcheck2") == 1 then
 			local RPred = GetPredictionForPlayer(myHeroPos, target, GetMoveSpeed(target),1670, 250, GetCastRange(myHero,_R), 150, true, true)
 				if RPred.HitChance == 1 and CanUseSpell(myHero,_R) == READY and mainMenu.Combo.useR:Value() then
 					CastSkillShot(_R, RPred.PredPos.x, RPred.PredPos.y, RPred.PredPos.z)
