@@ -39,7 +39,7 @@ target = GetCurrentTarget()
 
 
 -- Drawings
-if mainMenu.Drawings.DrawDMG:Value() then
+if mainMenu.Drawings.DrawDMG:Value() and GoS:ValidTarget(target, 2500) then
 -- Q
 	if CanUseSpell(myHero,_Q) == READY then
 		qDMG = GoS:CalcDamage(myHero, target, 0, (30*GetCastLevel(myHero,_Q)+50+(0.5*(GetBaseDamage(myHero) + GetBonusDmg(myHero)))+(0.5*GetBonusAP(myHero))))
@@ -56,7 +56,7 @@ if mainMenu.Drawings.DrawDMG:Value() then
 	end
 -- AA
 	local AA = GoS:CalcDamage(myHero, target, (GetBaseDamage(myHero) + GetBonusDmg(myHero)), 0)
-	local trueDMG = AA*0.1
+	local trueDMG = (GetBaseDamage(myHero) + GetBonusDmg(myHero))*0.1
 		
 	local DPS = qDMG + rDMG
 	
@@ -74,8 +74,21 @@ local bork = GetItemSlot(myHero,3153)
 local ghost = GetItemSlot(myHero,3142)
 local redpot = GetItemSlot(myHero,2140)
 
--- Use Items
-if mainMenu.Combo.Combo1:Value() then
+
+-- KS Q
+if mainMenu.Killsteal.ksQ:Value() then
+	KillstealQ()
+end
+-- KS R
+if mainMenu.Killsteal.ksR:Value() then
+	KillstealR()
+end
+
+
+-- [Combo
+if mainMenu.Combo.Combo1:Value() and GoS:ValidTarget(target, GetCastRange(myHero,_R)) then
+
+--Items
 	if CutBlade >= 1 and GoS:ValidTarget(target,550) and mainMenu.Items.useCut:Value() then
 		if CanUseSpell(myHero,GetItemSlot(myHero,3144)) == READY then
 			CastTargetSpell(target, GetItemSlot(myHero,3144))
@@ -97,43 +110,57 @@ if mainMenu.Combo.Combo1:Value() then
 			CastSpell(GetItemSlot(myHero,2140))
 		end
 	end
-end
+--
 
--- KS Q
-if mainMenu.Killsteal.ksQ:Value() then
-	KillstealQ()
-end
--- KS R
-if mainMenu.Killsteal.ksR:Value() then
-	KillstealR()
-end
-
-
--- [Combo
-if mainMenu.Combo.Combo1:Value() and GoS:ValidTarget(target, GetCastRange(myHero,_R)) then
 -- non SheenWeave
 	if not mainMenu.Combo.useSheen:Value() then
+		if mainMenu.Combo.useQ:Value() then
 		useQ(target)
+		end
+		if mainMenu.Combo.useE:Value() then
 		useE(target)
+		end
+		if mainMenu.Combo.useR:Value() then
 		useR(target)
+		end
 	end
 -- sheen
 	if mainMenu.Combo.useSheen:Value() and Sheen > 0 or TonsOfDamage > 0 then
 		if GoS:ValidTarget(target,GetRange(myHero)+20) and GotBuff(myHero,"sheen") == 1 then
 		
-		elseif GoS:ValidTarget(target,GetRange(myHero)+20) and GotBuff(myHero,"sheen") == 0 then
+		end
+		if GoS:ValidTarget(target,GetRange(myHero)+20) and GotBuff(myHero,"sheen") == 0 then
+			if mainMenu.Combo.useQ:Value() then
 			useQ(target)
+			end
+			if mainMenu.Combo.useE:Value() then
 			useE(target)
+			end
+			if mainMenu.Combo.useR:Value() then
 			useR(target)
-		elseif not GoS:IsInDistance(target, GetRange(myHero)+20) and GoS:ValidTarget(target, GetCastRange(myHero,_R)) then
+			end
+		end
+		if not GoS:IsInDistance(target, GetRange(myHero)+20) and GoS:ValidTarget(target, GetCastRange(myHero,_R)) then
+			if mainMenu.Combo.useQ:Value() then
 			useQ(target)
+			end
+			if mainMenu.Combo.useE:Value() then
 			useE(target)
+			end
+			if mainMenu.Combo.useR:Value() then
 			useR(target)
+			end
 		end		
 	elseif mainMenu.Combo.useSheen:Value() and Sheen == 0 or TonsOfDamage == 0 then
+			if mainMenu.Combo.useQ:Value() then
 			useQ(target)
+			end
+			if mainMenu.Combo.useE:Value() then
 			useE(target)
+			end
+			if mainMenu.Combo.useR:Value() then
 			useR(target)
+			end
 	end
 end-- Combo]
 
