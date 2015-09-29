@@ -28,7 +28,7 @@ eDMG = 0
 OnLoop ( function (myHero)
 
 local myHeroPos = GetOrigin(myHero)
-local target = GoS:GetTarget(GetCastRange(myHero,_R))
+local target = GetCurrentTarget()
 
 -- Items
 local CutBlade = GetItemSlot(myHero,3144)
