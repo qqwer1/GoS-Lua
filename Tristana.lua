@@ -97,7 +97,7 @@ end
 
 if mainMenu.Combo.Combo1:Value() then
 
-	if CanUseSpell(myHero,_E) == READY and mainMenu.Combo.useE:Value() then
+	if CanUseSpell(myHero,_E) == READY and mainMenu.Combo.useE:Value() and GoS:ValidTarget(target,GetCastRange(myHero,_R) + 20) then
 		CastTargetSpell(target,_E)
 	end
 	if CanUseSpell(myHero,_Q) == READY and GoS:ValidTarget(target,850) and mainMenu.Combo.useQ:Value() then
