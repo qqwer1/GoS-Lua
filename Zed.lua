@@ -70,7 +70,7 @@ local redpot = GetItemSlot(myHero,2140)
 	
 	EndHP = GetCurrentHP(target)
 if mainMenu.Drawings.DrawDMG:Value() then
-if CanUseSpell(myHero,_R) == READY then
+if CanUseSpell(myHero,_R) == READY and GoS:ValidTarget(target, 2000) then
 	DrawDmgOverHpBar(target,GetCurrentHP(target),trueDMGr,0,0xff00ff00)
 	
 elseif GotBuff(target,"zedulttargetmark") == 1 then
