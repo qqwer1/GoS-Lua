@@ -25,6 +25,7 @@ mainMenu.Drawings:Boolean("DrawWShadow", "W - Shadow Drawings", true)
 mainMenu.Drawings:Boolean("DrawRShadow", "R - Shadow Drawings", true)
 mainMenu.Drawings:Boolean("DrawDMG", "Draw Damage", true)
 
+
 global_ticks = 0
 	WPosx = 1
 	WPosy = 1
@@ -48,32 +49,6 @@ local CutBlade = GetItemSlot(myHero,3144)
 local bork = GetItemSlot(myHero,3153)
 local ghost = GetItemSlot(myHero,3142)
 local redpot = GetItemSlot(myHero,2140)
-
--- Use Items
-if mainMenu.Combo.Combo1:Value() then
-	if CutBlade >= 1 and GoS:ValidTarget(target,550) and mainMenu.Items.useCut:Value() then
-		if CanUseSpell(myHero,GetItemSlot(myHero,3144)) == READY then
-			CastTargetSpell(target, GetItemSlot(myHero,3144))
-		end	
-	elseif bork >= 1 and GoS:ValidTarget(target,550) and (GetMaxHP(myHero) / GetCurrentHP(myHero)) >= 1.25 and mainMenu.Items.useBork:Value() then 
-		if CanUseSpell(myHero,GetItemSlot(myHero,3153)) == READY then
-			CastTargetSpell(target,GetItemSlot(myHero,3153))
-		end
-	end
-
-	if ghost >= 1 and GoS:ValidTarget(target,550) and mainMenu.Items.useGhost:Value() then
-		if CanUseSpell(myHero,GetItemSlot(myHero,3142)) == READY then
-			CastSpell(GetItemSlot(myHero,3142))
-		end
-	end
-	
-	if redpot >= 1 and GoS:ValidTarget(target,550) and mainMenu.Items.useRedPot:Value() then
-		if CanUseSpell(myHero,GetItemSlot(myHero,2140)) == READY then
-			CastSpell(GetItemSlot(myHero,2140))
-		end
-	end
-end
-
 
 -- R DMG Calc 
 	USER = KeyIsDown(82)
@@ -222,6 +197,31 @@ end
 
 -- Combo
 if mainMenu.Combo.Combo1:Value() then
+
+--- Items
+	if CutBlade >= 1 and GoS:ValidTarget(target,550) and mainMenu.Items.useCut:Value() then
+		if CanUseSpell(myHero,GetItemSlot(myHero,3144)) == READY then
+			CastTargetSpell(target, GetItemSlot(myHero,3144))
+		end	
+	elseif bork >= 1 and GoS:ValidTarget(target,550) and (GetMaxHP(myHero) / GetCurrentHP(myHero)) >= 1.25 and mainMenu.Items.useBork:Value() then 
+		if CanUseSpell(myHero,GetItemSlot(myHero,3153)) == READY then
+			CastTargetSpell(target,GetItemSlot(myHero,3153))
+		end
+	end
+
+	if ghost >= 1 and GoS:ValidTarget(target,550) and mainMenu.Items.useGhost:Value() then
+		if CanUseSpell(myHero,GetItemSlot(myHero,3142)) == READY then
+			CastSpell(GetItemSlot(myHero,3142))
+		end
+	end
+	
+	if redpot >= 1 and GoS:ValidTarget(target,550) and mainMenu.Items.useRedPot:Value() then
+		if CanUseSpell(myHero,GetItemSlot(myHero,2140)) == READY then
+			CastSpell(GetItemSlot(myHero,2140))
+		end
+	end
+---
+
 
 	if GoS:ValidTarget(target, 2000) then
 	Ticker = GetTickCount()	
