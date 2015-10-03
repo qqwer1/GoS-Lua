@@ -16,11 +16,6 @@ mainMenu.Harass:Boolean("hW", "Use W", true)
 mainMenu.Harass:Boolean("hE", "Use E", true)
 mainMenu.Harass:Key("Harass1", "Harass", string.byte("C"))
 -----------------------------------------------------------------
-mainMenu:SubMenu("Killsteal", "Killsteal")
-mainMenu.Killsteal:Boolean("ksQ", "Use Q - KS", true)
-mainMenu.Killsteal:Boolean("ksE", "Use E - KS", true)
-mainMenu.Killsteal:Boolean("ksW", "W - Helper", true)
------------------------------------------------------------------
 mainMenu:SubMenu("Items", "Items")
 mainMenu.Items:Boolean("useCut", "Bilgewater Cutlass", true)
 mainMenu.Items:Boolean("useBork", "Blade of the Ruined King", true)
@@ -216,10 +211,6 @@ if mainMenu.Combo.AutoE:Value() then
 	end	
 end
 
-if mainMenu.Killsteal.ksQ:Value() or mainMenu.Killsteal.ksE:Value() then
-	Killsteal()
-end
-
 --[Combo
 if mainMenu.Combo.Combo1:Value() then
 	-- PrintChat("Energy: "..GetCastMana(myHero,_W,GetCastLevel(myHero,_W)))
@@ -384,13 +375,6 @@ function useE(target, mode)
 				CastSpell(_E)
 			end
 	end
-end
-
-function Killsteal()
-       for i,enemy in pairs(GoS:GetEnemyHeroes()) do
-			
-			
-      end
 end
 
 PrintChat("Zed - The Shadow loaded.")
