@@ -50,7 +50,7 @@ local redpot = GetItemSlot(myHero,2140)
 
 
 if mainMenu.Misc.drawW:Value() and CanUseSpell(myHero,_W) == READY and GoS:ValidTarget(target,2000) then
-	DrawCircle(myHeroPos,GetRange(myHero)+(20*GetCastLevel(myHero,_W)+110),0,155,ARGB(210,33,139,6))
+	DrawCircle(myHeroPos,GetRange(myHero)+(20*GetCastLevel(myHero,_W)+110),2,100,ARGB(210,33,139,6))
 end
 
 -- [Combo
@@ -107,7 +107,7 @@ end
 -- R
 if mainMenu.Combo.useR:Value() then
 	if CanUseSpell(myHero,_R) == READY and GoS:ValidTarget(target,(300*GetCastLevel(myHero,_R)+900)) and GotBuff(myHero,"kogmawlivingartillerycost") < mainMenu.Combo.RStacks:Value() then
-		local RPred = GetPredictionForPlayer(myHeroPos,target,GetMoveSpeed(target),math.huge,600+250,(300*GetCastLevel(myHero,_R)+900),100,false,false)
+		local RPred = GetPredictionForPlayer(myHeroPos,target,GetMoveSpeed(target),math.huge,1200,(300*GetCastLevel(myHero,_R)+900),100,false,false)
 		if RPred.HitChance == 1 then
 			CastSkillShot(_R,RPred.PredPos.x,RPred.PredPos.y,RPred.PredPos.z)
 		end
@@ -144,7 +144,7 @@ end
 -- R
 if mainMenu.Harass.useR:Value() and 100*GetCurrentMana(myHero)/GetMaxMana(myHero) >= mainMenu.Harass.Mana:Value() then
 	if CanUseSpell(myHero,_R) == READY and GoS:ValidTarget(target,(300*GetCastLevel(myHero,_R)+900)) and GotBuff(myHero,"kogmawlivingartillerycost") < mainMenu.Harass.RStacks:Value() then
-		local RPred = GetPredictionForPlayer(myHeroPos,target,GetMoveSpeed(target),math.huge,600+250,(300*GetCastLevel(myHero,_R)+900),100,false,false)
+		local RPred = GetPredictionForPlayer(myHeroPos,target,GetMoveSpeed(target),math.huge,1200,(300*GetCastLevel(myHero,_R)+900),100,false,false)
 		if RPred.HitChance == 1 then
 			CastSkillShot(_R,RPred.PredPos.x,RPred.PredPos.y,RPred.PredPos.z)
 		end
@@ -167,7 +167,7 @@ for i,enemy in pairs(GoS:GetEnemyHeroes()) do
 		end
 	end
 	if mainMenu.Killsteal.ksR:Value() and CanUseSpell(myHero,_R) == READY and GoS:ValidTarget(enemy,(300*GetCastLevel(myHero,_R)+900)) and GetCurrentHP(enemy) + GetDmgShield(enemy) + GetMagicShield(enemy) < GoS:CalcDamage(myHero,enemy,0,80*GetCastLevel(myHero,_R)+80+(0.3*GetBonusAP(myHero))+(0.5*(GetBaseDamage(myHero)+GetBonusDmg(myHero)))) then
-		local ksRPred = GetPredictionForPlayer(myHeroPos,enemy,GetMoveSpeed(enemy),math.huge,600+250,(300*GetCastLevel(myHero,_R)+900),100,false,false)
+		local ksRPred = GetPredictionForPlayer(myHeroPos,enemy,GetMoveSpeed(enemy),math.huge,1200,(300*GetCastLevel(myHero,_R)+900),100,false,false)
 		if ksRPred.HitChance == 1 then
 			CastSkillShot(_R,ksRPred.PredPos.x,ksRPred.PredPos.y,ksRPred.PredPos.z)
 		end
