@@ -124,7 +124,6 @@ end
 if GoS:ValidTarget(GetCurrentTarget(), 2000) then
 for i,enemy in pairs(GoS:GetEnemyHeroes()) do
 if PassiveStacks[GetNetworkID(enemy)] ~= nil then
-PrintChat("Enemy: "..GetObjectName(enemy).."  Stacks: "..PassiveStacks[GetNetworkID(enemy)])
 	if CanUseSpell(myHero,_E) == READY then
 	eDMG = GoS:CalcDamage(myHero,enemy,(15*GetCastLevel(myHero,_E)+5+(5*GetCastLevel(myHero,_E)+10+(0.2*GetBonusAP(myHero)+0.25*GetBonusDmg(myHero)))*PassiveStacks[GetNetworkID(enemy)]),0)
 	else eDMG = 0 end
