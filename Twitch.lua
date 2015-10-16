@@ -68,8 +68,9 @@ end
 
 end)
 
-OnTick(function(myHero)
-
+OnLoop(function(myHero)
+--OnTick(function(myHero)
+	
 local target = GetCurrentTarget()
 local myHeroPos = GetOrigin(myHero)
 
