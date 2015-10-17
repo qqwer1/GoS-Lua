@@ -21,6 +21,7 @@ mainMenu.Items:Boolean("useCut", "Bilgewater Cutlass", true)
 mainMenu.Items:Boolean("useBork", "Blade of the Ruined King", true)
 mainMenu.Items:Boolean("useGhost", "Youmuu's Ghostblade", true)
 mainMenu.Items:Boolean("useHydra", "Ravenous Hydra | Tiamat", true)
+mainMenu.Items:Slider("extraDelay","Extra Delay for AA reset", 10 , 0, 50, 1)
 mainMenu.Items:Boolean("useRedPot", "Elixir of Wrath", true)
 -----------------------------------------------------------------
 mainMenu:SubMenu("Drawings", "Drawings")
@@ -86,11 +87,11 @@ local TickerW = GetTickCount()
 			if tiamat ~= nil and tiamat >= 1 and CanUseSpell(myHero,GetItemSlot(myHero,3077)) == READY then
 				GoS:DelayAction(function()
 					CastSpell(GetItemSlot(myHero,3077))
-				end, GetWindUp(myHero)*baseAS*(1000/GetAttackSpeed(myHero))+ GetLatency()+30*GetAttackSpeed(myHero))
+				end, GetWindUp(myHero)*baseAS*(1000/GetAttackSpeed(myHero))+ GetLatency()+30*GetAttackSpeed(myHero) + mainMenu.Items.extraDelay:Value())
 			elseif hydra ~= nil and hydra >= 1 and CanUseSpell(myHero,GetItemSlot(myHero,3074)) == READY then
 				GoS:DelayAction(function()
 					CastSpell(GetItemSlot(myHero,3074))
-				end, GetWindUp(myHero)*baseAS*(1000/GetAttackSpeed(myHero))+ GetLatency()+30*GetAttackSpeed(myHero))
+				end, GetWindUp(myHero)*baseAS*(1000/GetAttackSpeed(myHero))+ GetLatency()+30*GetAttackSpeed(myHero) + mainMenu.Items.extraDelay:Value())
 			end
 		end
 	end
