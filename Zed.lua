@@ -2,12 +2,12 @@ require('Inspired')
 
 local mainMenu = Menu("Zed | The Shadow", "Zed")
 mainMenu:SubMenu("Combo", "Combo")
-mainMenu.Combo:Boolean("useQ", "Use Q in combo", true)
-mainMenu.Combo:Boolean("useW", "Use W in combo", true)
-mainMenu.Combo:Boolean("gabW", "Use W to gapclose", true)
-mainMenu.Combo:Boolean("useE", "Use E in combo", true)
-mainMenu.Combo:Boolean("AutoE", "Use auto E", true)
-mainMenu.Combo:Boolean("useR", "Use R", true)
+mainMenu.Combo:Boolean("useQ", "Use Q in combo", false)
+mainMenu.Combo:Boolean("useW", "Use W in combo", false)
+mainMenu.Combo:Boolean("gabW", "Use W to gapclose", false)
+mainMenu.Combo:Boolean("useE", "Use E in combo", false)
+mainMenu.Combo:Boolean("AutoE", "Use auto E", false)
+mainMenu.Combo:Boolean("useR", "Use R", false)
 mainMenu.Combo:Key("Combo1", "Combo", string.byte(" "))
 -----------------------------------------------------------------
 mainMenu:SubMenu("Harass", "Harass")
@@ -20,22 +20,23 @@ mainMenu:SubMenu("Items", "Items")
 mainMenu.Items:Boolean("useCut", "Bilgewater Cutlass", true)
 mainMenu.Items:Boolean("useBork", "Blade of the Ruined King", true)
 mainMenu.Items:Boolean("useGhost", "Youmuu's Ghostblade", true)
+mainMenu.Items:Boolean("useHydra", "Ravenous Hydra | Tiamat", true)
 mainMenu.Items:Boolean("useRedPot", "Elixir of Wrath", true)
 -----------------------------------------------------------------
 mainMenu:SubMenu("Drawings", "Drawings")
-mainMenu.Drawings:Boolean("DrawQ", "Draw Q range", true)
-mainMenu.Drawings:Boolean("DrawW", "Draw W range", true)
-mainMenu.Drawings:Boolean("DrawE", "Draw E range", true)
-mainMenu.Drawings:Boolean("DrawR", "Draw R range", true)
-mainMenu.Drawings:Boolean("DrawWShadow", "W - Shadow Drawings", true)
-mainMenu.Drawings:Boolean("DrawRShadow", "R - Shadow Drawings", true)
+mainMenu.Drawings:Boolean("DrawQ", "Draw Q range", false)
+mainMenu.Drawings:Boolean("DrawW", "Draw W range", false)
+mainMenu.Drawings:Boolean("DrawE", "Draw E range", false)
+mainMenu.Drawings:Boolean("DrawR", "Draw R range", false)
+mainMenu.Drawings:Boolean("DrawWShadow", "W - Shadow Drawings", false)
+mainMenu.Drawings:Boolean("DrawRShadow", "R - Shadow Drawings", false)
 mainMenu.Drawings:Boolean("DrawDMG", "Draw Damage", true)
 
 local global_ticks = 0
 local global_ticksRULT = 0
 local global_ticksR = 0
 local global_ticksW = 0
-
+baseAS = GetBaseAttackSpeed(myHero)
 -- Shadow
 OnProcessSpell(function(unit, spell)
 	if unit == myHero then
@@ -78,6 +79,21 @@ local TickerW = GetTickCount()
 	global_ticksW = TickerW
 	end
 	
+	if mainMenu.Combo.Combo1:Value() and mainMenu.Items.useHydra:Value() then
+	local hydra = GetItemSlot(myHero,3074)
+	local tiamat = GetItemSlot(myHero,3077)
+		if spell.name:lower():find("attack") then
+			if tiamat ~= nil and tiamat >= 1 and CanUseSpell(myHero,GetItemSlot(myHero,3077)) == READY then
+				GoS:DelayAction(function()
+					CastSpell(GetItemSlot(myHero,3077))
+				end, GetWindUp(myHero)*baseAS*(1000/GetAttackSpeed(myHero))+ GetLatency()+30*GetAttackSpeed(myHero))
+			elseif hydra ~= nil and hydra >= 1 and CanUseSpell(myHero,GetItemSlot(myHero,3074)) == READY then
+				GoS:DelayAction(function()
+					CastSpell(GetItemSlot(myHero,3074))
+				end, GetWindUp(myHero)*baseAS*(1000/GetAttackSpeed(myHero))+ GetLatency()+30*GetAttackSpeed(myHero))
+			end
+		end
+	end
 	end
 end)
 
@@ -92,6 +108,7 @@ local CutBlade = GetItemSlot(myHero,3144)
 local bork = GetItemSlot(myHero,3153)
 local ghost = GetItemSlot(myHero,3142)
 local redpot = GetItemSlot(myHero,2140)
+
 
 -- R Drawings
 if mainMenu.Drawings.DrawRShadow:Value() then
@@ -197,14 +214,14 @@ if mainMenu.Combo.AutoE:Value() then
 	end
 -- W _E	
 	if CanUseSpell(myHero,_E) == READY and mainMenu.Combo.AutoE:Value() and WPos ~= nil then
-		local wEPred = GetPredictionForPlayer(WPos,target,GetMoveSpeed(target),math.huge,250,284,0,false,false)
+		local wEPred = GetPredictionForPlayer(WPos,target,GetMoveSpeed(target),math.huge,50,284,0,false,false)
 			if wEPred.HitChance == 1 then
 				CastSpell(_E)
 			end
 	end
 -- R _E	
 	if CanUseSpell(myHero,_E) == READY and mainMenu.Combo.AutoE:Value() and RPos ~= nil then
-		local rEPred = GetPredictionForPlayer(RPos,target,GetMoveSpeed(target),math.huge,250,284,0,false,false)
+		local rEPred = GetPredictionForPlayer(RPos,target,GetMoveSpeed(target),math.huge,50,284,0,false,false)
 			if rEPred.HitChance == 1 then
 				CastSpell(_E)
 			end
