@@ -34,7 +34,7 @@ PassiveApply = {}
 
 OnUpdateBuff(function(Object,buff)
 
-if buff.Name == 'twitchdeadlyvenom' then
+if buff.Name == "twitchdeadlyvenom" and GetTeam(Object) ~= GetTeam(myHero) and GetObjectType(Object) == Obj_AI_Hero then
 if PassiveStacks[GetNetworkID(Object)] == nil then
 	PassiveStacks[GetNetworkID(Object)] = 0
 end
@@ -61,7 +61,7 @@ end)
 
 OnRemoveBuff(function(Object,buff)
 
-if buff.Name == 'twitchdeadlyvenom' then
+if buff.Name == "twitchdeadlyvenom" and GetTeam(Object) ~= GetTeam(myHero) and GetObjectType(Object) == Obj_AI_Hero then
 	PassiveStacks[GetNetworkID(Object)] = 0
 	PassiveApply[GetNetworkID(Object)] = 0
 end
@@ -69,8 +69,7 @@ end
 end)
 
 OnLoop(function(myHero)
---OnTick(function(myHero)
-	
+
 local target = GetCurrentTarget()
 local myHeroPos = GetOrigin(myHero)
 
@@ -139,23 +138,25 @@ end
 end
 
 -- DRAWINGS
-if mainMenu.Drawings.drawPoison:Value() or mainMenu.Drawings.drawE:Value() and GoS:ValidTarget(target,2000) and eDMG ~= nil then
+if mainMenu.Drawings.drawPoison:Value() or mainMenu.Drawings.drawE:Value() then 
+if GoS:ValidTarget(target,2000) and eDMG ~= nil and truepoisonDMG ~= nil then
 for i,enemy in pairs(GoS:GetEnemyHeroes()) do
 	if CanUseSpell(myHero,_E) == READY and mainMenu.Drawings.drawE:Value() and mainMenu.Drawings.drawPoison:Value() then
-	DrawDmgOverHpBar(target,GetCurrentHP(target),eDMG,0,0xff00ff00)
-	DrawDmgOverHpBar(target,GetCurrentHP(target)-eDMG,truepoisonDMG,0,0xffff00ff)
+	DrawDmgOverHpBar(enemy,GetCurrentHP(enemy),eDMG,0,0xff00ff00)
+	DrawDmgOverHpBar(enemy,GetCurrentHP(enemy)-eDMG,truepoisonDMG,0,0xffff00ff)
 	elseif CanUseSpell(myHero,_E) == ONCOOLDOWN and mainMenu.Drawings.drawE:Value() and mainMenu.Drawings.drawPoison:Value() then
-	DrawDmgOverHpBar(target,GetCurrentHP(target),truepoisonDMG,0,0xffff00ff)
+	DrawDmgOverHpBar(enemy,GetCurrentHP(enemy),truepoisonDMG,0,0xffff00ff)
 	end
 	
 	if mainMenu.Drawings.drawE:Value() and not mainMenu.Drawings.drawPoison:Value() then
-	DrawDmgOverHpBar(target,GetCurrentHP(target),eDMG,0,0xff00ff00)
+	DrawDmgOverHpBar(enemy,GetCurrentHP(enemy),eDMG,0,0xff00ff00)
 	end
 	
 	if mainMenu.Drawings.drawPoison:Value() and not mainMenu.Drawings.drawE:Value() then
-	DrawDmgOverHpBar(target,GetCurrentHP(target),truepoisonDMG,0,0xffff00ff)
+	DrawDmgOverHpBar(enemy,GetCurrentHP(enemy),truepoisonDMG,0,0xffff00ff)
 	end
 end	
+end
 end
 
 -- Draw R
@@ -171,7 +172,7 @@ for i,enemy in pairs(GoS:GetEnemyHeroes()) do
 			CastSpell(_E)
 		end
 		
-		if CanUseSpell(myHero,_E) == READY and GoS:ValidTarget(enemy, 1200) and GetCurrentHP(enemy) + GetDmgShield(enemy) < eDMG + truepoisonDMG and mainMenu.Killsteal.ksE:Value() and mainMenu.Killsteal.ksEp:Value() then
+		if CanUseSpell(myHero,_E) == READY and GoS:ValidTarget(enemy, 1200) and truepoisonDMG ~= nil and GetCurrentHP(enemy) + GetDmgShield(enemy) < eDMG + truepoisonDMG and mainMenu.Killsteal.ksE:Value() and mainMenu.Killsteal.ksEp:Value() then
 			CastSpell(_E)
 		end
 end	
