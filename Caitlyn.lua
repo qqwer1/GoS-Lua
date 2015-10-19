@@ -26,10 +26,9 @@ mainMenu.Items:Boolean("useBork", "Blade of the Ruined King", true)
 mainMenu.Items:Boolean("useGhost", "Youmuu's Ghostblade", true)
 mainMenu.Items:Boolean("useRedPot", "Elixir of Wrath", true)
 ---------------------------------------------------------------------------------
-mainMenu:SubMenu("Drawings", "Drawings")
-mainMenu.Drawings:Boolean("drawR", "Draw R-Damage", true)
-
--- W on stuned enemies
+mainMenu:SubMenu("Misc", "Misc")
+mainMenu.Misc:Boolean("drawR", "Draw R-Damage", true)
+mainMenu.Misc:Key("useEm", "Use E to mouse", string.byte("T"))
 
 baseATKSpeed = GetBaseAttackSpeed(myHero)
 
@@ -119,13 +118,29 @@ end)
 OnUpdateBuff(function(unit, buff)
 if mainMenu.AutoW.useWs:Value() then
 	if GetTeam(unit) ~= GetTeam(myHero) and GetObjectType(unit) == Obj_AI_Hero then
-		if buff.Type == 11  and GoS:IsInDistance(unit, GetCastRange(myHero,_W)+GetHitBox(unit)+500) then
+		if buff.Type == 11  and GoS:IsInDistance(unit, 800+GetHitBox(unit)+250) then
 			snaredtarget = unit
 			snared = true
 		end
-		if buff.Type == 5  and GoS:IsInDistance(unit, GetCastRange(myHero,_W)+GetHitBox(unit)+500) then
+		if buff.Type == 5  and GoS:IsInDistance(unit, 800+GetHitBox(unit)+250) then
 			stunedtarget = unit
 			stuned = true
+		end
+		if buff.Type == 29  and GoS:IsInDistance(unit, 800+GetHitBox(unit)) then
+			uptarget = unit
+			up = true
+		end
+		if buff.Type == 28  and GoS:IsInDistance(unit, 800+GetHitBox(unit)+250) then
+			fleetarget = unit
+			flee = true
+		end
+		if buff.Type == 8  and GoS:IsInDistance(unit, 800+GetHitBox(unit)+250) then
+			taunttarget = unit
+			taunt = true
+		end
+		if buff.Type == 22  and GoS:IsInDistance(unit, 800+GetHitBox(unit)+250) then
+			charmtarget = unit
+			charm = true
 		end
 	end
 end
@@ -134,11 +149,23 @@ end)
 OnRemoveBuff(function(unit, buff)
 if mainMenu.AutoW.useWs:Value() then
 	if GetTeam(unit) ~= GetTeam(myHero) and GetObjectType(unit) == Obj_AI_Hero then
-		if buff.Type == 11  and GoS:IsInDistance(unit, GetCastRange(myHero,_W)+GetHitBox(unit)+1000) then
+		if buff.Type == 11  and GoS:IsInDistance(unit, 800+GetHitBox(unit)+1000) then
 			snared = false
 		end
-		if buff.Type == 5  and GoS:IsInDistance(unit, GetCastRange(myHero,_W)+GetHitBox(unit)+1000) then
+		if buff.Type == 5  and GoS:IsInDistance(unit, 800+GetHitBox(unit)+1000) then
 			stuned = false
+		end
+		if buff.Type == 29  and GoS:IsInDistance(unit, 800+GetHitBox(unit)+1000) then
+			up = false
+		end
+		if buff.Type == 28  and GoS:IsInDistance(unit, 800+GetHitBox(unit)+1000) then
+			flee = false
+		end
+		if buff.Type == 8  and GoS:IsInDistance(unit, 800+GetHitBox(unit)+1000) then
+			taunt = false
+		end
+		if buff.Type == 22  and GoS:IsInDistance(unit, 800+GetHitBox(unit)+1000) then
+			charm = false
 		end
 	end
 end
@@ -155,13 +182,48 @@ local ghost = GetItemSlot(myHero,3142)
 local redpot = GetItemSlot(myHero,2140)
 
 if mainMenu.AutoW.useWs:Value() then
-	if snared ~= nil and snared == true and GoS:IsInDistance(snaredtarget, GetCastRange(myHero,_W)) then
+	if snared ~= nil and snared == true and GoS:IsInDistance(snaredtarget, 800) then
 		CastSkillShot(_W, GetOrigin(snaredtarget))
 	end
-	if stuned ~= nil and stuned == true and GoS:IsInDistance(stunedtarget, GetCastRange(myHero,_W)) then
+	if stuned ~= nil and stuned == true and GoS:IsInDistance(stunedtarget, 800) then
 		CastSkillShot(_W, GetOrigin(stunedtarget))
 	end
+	if up ~= nil and up == true and GoS:IsInDistance(uptarget, 800) then
+		CastSkillShot(_W, GetOrigin(uptarget))
+	end
+	if flee ~= nil and flee == true and GoS:IsInDistance(fleetarget, 800) then
+		GoS:DelayAction(function()
+		local fleeWPred = GetPredictionForPlayer(myHeroPos,fleetarget,GetMoveSpeed(fleetarget),math.huge, 1500, 800, 70, false, true)
+			if fleeWPred.HitChance == 1 then
+				CastSkillShot(_W, fleeWPred.PredPos.x, fleeWPred.PredPos.y, fleeWPred.PredPos.z)
+			end
+		end,100)
+	end
+	if taunt ~= nil and taunt == true and GoS:IsInDistance(taunttarget, 800) then
+		GoS:DelayAction(function()
+		local tauntWPred = GetPredictionForPlayer(myHeroPos,taunttarget,GetMoveSpeed(taunttarget),math.huge, 1500, 800, 70, false, true)
+			if tauntWPred.HitChance == 1 then
+				CastSkillShot(_W, tauntWPred.PredPos.x, tauntWPred.PredPos.y, tauntWPred.PredPos.z)
+			end
+		end,100)
+	end
+	if charm ~= nil and charm == true and GoS:IsInDistance(charmtarget, 800) then
+		GoS:DelayAction(function()
+		local charmWPred = GetPredictionForPlayer(myHeroPos,charmtarget,GetMoveSpeed(charmtarget),math.huge, 1500, 800, 70, false, true)
+			if charmWPred.HitChance == 1 then
+				CastSkillShot(_W, charmWPred.PredPos.x, charmWPred.PredPos.y, charmWPred.PredPos.z)
+			end
+		end,100)
+	end
 end
+
+if mainMenu.Misc.useEm:Value() then
+	local ePos = VectorWay(myHeroPos,GetMousePos())
+	local ePosEnd = myHeroPos - ePos
+	-- DrawCircle(ePosEnd,50,3,155,ARGB(255,255,255,255))
+		CastSkillShot(_E, ePosEnd)
+end
+
 
 if mainMenu.Combo.Combo1:Value() then
 
@@ -231,3 +293,10 @@ end -- Combo
 
 
 end)
+
+function VectorWay(A,B)
+WayX = B.x - A.x
+WayY = B.y - A.y
+WayZ = B.z - A.z
+return Vector(WayX, WayY, WayZ)
+end
