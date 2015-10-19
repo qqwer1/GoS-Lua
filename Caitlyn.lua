@@ -3,6 +3,7 @@ require('Inspired')
 mainMenu = Menu("ADC MAIN | Caitlyn", "Caitlyn")
 mainMenu:SubMenu("Combo", "Combo")
 mainMenu.Combo:Boolean("useQ", "Use Q in combo", true)
+mainMenu.Combo:Boolean("useW", "Use W on close enemy", true)
 mainMenu.Combo:Boolean("useR", "Use R in combo", true)
 mainMenu.Combo:Key("Combo1", "Combo", string.byte(" "))
 ---------------------------------------------------------------------------------
@@ -250,6 +251,12 @@ if mainMenu.Combo.Combo1:Value() then
 		end
 	end
 --
+if mainMenu.Combo.useW:Value() and GoS:ValidTarget(target, 500) and CanUseSpell(myHero,_W) == READY then
+	local WPred = GetPredictionForPlayer(myHeroPos,target,GetMoveSpeed(target),math.huge, 1500, 800, 70, false, true)
+	if WPred.HitChance == 1 and GoS:GetDistance(myHeroPos, WPred.PredPos) < 250+GetHitBox(target) then
+		CastSkillShot(_W, WPred.PredPos.x, WPred.PredPos.y, WPred.PredPos.z)
+	end
+end
 
 if mainMenu.Combo.useQ:Value() and GoS:ValidTarget(target, 1300) and CanUseSpell(myHero,_Q) == READY then
 	local AA = (GoS:CalcDamage(myHero,target,GetBaseDamage(myHero)+GetBonusDmg(myHero),0) * (baseATKSpeed*GetAttackSpeed(myHero)))
@@ -275,7 +282,7 @@ end
 
 if mainMenu.Combo.useR:Value() and CanUseSpell(myHero,_R) == READY then
 	for i,enemy in pairs(GoS:GetEnemyHeroes()) do
-		if GoS:ValidTarget(enemy, 500*GetCastLevel(myHero,_R)+1500) and not GoS:IsInDistance(enemy, 1100) and GetCurrentHP(enemy) + GetDmgShield(enemy) < GoS:CalcDamage(myHero, enemy, 225*GetCastLevel(myHero,_R)+25+2*GetBonusDmg(myHero),0) then
+		if GoS:ValidTarget(enemy, 500*GetCastLevel(myHero,_R)+1500) and GoS:EnemiesAround(myHeroPos, 1100) == 0 and not GoS:IsInDistance(enemy, 1100) and GetCurrentHP(enemy) + GetDmgShield(enemy) < GoS:CalcDamage(myHero, enemy, 225*GetCastLevel(myHero,_R)+25+2*GetBonusDmg(myHero),0) then
 			CastTargetSpell(enemy,_R)
 		end
 	end
