@@ -94,6 +94,31 @@ GAPCLOSER2_SPELLS = {
 
 OnProcessSpell(function(unit, spell)
 
+--1.
+if mainMenu.Misc.gapE:Value() then
+local Spell1g = GAPCLOSER_SPELLS[spell.name]
+	if Spell1g and spell.target == myHero and Spell1g.Name == GetObjectName(unit) and GetTeam(unit) ~= GetTeam(myHero) and GetObjectType(unit) == Obj_AI_Hero and CanUseSpell(myHero,_E) == READY then
+		local myHeroPos = GetOrigin(myHero)
+		local ePos1 = VectorWay(myHeroPos,GetOrigin(unit))
+		local ePosEnd1 = myHeroPos - (ePos1/GoS:GetDistance(myHeroPos, GetOrigin(unit)))*400	
+		if GoS:EnemiesAround(myHeroPos, 600) >= GoS:EnemiesAround(ePosEnd1, 500) then
+			CastSkillShot(_E,GetOrigin(unit))
+		end
+	end
+local Spell2g = GAPCLOSER2_SPELLS[spell.name]
+	if Spell2g and Spell2g.Name == GetObjectName(unit) and GetTeam(unit) ~= GetTeam(myHero) and GetObjectType(unit) == Obj_AI_Hero and CanUseSpell(myHero,_E) == READY then
+		if GoS:GetDistance(spell.endPos, myHero) < 300 then
+			local myHeroPos = GetOrigin(myHero)
+			local ePos2 = VectorWay(myHeroPos,GetOrigin(unit))
+			local ePosEnd2 = myHeroPos - (ePos2/GoS:GetDistance(myHeroPos, GetOrigin(unit)))*400
+			if GoS:EnemiesAround(myHeroPos, 600) >= GoS:EnemiesAround(ePosEnd2, 500) then
+				CastSkillShot(_E,GetOrigin(unit))
+			end
+		end
+	end
+end
+
+--2. 
 if mainMenu.AutoW.useWgap:Value() then
 local Spell1 = GAPCLOSER_SPELLS[spell.name]
 	if Spell1 and spell.target == myHero and Spell1.Name == GetObjectName(unit) and GetTeam(unit) ~= GetTeam(myHero) and GetObjectType(unit) == Obj_AI_Hero and CanUseSpell(myHero,_W) == READY then
@@ -113,20 +138,6 @@ if mainMenu.AutoW.useWc:Value() then
 local CSpell = CHANELLING_SPELLS[spell.name]
 	if CSpell and CSpell.Name == GetObjectName(unit) and GetTeam(unit) ~= GetTeam(myHero) and GetObjectType(unit) == Obj_AI_Hero and CanUseSpell(myHero,_W) == READY then
 		CastSkillShot(_W,GetOrigin(unit))
-	end
-end
-
--- Need to add endPos check after E
-if mainMenu.Misc.gapE:Value() then
-local Spell1g = GAPCLOSER_SPELLS[spell.name]
-	if Spell1g and spell.target == myHero and Spell1g.Name == GetObjectName(unit) and GetTeam(unit) ~= GetTeam(myHero) and GetObjectType(unit) == Obj_AI_Hero and CanUseSpell(myHero,_E) == READY then
-		CastSkillShot(_E,GetOrigin(unit))
-	end
-local Spell2g = GAPCLOSER2_SPELLS[spell.name]
-	if Spell2g and Spell2g.Name == GetObjectName(unit) and GetTeam(unit) ~= GetTeam(myHero) and GetObjectType(unit) == Obj_AI_Hero and CanUseSpell(myHero,_E) == READY then
-		if GoS:GetDistance(spell.endPos, myHero) < 300 then
-			CastSkillShot(_E,GetOrigin(unit))
-		end
 	end
 end
 
