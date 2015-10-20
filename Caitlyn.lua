@@ -325,12 +325,14 @@ if mainMenu.Harass.Harass1:Value() and CanUseSpell(myHero,_Q) == READY and 100*G
 	end
 end
 
-
-
-
-
-
-
+-- Draw R Damage
+if mainMenu.Misc.drawR:Value() and CanUseSpell(myHero,_R) == READY then
+	for i,enemy in pairs(GoS:GetEnemyHeroes()) do
+		if GoS:ValidTarget(enemy, 500*GetCastLevel(myHero,_R)+1500) then
+			DrawDmgOverHpBar(enemy,GetCurrentHP(enemy),GoS:CalcDamage(myHero, enemy, 225*GetCastLevel(myHero,_R)+25+2*GetBonusDmg(myHero),0),0,0xff00ff00)
+		end
+	end
+end
 
 end)
 
