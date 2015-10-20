@@ -17,10 +17,10 @@ mainMenu.Harass:Boolean("hQ", "Use Q", true)
 mainMenu.Harass:Slider("Mana","Mana-Manager", 60, 1, 100, 1)
 mainMenu.Harass:Key("Harass1", "Harass", string.byte("C"))
 ---------------------------------------------------------------------------------
-mainMenu:SubMenu("Killsteal", "Killsteal")
-mainMenu.Killsteal:Boolean("ksQ", "Use Q - KS", true)
-mainMenu.Killsteal:Boolean("ksE", "Use E - KS", true)
-mainMenu.Killsteal:Boolean("ksR", "Use R - KS", true)
+-- mainMenu:SubMenu("Killsteal", "Killsteal")
+-- mainMenu.Killsteal:Boolean("ksQ", "Use Q - KS", true)
+-- mainMenu.Killsteal:Boolean("ksE", "Use E - KS", true)
+-- mainMenu.Killsteal:Boolean("ksR", "Use R - KS", true)
 ---------------------------------------------------------------------------------
 mainMenu:SubMenu("Items", "Items")
 mainMenu.Items:Boolean("useCut", "Bilgewater Cutlass", true)
@@ -146,11 +146,11 @@ end)
 OnUpdateBuff(function(unit, buff)
 if mainMenu.AutoW.useWs:Value() then
 	if GetTeam(unit) ~= GetTeam(myHero) and GetObjectType(unit) == Obj_AI_Hero then
-		if buff.Type == 11  and GoS:IsInDistance(unit, 800+GetHitBox(unit)+250) then
+		if buff.Type == 11  and GoS:IsInDistance(unit, 825+GetHitBox(unit)) then
 			snaredtarget = unit
 			snared = true
 		end
-		if buff.Type == 5  and GoS:IsInDistance(unit, 800+GetHitBox(unit)+250) then
+		if buff.Type == 5  and GoS:IsInDistance(unit, 825+GetHitBox(unit)) then
 			stunedtarget = unit
 			stuned = true
 		end
@@ -158,15 +158,15 @@ if mainMenu.AutoW.useWs:Value() then
 			uptarget = unit
 			up = true
 		end
-		if buff.Type == 28  and GoS:IsInDistance(unit, 800+GetHitBox(unit)+250) then
+		if buff.Type == 28  and GoS:IsInDistance(unit, 850+GetHitBox(unit)) then
 			fleetarget = unit
 			flee = true
 		end
-		if buff.Type == 8  and GoS:IsInDistance(unit, 800+GetHitBox(unit)+250) then
+		if buff.Type == 8  and GoS:IsInDistance(unit, 850+GetHitBox(unit)+) then
 			taunttarget = unit
 			taunt = true
 		end
-		if buff.Type == 22  and GoS:IsInDistance(unit, 800+GetHitBox(unit)+250) then
+		if buff.Type == 22  and GoS:IsInDistance(unit, 825+GetHitBox(unit)) then
 			charmtarget = unit
 			charm = true
 		end
