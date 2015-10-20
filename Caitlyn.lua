@@ -14,6 +14,7 @@ mainMenu.AutoW:Boolean("useWs", "Use W on immobile", true)
 ---------------------------------------------------------------------------------
 mainMenu:SubMenu("Harass", "Harass")
 mainMenu.Harass:Boolean("hQ", "Use Q", true)
+mainMenu.Harass:Slider("Mana","Mana-Manager", 60, 1, 100, 1)
 mainMenu.Harass:Key("Harass1", "Harass", string.byte("C"))
 ---------------------------------------------------------------------------------
 mainMenu:SubMenu("Killsteal", "Killsteal")
@@ -29,6 +30,7 @@ mainMenu.Items:Boolean("useRedPot", "Elixir of Wrath", true)
 ---------------------------------------------------------------------------------
 mainMenu:SubMenu("Misc", "Misc")
 mainMenu.Misc:Boolean("drawR", "Draw R-Damage", true)
+mainMenu.Misc:Boolean("gapE", "Auto E agains gapcloser", true)
 mainMenu.Misc:Key("useEm", "Use E to mouse", string.byte("T"))
 
 baseATKSpeed = GetBaseAttackSpeed(myHero)
@@ -111,6 +113,20 @@ if mainMenu.AutoW.useWc:Value() then
 local CSpell = CHANELLING_SPELLS[spell.name]
 	if CSpell and CSpell.Name == GetObjectName(unit) and GetTeam(unit) ~= GetTeam(myHero) and GetObjectType(unit) == Obj_AI_Hero and CanUseSpell(myHero,_W) == READY then
 		CastSkillShot(_W,GetOrigin(unit))
+	end
+end
+
+-- Need to add endPos check after E
+if mainMenu.Misc.gapE:Value() then
+local Spell1g = GAPCLOSER_SPELLS[spell.name]
+	if Spell1g and spell.target == myHero and Spell1g.Name == GetObjectName(unit) and GetTeam(unit) ~= GetTeam(myHero) and GetObjectType(unit) == Obj_AI_Hero and CanUseSpell(myHero,_E) == READY then
+		CastSkillShot(_E,GetOrigin(unit))
+	end
+local Spell2g = GAPCLOSER2_SPELLS[spell.name]
+	if Spell2g and Spell2g.Name == GetObjectName(unit) and GetTeam(unit) ~= GetTeam(myHero) and GetObjectType(unit) == Obj_AI_Hero and CanUseSpell(myHero,_E) == READY then
+		if GoS:GetDistance(spell.endPos, myHero) < 300 then
+			CastSkillShot(_E,GetOrigin(unit))
+		end
 	end
 end
 
@@ -225,7 +241,7 @@ if mainMenu.Misc.useEm:Value() then
 		CastSkillShot(_E, ePosEnd)
 end
 
-
+-- Combo
 if mainMenu.Combo.Combo1:Value() then
 
 -- Items
@@ -282,7 +298,7 @@ end
 
 if mainMenu.Combo.useR:Value() and CanUseSpell(myHero,_R) == READY then
 	for i,enemy in pairs(GoS:GetEnemyHeroes()) do
-		if GoS:ValidTarget(enemy, 500*GetCastLevel(myHero,_R)+1500) and GoS:EnemiesAround(myHeroPos, 1100) == 0 and not GoS:IsInDistance(enemy, 1100) and GetCurrentHP(enemy) + GetDmgShield(enemy) < GoS:CalcDamage(myHero, enemy, 225*GetCastLevel(myHero,_R)+25+2*GetBonusDmg(myHero),0) then
+		if GoS:ValidTarget(enemy, 500*GetCastLevel(myHero,_R)+1500) and GoS:EnemiesAround(myHeroPos, 1100) == 0 and not GoS:IsInDistance(enemy, 1100) and GetCurrentHP(enemy) + GetDmgShield(enemy) + GetHPRegen(enemy)*2 < GoS:CalcDamage(myHero, enemy, 225*GetCastLevel(myHero,_R)+25+2*GetBonusDmg(myHero),0) then
 			CastTargetSpell(enemy,_R)
 		end
 	end
@@ -290,7 +306,13 @@ end
 
 end -- Combo
 
-
+-- Harass
+if mainMenu.Harass.Harass1:Value() and CanUseSpell(myHero,_Q) == READY and 100*GetCurrentMana(myHero)/GetMaxMana(myHero) >= mainMenu.Harass.Mana:Value() and GoS:ValidTarget(target, 1300) then
+	local QPred = GetPredictionForPlayer(myHeroPos,target,GetMoveSpeed(target),2200, 625, 1300, 90, true, false)
+	if QPred.HitChance == 1 then
+		CastSkillShot(_Q, QPred.PredPos.x, QPred.PredPos.y, QPred.PredPos.z)
+	end
+end
 
 
 
