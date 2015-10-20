@@ -29,23 +29,23 @@ mainMenu.Items:Boolean("useRedPot", "Elixir of Wrath", true)
 
 CC = {
 -- Aatrox
-["AatroxQ"] 					= 	{ slot = _Q , champName = "Aatrox"				, spellType = "circular" 	, projectileSpeed = 450			, spellDelay = 250	, spellRange = 650		, spellRadius = 285		, collision = false	}, 
-["AatroxE"] 					= 	{ slot = _E , champName = "Aatrox"				, spellType = "line" 		, projectileSpeed = 1200		, spellDelay = 250	, spellRange = 1075		, spellRadius = 100		, collision = false	}, 
+["AatroxQ"] 					= 	{ slot = _Q , champName = "Aatrox"				, spellType = "circular" 	, projectileSpeed = 2000		, spellDelay = 600	, spellRange = 650		, spellRadius = 285		, collision = false	}, 
+["AatroxE"] 					= 	{ slot = _E , champName = "Aatrox"				, spellType = "line" 		, projectileSpeed = 1250		, spellDelay = 250	, spellRange = 1075		, spellRadius = 100		, collision = false	, projectileName = "AatroxBladeofTorment_mis.troy"}, 
 -- Ahri
-["AhriSeduce"] 					= 	{ slot = _E , champName = "Ahri"				, spellType = "line" 	 	, projectileSpeed = 1550		, spellDelay = 250	, spellRange = 1000		, spellRadius = 60		, collision = true	}, 
+["AhriSeduce"] 					= 	{ slot = _E , champName = "Ahri"				, spellType = "line" 	 	, projectileSpeed = 1550		, spellDelay = 250	, spellRange = 1000		, spellRadius = 60		, collision = true	, projectileName = "Ahri_Charm_mis.troy"}, 
 -- Alistar
 ["Pulverize"] 					= 	{ slot = _Q , champName = "Alistar"				, spellType = "circular" 	, projectileSpeed = math.huge	, spellDelay = 250	, spellRange = 365		, spellRadius = 365		, collision = false	},
 -- Amumu
-["BandageToss"] 				= 	{ slot = _Q , champName = "Amumu"				, spellType = "line" 	 	, projectileSpeed = 2000		, spellDelay = 250	, spellRange = 1100		, spellRadius = 80		, collision = true	}, 
+["BandageToss"] 				= 	{ slot = _Q , champName = "Amumu"				, spellType = "line" 	 	, projectileSpeed = 2000		, spellDelay = 250	, spellRange = 1100		, spellRadius = 80		, collision = true	, projectileName = "Bandage_beam.troy"}, 
 ["CurseoftheSadMummy"] 			= 	{ slot = _R , champName = "Amumu"				, spellType = "aoe" 	 	, projectileSpeed = math.huge	, spellDelay = 250	, spellRange = 560		, spellRadius = 560		, collision = false	},
 -- Anivia
-["FlashFrostSpell"] 			= 	{ slot = _Q , champName = "Anivia"				, spellType = "line" 	 	, projectileSpeed = 850			, spellDelay = 250	, spellRange = 1250		, spellRadius = 110		, collision = false	}, 
+["FlashFrostSpell"] 			= 	{ slot = _Q , champName = "Anivia"				, spellType = "line" 	 	, projectileSpeed = 850			, spellDelay = 250	, spellRange = 1250		, spellRadius = 110		, collision = false	, projectileName = "cryo_FlashFrost_mis.troy"}, 
 -- Ashe
-["EnchantedCrystalArrow"] 		= 	{ slot = _R , champName = "Ashe"				, spellType = "line" 	 	, projectileSpeed = 1600		, spellDelay = 250	, spellRange = 20000	, spellRadius = 130		, collision = false	},
+["EnchantedCrystalArrow"] 		= 	{ slot = _R , champName = "Ashe"				, spellType = "line" 	 	, projectileSpeed = 1600		, spellDelay = 250	, spellRange = 20000	, spellRadius = 130		, collision = false	, projectileName = "EnchantedCrystalArrow_mis.troy"},
 -- Bard
 ["BardQ"] 						= 	{ slot = _Q , champName = "Bard"				, spellType = "line" 	 	, projectileSpeed = 1600		, spellDelay = 250	, spellRange = 950		, spellRadius = 60		, collision = true	},
 -- Blitzcrank
-["RocketGrab"] 					= 	{ slot = _Q , champName = "Blitzcrank"			, spellType = "line" 	 	, projectileSpeed = 1800		, spellDelay = 250	, spellRange = 1050		, spellRadius = 70		, collision = true	},
+["RocketGrab"] 					= 	{ slot = _Q , champName = "Blitzcrank"			, spellType = "line" 	 	, projectileSpeed = 1800		, spellDelay = 250	, spellRange = 1050		, spellRadius = 70		, collision = true	, projectileName = "FistGrab_mis.troy"},
 -- Braum
 ["BraumQ"] 						= 	{ slot = _Q , champName = "Braum"				, spellType = "line" 	 	, projectileSpeed = 1200		, spellDelay = 250	, spellRange = 1000		, spellRadius = 100		, collision = true	},
 ["BraumRWrapper"] 				= 	{ slot = _R , champName = "Braum"				, spellType = "line" 	 	, projectileSpeed = 1125		, spellDelay = 500	, spellRange = 1250		, spellRadius = 100		, collision = false	},
@@ -58,17 +58,17 @@ CC = {
 -- Diana
 ["DianaVortex"] 				= 	{ slot = _E , champName = "Diana"				, spellType = "circular" 	, projectileSpeed = math.huge	, spellDelay = 250	, spellRange = 350		, spellRadius = 350		, collision = false	},
 -- DrMundo
-["InfectedCleaverMissileCast"] 	= 	{ slot = _Q , champName = "DrMundo"				, spellType = "line" 		, projectileSpeed = 2000		, spellDelay = 250	, spellRange = 1050		, spellRadius = 60		, collision = true	},
+["InfectedCleaverMissileCast"] 	= 	{ slot = _Q , champName = "DrMundo"				, spellType = "line" 		, projectileSpeed = 2000		, spellDelay = 250	, spellRange = 1050		, spellRadius = 60		, collision = true	, projectileName = "DrMundo_Base_Q_mis.troy"},
 -- Draven
-["DravenDoubleShot"] 			= 	{ slot = _E , champName = "Draven"				, spellType = "line" 		, projectileSpeed = 1400		, spellDelay = 250	, spellRange = 1100		, spellRadius = 130		, collision = false	},
+["DravenDoubleShot"] 			= 	{ slot = _E , champName = "Draven"				, spellType = "line" 		, projectileSpeed = 1400		, spellDelay = 250	, spellRange = 1100		, spellRadius = 130		, collision = false	, projectileName = "Draven_E_mis.troy"},
 -- Elise
-["EliseHumanE"] 				= 	{ slot = _E , champName = "Elise"				, spellType = "line" 		, projectileSpeed = 1600		, spellDelay = 250	, spellRange = 1100		, spellRadius = 70		, collision = true	},
+["EliseHumanE"] 				= 	{ slot = _E , champName = "Elise"				, spellType = "line" 		, projectileSpeed = 1600		, spellDelay = 250	, spellRange = 1100		, spellRadius = 70		, collision = true	, projectileName = "Elise_human_E_mis.troy"},
 -- Evelynn
 ["EvelynnR"] 					= 	{ slot = _R , champName = "Evelynn"				, spellType = "circular" 	, projectileSpeed = math.huge	, spellDelay = 250	, spellRange = 650		, spellRadius = 350		, collision = false },
 -- FiddleSticks
 ["Terrify"] 					= 	{ slot = _Q , champName = "FiddleSticks"		, spellType = "target" 		, projectileSpeed = math.huge	, spellDelay = 250	, spellRange = 575		, spellRadius = 0		, collision = false },
 -- Fizz
-["FizzMarinerDoom"] 			= 	{ slot = _R , champName = "Fizz"				, spellType = "line" 		, projectileSpeed = 1350		, spellDelay = 250	, spellRange = 1275		, spellRadius = 120		, collision = false },
+["FizzMarinerDoom"] 			= 	{ slot = _R , champName = "Fizz"				, spellType = "line" 		, projectileSpeed = 1350		, spellDelay = 250	, spellRange = 1275		, spellRadius = 120		, collision = false , projectileName = "Fizz_UltimateMissile.troy"}, --Test
 -- Galio
 ["GalioResoluteSmite"] 			= 	{ slot = _Q , champName = "Galio"				, spellType = "circular" 	, projectileSpeed = 1200		, spellDelay = 250	, spellRange = 1040		, spellRadius = 235		, collision = false },
 ["GalioIdolOfDurand"] 			= 	{ slot = _R , champName = "Galio"				, spellType = "aoe" 		, projectileSpeed = math.huge	, spellDelay = 250	, spellRange = 600		, spellRadius = 600		, collision = false },
@@ -87,7 +87,7 @@ CC = {
 -- Irelia
 ["IreliaEquilibriumStrike"] 	= 	{ slot = _E , champName = "Irelia"				, spellType = "target" 		, projectileSpeed = math.huge	, spellDelay = 250	, spellRange = 425		, spellRadius = 0		, collision = false },
 -- Janna
-["HowlingGale"] 				= 	{ slot = _Q , champName = "Janna"				, spellType = "line" 		, projectileSpeed = 900			, spellDelay = 0	, spellRange = 1700		, spellRadius = 120		, collision = false },
+["HowlingGale"] 				= 	{ slot = _Q , champName = "Janna"				, spellType = "line" 		, projectileSpeed = 900			, spellDelay = 0	, spellRange = 1700		, spellRadius = 120		, collision = false , projectileName = "HowlingGale_mis.troy"},
 ["SowTheWind"] 					= 	{ slot = _W , champName = "Janna"				, spellType = "target" 		, projectileSpeed = 1000		, spellDelay = 250	, spellRange = 600		, spellRadius = 0		, collision = false },
 -- JarvanIV
 ["JarvanIVDragonStrike2"] 		= 	{ slot = _Q , champName = "JarvanIV"			, spellType = "line" 		, projectileSpeed = 1800		, spellDelay = 250	, spellRange = 845		, spellRadius = 120		, collision = false	},
@@ -103,15 +103,15 @@ CC = {
 -- Kayle
 ["JudicatorReckoning"] 			= 	{ slot = _Q , champName = "Kayle"				, spellType = "target" 		, projectileSpeed = 1000		, spellDelay = 250	, spellRange = 650		, spellRadius = 0		, collision = false	},
 -- KhaZix
-["KhazixW"] 					= 	{ slot = _W , champName = "KhaZix"				, spellType = "line" 		, projectileSpeed = 1700		, spellDelay = 250	, spellRange = 1100		, spellRadius = 70		, collision = true	},
-["khazixwlong"] 				= 	{ slot = _W , champName = "KhaZix"				, spellType = "line" 		, projectileSpeed = 1700		, spellDelay = 250	, spellRange = 1025		, spellRadius = 70		, collision = true	},
+["KhazixW"] 					= 	{ slot = _W , champName = "KhaZix"				, spellType = "line" 		, projectileSpeed = 1700		, spellDelay = 250	, spellRange = 1100		, spellRadius = 70		, collision = true	, projectileName = "Khazix_W_mis_enhanced.troy"},
+["khazixwlong"] 				= 	{ slot = _W , champName = "KhaZix"				, spellType = "line" 		, projectileSpeed = 1700		, spellDelay = 250	, spellRange = 1025		, spellRadius = 70		, collision = true	, projectileName = "Khazix_W_mis_enhanced.troy"},
 -- KogMaw
-["KogMawVoidOoze"] 				= 	{ slot = _E , champName = "KogMaw"				, spellType = "line" 		, projectileSpeed = 1400		, spellDelay = 250	, spellRange = 1360		, spellRadius = 120		, collision = false	},
+["KogMawVoidOoze"] 				= 	{ slot = _E , champName = "KogMaw"				, spellType = "line" 		, projectileSpeed = 1400		, spellDelay = 250	, spellRange = 1360		, spellRadius = 120		, collision = false	, projectileName = "KogMawVoidOoze_mis.troy"},
 -- LeBlanc
-["LeblancSoulShackle"] 			= 	{ slot = _E , champName = "Leblanc"				, spellType = "line" 		, projectileSpeed = 1600		, spellDelay = 250	, spellRange = 960		, spellRadius = 70		, collision = true	},
-["LeblancSoulShackleM"] 		= 	{ slot = _R , champName = "Leblanc"				, spellType = "line" 		, projectileSpeed = 1600		, spellDelay = 250	, spellRange = 960		, spellRadius = 70		, collision = true	},
+["LeblancSoulShackle"] 			= 	{ slot = _E , champName = "Leblanc"				, spellType = "line" 		, projectileSpeed = 1600		, spellDelay = 250	, spellRange = 960		, spellRadius = 70		, collision = true	, projectileName = "leBlanc_shackle_mis.troy"},
+["LeblancSoulShackleM"] 		= 	{ slot = _R , champName = "Leblanc"				, spellType = "line" 		, projectileSpeed = 1600		, spellDelay = 250	, spellRange = 960		, spellRadius = 70		, collision = true	, projectileName = "leBlanc_shackle_mis_ult.troy"},
 -- LeeSin
-["BlindMonkQOne"] 				= 	{ slot = _Q , champName = "LeeSin"				, spellType = "line" 		, projectileSpeed = 1800		, spellDelay = 250	, spellRange = 1100		, spellRadius = 60		, collision = true	},
+["BlindMonkQOne"] 				= 	{ slot = _Q , champName = "LeeSin"				, spellType = "line" 		, projectileSpeed = 1800		, spellDelay = 250	, spellRange = 1100		, spellRadius = 60		, collision = true	, projectileName = "blindMonk_Q_mis_01.troy"},
 ["BlindMonkRKick"] 				= 	{ slot = _R , champName = "LeeSin"				, spellType = "target" 		, projectileSpeed = math.huge	, spellDelay = 250	, spellRange = 375		, spellRadius = 0		, collision = false	},
 -- Leona
 ["LeonaSolarFlare"] 			= 	{ slot = _R , champName = "Leona"				, spellType = "circular" 	, projectileSpeed = math.huge	, spellDelay = 1000	, spellRange = 1200		, spellRadius = 300		, collision = false	},
@@ -119,10 +119,10 @@ CC = {
 ["LissandraW"] 					= 	{ slot = _W , champName = "Lissandra"			, spellType = "circular" 	, projectileSpeed = math.huge	, spellDelay = 250	, spellRange = 450		, spellRadius = 450		, collision = false	},
 ["LissandraR"] 					= 	{ slot = _R , champName = "Lissandra"			, spellType = "target" 		, projectileSpeed = math.huge	, spellDelay = 250	, spellRange = 550		, spellRadius = 550		, collision = false	},
 -- Lulu
-["LuluQ"] 						= 	{ slot = _Q , champName = "Lulu"				, spellType = "line" 		, projectileSpeed = 1450		, spellDelay = 250	, spellRange = 925		, spellRadius = 80		, collision = false	},
+["LuluQ"] 						= 	{ slot = _Q , champName = "Lulu"				, spellType = "line" 		, projectileSpeed = 1450		, spellDelay = 250	, spellRange = 950		, spellRadius = 80		, collision = false	, projectileName = "Lulu_Q_Mis.troy"},
 ["LuluW"] 						= 	{ slot = _W , champName = "Lulu"				, spellType = "target" 		, projectileSpeed = math.huge	, spellDelay = 250	, spellRange = 925		, spellRadius = 450		, collision = false	}, -- check spellname
 -- Lux
-["LuxLightBinding"] 			= 	{ slot = _Q , champName = "Lux"					, spellType = "line" 		, projectileSpeed = 1200		, spellDelay = 250	, spellRange = 1300		, spellRadius = 70		, collision = true	},
+["LuxLightBinding"] 			= 	{ slot = _Q , champName = "Lux"					, spellType = "line" 		, projectileSpeed = 1200		, spellDelay = 250	, spellRange = 1300		, spellRadius = 70		, collision = true	, projectileName = "LuxLightBinding_mis.troy"},
 -- Malphite
 ["SeismicShard"] 				= 	{ slot = _Q , champName = "Malphite"			, spellType = "target" 		, projectileSpeed = 1000		, spellDelay = 250	, spellRange = 625		, spellRadius = 0		, collision = false	},
 ["UFSlash"] 					= 	{ slot = _R , champName = "Malphite"			, spellType = "circular" 	, projectileSpeed = 2000		, spellDelay = 0	, spellRange = 1000		, spellRadius = 300		, collision = false	},
@@ -132,7 +132,7 @@ CC = {
 ["MaokaiTrunkLine"] 			= 	{ slot = _Q , champName = "Maokai"				, spellType = "line" 		, projectileSpeed = 1000		, spellDelay = 250	, spellRange = 600		, spellRadius = 100		, collision = false	},
 ["MaokaiW"] 					= 	{ slot = _W , champName = "Maokai"				, spellType = "target" 		, projectileSpeed = 1000		, spellDelay = 250	, spellRange = 600		, spellRadius = 0		, collision = false	}, -- check spellname
 -- Morgana
-["DarkBindingMissile"] 			= 	{ slot = _Q , champName = "Morgana"				, spellType = "line" 		, projectileSpeed = 1200		, spellDelay = 250	, spellRange = 1300		, spellRadius = 80		, collision = true	},
+["DarkBindingMissile"] 			= 	{ slot = _Q , champName = "Morgana"				, spellType = "line" 		, projectileSpeed = 1200		, spellDelay = 250	, spellRange = 1300		, spellRadius = 80		, collision = true	, projectileName = "DarkBinding_mis.troy"},
 ["SoulShackles"] 				= 	{ slot = _R , champName = "Morgana"				, spellType = "aoe" 		, projectileSpeed = math.huge	, spellDelay = 250	, spellRange = 600		, spellRadius = 600		, collision = false	},
 -- Nami
 ["NamiQ"] 						= 	{ slot = _Q , champName = "Nami"				, spellType = "circular" 	, projectileSpeed = math.huge	, spellDelay = 1000	, spellRange = 875		, spellRadius = 200		, collision = false	},
@@ -140,14 +140,14 @@ CC = {
 -- Nasus
 ["NasusW"] 						= 	{ slot = _W , champName = "Nasus"				, spellType = "target" 		, projectileSpeed = math.huge	, spellDelay = 250	, spellRange = 600		, spellRadius = 0		, collision = false	},
 -- Nautilus
-["NautilusAnchorDrag"] 			= 	{ slot = _Q , champName = "Nautilus"			, spellType = "line" 		, projectileSpeed = 2000		, spellDelay = 250	, spellRange = 1250		, spellRadius = 90		, collision = true	},
+["NautilusAnchorDrag"] 			= 	{ slot = _Q , champName = "Nautilus"			, spellType = "line" 		, projectileSpeed = 2000		, spellDelay = 250	, spellRange = 1250		, spellRadius = 90		, collision = true	, projectileName = "Nautilus_Q_mis.troy"},
 ["NautilusR"] 					= 	{ slot = _R , champName = "Nautilus"			, spellType = "target" 		, projectileSpeed = 1000		, spellDelay = 250	, spellRange = 825		, spellRadius = 0		, collision = false	}, -- check spellname
 -- Nocturne
 ["NocturneUnspeakableHorror"]	= 	{ slot = _E , champName = "Nocturne"			, spellType = "target" 		, projectileSpeed = math.huge	, spellDelay = 250	, spellRange = 425		, spellRadius = 0		, collision = false	},
 -- Nunu
 ["IceBlast"]					= 	{ slot = _E , champName = "Nunu"				, spellType = "target" 		, projectileSpeed = 1000		, spellDelay = 400	, spellRange = 425		, spellRadius = 0		, collision = false	},
 -- Olaf
-["OlafAxeThrowCast"]			= 	{ slot = _Q , champName = "Olaf"				, spellType = "line" 		, projectileSpeed = 1600		, spellDelay = 250	, spellRange = 100		, spellRadius = 90		, collision = false	},
+["OlafAxeThrowCast"]			= 	{ slot = _Q , champName = "Olaf"				, spellType = "line" 		, projectileSpeed = 1600		, spellDelay = 250	, spellRange = 100		, spellRadius = 90		, collision = false	, projectileName = "olaf_axe_mis.troy"},
 -- Orianna
 --0
 -- Pantheon
@@ -155,7 +155,7 @@ CC = {
 -- Poppy
 ["PoppyHeroicCharge"]			= 	{ slot = _E , champName = "Poppy"				, spellType = "target" 		, projectileSpeed = 1000		, spellDelay = 250	, spellRange = 600		, spellRadius = 0		, collision = false	},
 -- Quinn
-["QuinnQ"]						= 	{ slot = _Q , champName = "Quinn"				, spellType = "line" 		, projectileSpeed = 1550		, spellDelay = 250	, spellRange = 1050		, spellRadius = 80		, collision = true	},
+["QuinnQ"]						= 	{ slot = _Q , champName = "Quinn"				, spellType = "line" 		, projectileSpeed = 1550		, spellDelay = 250	, spellRange = 1050		, spellRadius = 80		, collision = true	, projectileName = "Quinn_Q_missile.troy"},
 ["QuinnE"]						= 	{ slot = _E , champName = "Quinn"				, spellType = "target" 		, projectileSpeed = math.huge	, spellDelay = 250	, spellRange = 700		, spellRadius = 0		, collision = false	},
 -- Rammus
 ["PuncturingTaunt"]				= 	{ slot = _E , champName = "Rammus"				, spellType = "target" 		, projectileSpeed = math.huge	, spellDelay = 250	, spellRange = 325		, spellRadius = 0		, collision = false	},
@@ -164,7 +164,7 @@ CC = {
 -- Riven
 ["RivenMartyr"]					= 	{ slot = _W , champName = "Riven"				, spellType = "aoe" 		, projectileSpeed = math.huge	, spellDelay = 250	, spellRange = 280		, spellRadius = 280		, collision = false	},
 -- Rumble
-["RumbleGrenade"]				= 	{ slot = _E , champName = "Rumble"				, spellType = "line" 		, projectileSpeed = 2000		, spellDelay = 250	, spellRange = 950		, spellRadius = 90		, collision = true	},
+["RumbleGrenade"]				= 	{ slot = _E , champName = "Rumble"				, spellType = "line" 		, projectileSpeed = 2000		, spellDelay = 250	, spellRange = 950		, spellRadius = 90		, collision = true	, projectileName = "rumble_taze_mis.troy"},
 -- Ryze
 ["RyzeW"]						= 	{ slot = _W , champName = "Ryze"				, spellType = "target" 		, projectileSpeed = math.huge	, spellDelay = 250	, spellRange = 600		, spellRadius = 0		, collision = false	},
 -- Sejuani
@@ -173,7 +173,7 @@ CC = {
 -- Shaco
 ["TwoShivPoison"]				= 	{ slot = _E , champName = "Shaco"				, spellType = "target" 		, projectileSpeed = 1000		, spellDelay = 250	, spellRange = 625		, spellRadius = 0		, collision = false	},
 -- Shen
-["ShenShadowDash"]				= 	{ slot = _E , champName = "Shen"				, spellType = "line" 		, projectileSpeed = 1250		, spellDelay = 0	, spellRange = 700		, spellRadius = 75		, collision = false	},
+["ShenShadowDash"]				= 	{ slot = _E , champName = "Shen"				, spellType = "line" 		, projectileSpeed = 1600		, spellDelay = 0	, spellRange = 650		, spellRadius = 50		, collision = false	},
 -- Shyvana
 ["ShyvanaTransformCast"]		= 	{ slot = _R , champName = "Shyvana"				, spellType = "line" 		, projectileSpeed = 1100		, spellDelay = 10	, spellRange = 1000		, spellRadius = 160		, collision = false	},
 -- Singed
@@ -254,18 +254,18 @@ local CCSpell = CC[spellProc.name]
 				CastSpell(_E)
 			end
 			if CCSpell.spellType == "line" and GoS:IsInDistance(unit, CCSpell.spellRange + GetMoveSpeed(myHero)) then
-				local CCPred = GetPredictionForPlayer(GetOrigin(unit),myHero,GetMoveSpeed(myHero),CCSpell.projectileSpeed,CCSpell.spellDelay,CCSpell.spellRange,CCSpell.spellRadius,CCSpell.collision,false)
-					if CCPred.HitChance == 1 then
+				-- local CCPred = GetPredictionForPlayer(GetOrigin(unit),myHero,GetMoveSpeed(myHero),CCSpell.projectileSpeed,CCSpell.spellDelay,CCSpell.spellRange,CCSpell.spellRadius,CCSpell.collision,false)
+					-- if CCPred.HitChance == 1 then
 				CCVector = VectorWay(spellProc.startPos, spellProc.endPos)
 				CCDistanceStartEnd = DistanceBetween(spellProc.startPos, spellProc.endPos)
 				CCVector = (CCVector/CCDistanceStartEnd)*CCSpell.spellRange
 				CCSpellTimeNeed = ((CCSpell.spellRange / (CCSpell.projectileSpeed+50))*1000)+CCSpell.spellDelay
 				WayOnTime = CCVector/CCSpellTimeNeed
-				startTime = 0
+				startTime = GetGameTimer()
 				stargingPos = spellProc.startPos
 				endingPos = spellProc.startPos + CCVector
 				radius = CCSpell.spellRadius
-					end
+					-- end
 				--	
 
 				--
@@ -290,79 +290,64 @@ local CCSpell = CC[spellProc.name]
 	end
 end
 
+end)
 
--- W
-if "Sivir" == GetObjectName(unit) and GetTeam(unit) == GetTeam(myHero) and GetObjectType(unit) == Obj_AI_Hero and CanUseSpell(myHero,_W) == READY and spellProc.name:lower():find("attack") and spellProc.target == GetCurrentTarget() then
-	if GetCastLevel(myHero,_R) > 0 then
-		multiW = 300
-	else
-		multiW = 1000
-	end
--- Combo
-	if mainMenu.Combo.useW:Value() and mainMenu.Combo.Combo1:Value() and GoS:ValidTarget(GetCurrentTarget(),GetRange(myHero)) then
+OnProcessSpellComplete(function(Object,spellProc)
+if mainMenu.Combo.useW:Value() and mainMenu.Combo.Combo1:Value() then
+	if Object == myHero and CanUseSpell(myHero,_W) == READY and spellProc.name:lower():find("attack") and spellProc.target == GetCurrentTarget() and GoS:ValidTarget(GetCurrentTarget(), 550+GetHitBox(GetCurrentTarget())) then
+		CastSpell(_W)
 		GoS:DelayAction(function()
-			CastSpell(_W)
-			GoS:DelayAction(function()
 			AttackUnit(GetCurrentTarget())
-			end, 20)
-		end, GetWindUp(myHero)*multiW)
+		end, 1)
 	end
--- Harass
-	if mainMenu.Harass.useW:Value() and mainMenu.Harass.Harass1:Value() and 100*GetCurrentMana(myHero)/GetMaxMana(myHero) >= mainMenu.Harass.Mana:Value() and GoS:ValidTarget(GetCurrentTarget(),GetRange(myHero)) then
+end
+if mainMenu.Harass.useW:Value() and mainMenu.Harass.Harass1:Value() and 100*GetCurrentMana(myHero)/GetMaxMana(myHero) >= mainMenu.Harass.Mana:Value() and GoS:ValidTarget(GetCurrentTarget(), 550+GetHitBox(GetCurrentTarget())) then
+	if Object == myHero and CanUseSpell(myHero,_W) == READY and spellProc.name:lower():find("attack") and spellProc.target == GetCurrentTarget() then
+		CastSpell(_W)
 		GoS:DelayAction(function()
-			CastSpell(_W)
-			GoS:DelayAction(function()
 			AttackUnit(GetCurrentTarget())
-			end, 20)
-		end, GetWindUp(myHero)*multiW)
+		end, 1)
 	end
 end
 end)
 
-OnLoop(function (myHero)
--- if endPos ~= nil then
--- DrawCircle(endPos, radius,3,50,0xff0ffff0)
--- end
+OnTick(function (myHero)
 
-if startTime ~= nil then
-Ticker1 = GetTickCount()		 
-	if (global_ticks1 + 30) < Ticker1 then
-		GoS:DelayAction( function ()
+
 		if startTime ~= nil then
-			startTime = startTime + 30
-			local spellPos0 = stargingPos + ((startTime+50)*WayOnTime)
-			local spellPos = stargingPos + (startTime*WayOnTime)
-			local spellPos1 = stargingPos + ((startTime-150)*WayOnTime)
-			local spellPos2 = stargingPos + ((startTime-100)*WayOnTime)
-			local spellPos3 = stargingPos + ((startTime-50)*WayOnTime)
-			DrawCircle(endingPos, radius,3,255,0xff0ffff0)
-			DrawCircle(spellPos, radius+GetHitBox(myHero)*1.8,1,255,0xffffffff)
+			local Time = GetGameTimer() - startTime
+			Time = Time*1000
+			local spellPos0 = stargingPos + ((Time+25)*WayOnTime)
+			local spellPos = stargingPos + (Time*WayOnTime)
+			local spellPos1 = stargingPos + ((Time-150)*WayOnTime)
+			local spellPos2 = stargingPos + ((Time-100)*WayOnTime)
+			local spellPos3 = stargingPos + ((Time-50)*WayOnTime)
+			-- DrawCircle(endingPos, radius,3,255,0xff0ffff0)
+			-- DrawCircle(spellPos, radius+GetHitBox(myHero)*1.8,1,255,0xffffffff)
+			-- DrawCircle(spellPos0, radius+GetHitBox(myHero)*1.8,1,255,0xffffffff)
+			-- DrawCircle(spellPos1, radius+GetHitBox(myHero)*1.8,1,255,0xffffffff)
 			if CanUseSpell(myHero,_E) == READY then
-				if GoS:GetDistance(spellPos0) <= radius+GetHitBox(myHero)*1.8 then
+				if GoS:GetDistance(spellPos0) <= radius+GetHitBox(myHero)*1.2 then
+					-- CastSpell(_E)
+				end
+				if GoS:GetDistance(spellPos) <= radius+GetHitBox(myHero)*1.2 then
 					CastSpell(_E)
 				end
-				if GoS:GetDistance(spellPos) <= radius+GetHitBox(myHero)*1.8 then
+				if GoS:GetDistance(spellPos1) <= radius+GetHitBox(myHero)*1.2 then
 					CastSpell(_E)
 				end
-				if GoS:GetDistance(spellPos1) <= radius+GetHitBox(myHero)*1.8 then
+				if GoS:GetDistance(spellPos2) <= radius+GetHitBox(myHero)*1.2 then
 					CastSpell(_E)
 				end
-				if GoS:GetDistance(spellPos2) <= radius+GetHitBox(myHero)*1.8 then
-					CastSpell(_E)
-				end
-				if GoS:GetDistance(spellPos3) <= radius+GetHitBox(myHero)*1.8 then
+				if GoS:GetDistance(spellPos3) <= radius+GetHitBox(myHero)*1.2 then
 					CastSpell(_E)
 				end
 			end
-			if startTime >= CCSpellTimeNeed then
+			if Time >= CCSpellTimeNeed then
 				startTime = nil
 			end
 		end
-		end, 30)	
-	global_ticks1 = Ticker1
-	
-	end	
-end
+
 
 local target = GetCurrentTarget()
 local myHeroPos = GetOrigin(myHero)
