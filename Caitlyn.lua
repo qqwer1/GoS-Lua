@@ -342,3 +342,6 @@ WayY = B.y - A.y
 WayZ = B.z - A.z
 return Vector(WayX, WayY, WayZ)
 end
+
+PrintChat("ADC MAIN | Caitlyn loaded.")
+PrintChat("by Noddy")
