@@ -162,7 +162,7 @@ if mainMenu.AutoW.useWs:Value() then
 			fleetarget = unit
 			flee = true
 		end
-		if buff.Type == 8  and GoS:IsInDistance(unit, 850+GetHitBox(unit)+) then
+		if buff.Type == 8  and GoS:IsInDistance(unit, 850+GetHitBox(unit)) then
 			taunttarget = unit
 			taunt = true
 		end
