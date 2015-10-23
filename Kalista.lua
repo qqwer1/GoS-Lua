@@ -140,8 +140,8 @@ end -- Harass]
 if mainMenu.Drawings.drawE:Value() then
 for i,enemy in pairs(GoS:GetEnemyHeroes()) do
 	if GotBuff(enemy,"kalistaexpungemarker") >= 1 and GoS:ValidTarget(enemy,2500) then
-		eDMG = GoS:CalcDamage(myHero, enemy, (10*GetCastLevel(myHero,_E)+10+(0.6*(GetBaseDamage(myHero)+GetBonusDmg(myHero)))) + (((({[1]=10,[2]=14,[3]=19,[4]=25,[5]=32})[GetCastLevel(myHero,_E)])+((0.025*GetCastLevel(myHero,_E)+0.175)*(GetBaseDamage(myHero)+GetBonusDmg(myHero))))*(GotBuff(enemy,"kalistaexpungemarker")-1)),0)
-		DrawDmgOverHpBar(enemy,GetCurrentHP(enemy)+GetDmgShield(enemy),eDMG,0,ARGB(255,33,139,6))
+		local eDMG = GoS:CalcDamage(myHero, enemy, (10*GetCastLevel(myHero,_E)+10+(0.6*(GetBaseDamage(myHero)+GetBonusDmg(myHero)))) + (((({[1]=10,[2]=14,[3]=19,[4]=25,[5]=32})[GetCastLevel(myHero,_E)])+((0.025*GetCastLevel(myHero,_E)+0.175)*(GetBaseDamage(myHero)+GetBonusDmg(myHero))))*(GotBuff(enemy,"kalistaexpungemarker")-1)),0)
+		DrawDmgOverHpBar(enemy,GetCurrentHP(enemy),eDMG,0,0xff00ff00)
 	end
 end
 end
