@@ -1,25 +1,25 @@
-require('Inspired')
+if GetObjectName(GetMyHero()) ~= "Sivir" then return end
 
 PrintChat("ADC MAIN | Sivir loaded.")
 PrintChat("by Noddy")
 
-mainMenu = Menu("ADC MAIN | Sivir", "Sivir")
-mainMenu:SubMenu("Combo", "Combo")
+local mainMenu = Menu("ADC MAIN | Sivir", "Sivir")
+mainMenu:Menu("Combo", "Combo")
 mainMenu.Combo:Boolean("useQ", "Use Q in combo", true)
 mainMenu.Combo:Boolean("useW", "Use W in combo", true)
 mainMenu.Combo:Key("Combo1", "Combo", string.byte(" "))
 --------------------------------
-mainMenu:SubMenu("Harass", "Harass")
+mainMenu:Menu("Harass", "Harass")
 mainMenu.Harass:Boolean("useQ", "Use Q", true)
 mainMenu.Harass:Boolean("useW", "Use W", true)
 mainMenu.Harass:Slider("Mana","Mana-Manager", 60, 1, 100, 1)
 mainMenu.Harass:Key("Harass1", "Harass", string.byte("C"))
 --------------------------------
-mainMenu:SubMenu("AutoE", "Auto E options")
+mainMenu:Menu("AutoE", "Auto E options")
 mainMenu.AutoE:Boolean("CC", "Use E on CC", true)
 -- mainMenu.AutoE:Boolean("DMG", "Use E on high DMG spells", false)
 --------------------------------
-mainMenu:SubMenu("Items", "Items")
+mainMenu:Menu("Items", "Items")
 mainMenu.Items:Boolean("useCut", "Bilgewater Cutlass", true)
 mainMenu.Items:Boolean("useBork", "Blade of the Ruined King", true)
 mainMenu.Items:Boolean("useGhost", "Youmuu's Ghostblade", true)
@@ -43,18 +43,18 @@ CC = {
 -- Ashe
 ["EnchantedCrystalArrow"] 		= 	{ slot = _R , champName = "Ashe"				, spellType = "line" 	 	, projectileSpeed = 1600		, spellDelay = 250	, spellRange = 20000	, spellRadius = 130		, collision = false	, projectileName = "EnchantedCrystalArrow_mis.troy"},
 -- Bard
-["BardQ"] 						= 	{ slot = _Q , champName = "Bard"				, spellType = "line" 	 	, projectileSpeed = 1600		, spellDelay = 250	, spellRange = 950		, spellRadius = 60		, collision = true	},
+["BardQ"] 						= 	{ slot = _Q , champName = "Bard"				, spellType = "line" 	 	, projectileSpeed = 1600		, spellDelay = 250	, spellRange = 950		, spellRadius = 60		, collision = true	, projectileName = "Bard_Base_Q_Missile_mis.troy"},
 -- Blitzcrank
 ["RocketGrab"] 					= 	{ slot = _Q , champName = "Blitzcrank"			, spellType = "line" 	 	, projectileSpeed = 1800		, spellDelay = 250	, spellRange = 1050		, spellRadius = 70		, collision = true	, projectileName = "FistGrab_mis.troy"},
 -- Braum
-["BraumQ"] 						= 	{ slot = _Q , champName = "Braum"				, spellType = "line" 	 	, projectileSpeed = 1200		, spellDelay = 250	, spellRange = 1000		, spellRadius = 100		, collision = true	},
-["BraumRWrapper"] 				= 	{ slot = _R , champName = "Braum"				, spellType = "line" 	 	, projectileSpeed = 1125		, spellDelay = 500	, spellRange = 1250		, spellRadius = 100		, collision = false	},
+["BraumQ"] 						= 	{ slot = _Q , champName = "Braum"				, spellType = "line" 	 	, projectileSpeed = 1200		, spellDelay = 250	, spellRange = 1000		, spellRadius = 100		, collision = true	, projectileName = ""},
+["BraumRWrapper"] 				= 	{ slot = _R , champName = "Braum"				, spellType = "line" 	 	, projectileSpeed = 1125		, spellDelay = 500	, spellRange = 1250		, spellRadius = 100		, collision = false	, projectileName = ""},
 -- Cassiopeia
-["CassiopeiaPetrifyingGaze"]	= 	{ slot = _R , champName = "Cassiopeia"			, spellType = "line" 	 	, projectileSpeed = math.huge	, spellDelay = 500	, spellRange = 825		, spellRadius = 150		, collision = false	},
+["CassiopeiaPetrifyingGaze"]	= 	{ slot = _R , champName = "Cassiopeia"			, spellType = "line" 	 	, projectileSpeed = math.huge	, spellDelay = 500	, spellRange = 825		, spellRadius = 150		, collision = false	, projectileName = ""},
 -- Chogath
 ["Rupture"] 					= 	{ slot = _Q , champName = "Chogath"				, spellType = "circular" 	, projectileSpeed = math.huge	, spellDelay = 1200	, spellRange = 950		, spellRadius = 250		, collision = false },
 -- Darius
-["DariusAxeGrabCone"] 			= 	{ slot = _E , champName = "Darius"				, spellType = "line" 		, projectileSpeed = math.huge	, spellDelay = 320	, spellRange = 570		, spellRadius = 150		, collision = false },
+["DariusAxeGrabCone"] 			= 	{ slot = _E , champName = "Darius"				, spellType = "line" 		, projectileSpeed = math.huge	, spellDelay = 320	, spellRange = 570		, spellRadius = 150		, collision = false , projectileName = ""},
 -- Diana
 ["DianaVortex"] 				= 	{ slot = _E , champName = "Diana"				, spellType = "circular" 	, projectileSpeed = math.huge	, spellDelay = 250	, spellRange = 350		, spellRadius = 350		, collision = false	},
 -- DrMundo
@@ -73,12 +73,12 @@ CC = {
 ["GalioResoluteSmite"] 			= 	{ slot = _Q , champName = "Galio"				, spellType = "circular" 	, projectileSpeed = 1200		, spellDelay = 250	, spellRange = 1040		, spellRadius = 235		, collision = false },
 ["GalioIdolOfDurand"] 			= 	{ slot = _R , champName = "Galio"				, spellType = "aoe" 		, projectileSpeed = math.huge	, spellDelay = 250	, spellRange = 600		, spellRadius = 600		, collision = false },
 -- Gnar
-["gnarbigq"] 					= 	{ slot = _Q , champName = "Gnar"				, spellType = "line" 		, projectileSpeed = 2000		, spellDelay = 500	, spellRange = 1150		, spellRadius = 90		, collision = true  },
-["GnarQ"] 						= 	{ slot = _Q , champName = "Gnar"				, spellType = "line" 		, projectileSpeed = 2400		, spellDelay = 250	, spellRange = 1185		, spellRadius = 60		, collision = true  },
-["gnarbigw"] 					= 	{ slot = _W , champName = "Gnar"				, spellType = "line" 		, projectileSpeed = math.huge	, spellDelay = 600	, spellRange = 600		, spellRadius = 100		, collision = false },
+["gnarbigq"] 					= 	{ slot = _Q , champName = "Gnar"				, spellType = "line" 		, projectileSpeed = 2000		, spellDelay = 500	, spellRange = 1150		, spellRadius = 90		, collision = true  , projectileName = ""},
+["GnarQ"] 						= 	{ slot = _Q , champName = "Gnar"				, spellType = "line" 		, projectileSpeed = 2400		, spellDelay = 250	, spellRange = 1185		, spellRadius = 60		, collision = true  , projectileName = ""},
+["gnarbigw"] 					= 	{ slot = _W , champName = "Gnar"				, spellType = "line" 		, projectileSpeed = math.huge	, spellDelay = 600	, spellRange = 600		, spellRadius = 100		, collision = false , projectileName = ""},
 ["GnarR"] 						= 	{ slot = _R , champName = "Gnar"				, spellType = "aoe" 		, projectileSpeed = math.huge	, spellDelay = 250	, spellRange = 500		, spellRadius = 500		, collision = false },
 -- Gragas
-["GragasE"] 					= 	{ slot = _E , champName = "Gragas"				, spellType = "line" 		, projectileSpeed = 1200		, spellDelay = 0	, spellRange = 950		, spellRadius = 200		, collision = true  },
+["GragasE"] 					= 	{ slot = _E , champName = "Gragas"				, spellType = "line" 		, projectileSpeed = 1200		, spellDelay = 0	, spellRange = 950		, spellRadius = 200		, collision = true  , projectileName = ""},
 ["GragasR"] 					= 	{ slot = _R , champName = "Gragas"				, spellType = "circular" 	, projectileSpeed = 1750		, spellDelay = 250	, spellRange = 1050		, spellRadius = 350		, collision = false },
 -- Hecarim
 ["HecarimUlt"] 					= 	{ slot = _R , champName = "Hecarim"				, spellType = "circular" 	, projectileSpeed = 1100		, spellDelay = 10	, spellRange = 1500		, spellRadius = 300		, collision = false },
@@ -90,16 +90,16 @@ CC = {
 ["HowlingGale"] 				= 	{ slot = _Q , champName = "Janna"				, spellType = "line" 		, projectileSpeed = 900			, spellDelay = 0	, spellRange = 1700		, spellRadius = 120		, collision = false , projectileName = "HowlingGale_mis.troy"},
 ["SowTheWind"] 					= 	{ slot = _W , champName = "Janna"				, spellType = "target" 		, projectileSpeed = 1000		, spellDelay = 250	, spellRange = 600		, spellRadius = 0		, collision = false },
 -- JarvanIV
-["JarvanIVDragonStrike2"] 		= 	{ slot = _Q , champName = "JarvanIV"			, spellType = "line" 		, projectileSpeed = 1800		, spellDelay = 250	, spellRange = 845		, spellRadius = 120		, collision = false	},
+["JarvanIVDragonStrike2"] 		= 	{ slot = _Q , champName = "JarvanIV"			, spellType = "line" 		, projectileSpeed = 1800		, spellDelay = 250	, spellRange = 845		, spellRadius = 120		, collision = false	, projectileName = ""},
 -- Jayce
 ["JayceToTheSkies"] 			= 	{ slot = _Q , champName = "Jayce"				, spellType = "target" 		, projectileSpeed = 1000		, spellDelay = 250	, spellRange = 600		, spellRadius = 100		, collision = false	},
 ["JayceThunderingBlow"] 		= 	{ slot = _E , champName = "Jayce"				, spellType = "target" 		, projectileSpeed = math.huge	, spellDelay = 250	, spellRange = 240		, spellRadius = 0		, collision = false	},
 -- Karma
-["KarmaQMissileMantra"] 		= 	{ slot = _Q , champName = "Karma"				, spellType = "line" 		, projectileSpeed = 1700		, spellDelay = 250	, spellRange = 1050		, spellRadius = 90		, collision = true	},
-["KarmaQ"] 						= 	{ slot = _Q , champName = "Karma"				, spellType = "line" 		, projectileSpeed = 1700		, spellDelay = 250	, spellRange = 1050		, spellRadius = 90		, collision = true	},
+["KarmaQMissileMantra"] 		= 	{ slot = _Q , champName = "Karma"				, spellType = "line" 		, projectileSpeed = 1700		, spellDelay = 250	, spellRange = 1050		, spellRadius = 90		, collision = true	, projectileName = ""},
+["KarmaQ"] 						= 	{ slot = _Q , champName = "Karma"				, spellType = "line" 		, projectileSpeed = 1700		, spellDelay = 250	, spellRange = 1050		, spellRadius = 90		, collision = true	, projectileName = ""},
 ["KarmaW"] 						= 	{ slot = _W , champName = "Karma"				, spellType = "target" 		, projectileSpeed = math.huge	, spellDelay = 250	, spellRange = 1000		, spellRadius = 0		, collision = false	}, -- Check spellname
 -- Kassadin
-["ForcePulse"] 					= 	{ slot = _E , champName = "Kassadin"			, spellType = "line" 		, projectileSpeed = math.huge	, spellDelay = 250	, spellRange = 700		, spellRadius = 100		, collision = false	},
+["ForcePulse"] 					= 	{ slot = _E , champName = "Kassadin"			, spellType = "line" 		, projectileSpeed = math.huge	, spellDelay = 250	, spellRange = 700		, spellRadius = 100		, collision = false	, projectileName = ""},
 -- Kayle
 ["JudicatorReckoning"] 			= 	{ slot = _Q , champName = "Kayle"				, spellType = "target" 		, projectileSpeed = 1000		, spellDelay = 250	, spellRange = 650		, spellRadius = 0		, collision = false	},
 -- KhaZix
@@ -129,14 +129,14 @@ CC = {
 -- Malzahar
 ["AlZaharNetherGrasp"] 			= 	{ slot = _R , champName = "Malzahar"			, spellType = "target" 		, projectileSpeed = math.huge	, spellDelay = 250	, spellRange = 700		, spellRadius = 0		, collision = false	},
 -- Maokai
-["MaokaiTrunkLine"] 			= 	{ slot = _Q , champName = "Maokai"				, spellType = "line" 		, projectileSpeed = 1000		, spellDelay = 250	, spellRange = 600		, spellRadius = 100		, collision = false	},
+["MaokaiTrunkLine"] 			= 	{ slot = _Q , champName = "Maokai"				, spellType = "line" 		, projectileSpeed = 1000		, spellDelay = 250	, spellRange = 600		, spellRadius = 100		, collision = false	, projectileName = ""},
 ["MaokaiW"] 					= 	{ slot = _W , champName = "Maokai"				, spellType = "target" 		, projectileSpeed = 1000		, spellDelay = 250	, spellRange = 600		, spellRadius = 0		, collision = false	}, -- check spellname
 -- Morgana
 ["DarkBindingMissile"] 			= 	{ slot = _Q , champName = "Morgana"				, spellType = "line" 		, projectileSpeed = 1200		, spellDelay = 250	, spellRange = 1300		, spellRadius = 80		, collision = true	, projectileName = "DarkBinding_mis.troy"},
 ["SoulShackles"] 				= 	{ slot = _R , champName = "Morgana"				, spellType = "aoe" 		, projectileSpeed = math.huge	, spellDelay = 250	, spellRange = 600		, spellRadius = 600		, collision = false	},
 -- Nami
 ["NamiQ"] 						= 	{ slot = _Q , champName = "Nami"				, spellType = "circular" 	, projectileSpeed = math.huge	, spellDelay = 1000	, spellRange = 875		, spellRadius = 200		, collision = false	},
-["NamiR"] 						= 	{ slot = _R , champName = "Nami"				, spellType = "line" 		, projectileSpeed = 850			, spellDelay = 500	, spellRange = 2750		, spellRadius = 250		, collision = false	},
+["NamiR"] 						= 	{ slot = _R , champName = "Nami"				, spellType = "line" 		, projectileSpeed = 850			, spellDelay = 500	, spellRange = 2750		, spellRadius = 250		, collision = false	, projectileName = ""},
 -- Nasus
 ["NasusW"] 						= 	{ slot = _W , champName = "Nasus"				, spellType = "target" 		, projectileSpeed = math.huge	, spellDelay = 250	, spellRange = 600		, spellRadius = 0		, collision = false	},
 -- Nautilus
@@ -160,7 +160,7 @@ CC = {
 -- Rammus
 ["PuncturingTaunt"]				= 	{ slot = _E , champName = "Rammus"				, spellType = "target" 		, projectileSpeed = math.huge	, spellDelay = 250	, spellRange = 325		, spellRadius = 0		, collision = false	},
 -- Rengar
-["RengarE"]						= 	{ slot = _E , champName = "Rengar"				, spellType = "line" 		, projectileSpeed = 1500		, spellDelay = 250	, spellRange = 1000		, spellRadius = 70		, collision = true	},
+["RengarE"]						= 	{ slot = _E , champName = "Rengar"				, spellType = "line" 		, projectileSpeed = 1500		, spellDelay = 250	, spellRange = 1000		, spellRadius = 70		, collision = true	, projectileName = ""},
 -- Riven
 ["RivenMartyr"]					= 	{ slot = _W , champName = "Riven"				, spellType = "aoe" 		, projectileSpeed = math.huge	, spellDelay = 250	, spellRange = 280		, spellRadius = 280		, collision = false	},
 -- Rumble
@@ -168,37 +168,37 @@ CC = {
 -- Ryze
 ["RyzeW"]						= 	{ slot = _W , champName = "Ryze"				, spellType = "target" 		, projectileSpeed = math.huge	, spellDelay = 250	, spellRange = 600		, spellRadius = 0		, collision = false	},
 -- Sejuani
-["SejuaniArcticAssault"]		= 	{ slot = _Q , champName = "Sejuani"				, spellType = "line" 		, projectileSpeed = 1600		, spellDelay = 0	, spellRange = 900		, spellRadius = 70		, collision = false	},
-["SejuaniGlacialPrisonCast"]	= 	{ slot = _R , champName = "Sejuani"				, spellType = "line" 		, projectileSpeed = 1600		, spellDelay = 250	, spellRange = 1200		, spellRadius = 110		, collision = false	},
+["SejuaniArcticAssault"]		= 	{ slot = _Q , champName = "Sejuani"				, spellType = "line" 		, projectileSpeed = 1600		, spellDelay = 0	, spellRange = 900		, spellRadius = 70		, collision = false	, projectileName = ""},
+["SejuaniGlacialPrisonCast"]	= 	{ slot = _R , champName = "Sejuani"				, spellType = "line" 		, projectileSpeed = 1600		, spellDelay = 250	, spellRange = 1200		, spellRadius = 110		, collision = false	, projectileName = ""},
 -- Shaco
 ["TwoShivPoison"]				= 	{ slot = _E , champName = "Shaco"				, spellType = "target" 		, projectileSpeed = 1000		, spellDelay = 250	, spellRange = 625		, spellRadius = 0		, collision = false	},
 -- Shen
-["ShenShadowDash"]				= 	{ slot = _E , champName = "Shen"				, spellType = "line" 		, projectileSpeed = 1600		, spellDelay = 0	, spellRange = 650		, spellRadius = 50		, collision = false	},
+["ShenShadowDash"]				= 	{ slot = _E , champName = "Shen"				, spellType = "line" 		, projectileSpeed = 1600		, spellDelay = 0	, spellRange = 650		, spellRadius = 50		, collision = false	, projectileName = ""},
 -- Shyvana
-["ShyvanaTransformCast"]		= 	{ slot = _R , champName = "Shyvana"				, spellType = "line" 		, projectileSpeed = 1100		, spellDelay = 10	, spellRange = 1000		, spellRadius = 160		, collision = false	},
+["ShyvanaTransformCast"]		= 	{ slot = _R , champName = "Shyvana"				, spellType = "line" 		, projectileSpeed = 1100		, spellDelay = 10	, spellRange = 1000		, spellRadius = 160		, collision = false	, projectileName = ""},
 -- Singed
 ["Fling"]						= 	{ slot = _E , champName = "Singed"				, spellType = "target" 		, projectileSpeed = math.huge	, spellDelay = 250	, spellRange = 125		, spellRadius = 0		, collision = false	},
 -- Skarner
-["SkarnerFracture"]				= 	{ slot = _E , champName = "Skarner"				, spellType = "line" 		, projectileSpeed = 1400		, spellDelay = 250	, spellRange = 1000		, spellRadius = 60		, collision = false	},
+["SkarnerFracture"]				= 	{ slot = _E , champName = "Skarner"				, spellType = "line" 		, projectileSpeed = 1400		, spellDelay = 250	, spellRange = 1000		, spellRadius = 60		, collision = false	, projectileName = ""},
 ["SkarnerImpale"]				= 	{ slot = _R , champName = "Skarner"				, spellType = "target" 		, projectileSpeed = math.huge	, spellDelay = 250	, spellRange = 350		, spellRadius = 0		, collision = false	}, -- check spellname
 -- Sona
-["SonaR"]						= 	{ slot = _R , champName = "Sona"				, spellType = "line" 		, projectileSpeed = 2400		, spellDelay = 250	, spellRange = 1000		, spellRadius = 140		, collision = false	},
+["SonaR"]						= 	{ slot = _R , champName = "Sona"				, spellType = "line" 		, projectileSpeed = 2400		, spellDelay = 250	, spellRange = 1000		, spellRadius = 140		, collision = false	, projectileName = ""},
 -- Swain
 ["SwainQ"]						= 	{ slot = _Q , champName = "Swain"				, spellType = "target" 		, projectileSpeed = math.huge	, spellDelay = 250	, spellRange = 625		, spellRadius = 0		, collision = false	}, -- check spellname
 ["SwainShadowGrasp"]			= 	{ slot = _W , champName = "Swain"				, spellType = "circular" 	, projectileSpeed = math.huge	, spellDelay = 1100	, spellRange = 900		, spellRadius = 250		, collision = false	},
 -- Syndra
 ["syndrawcast"]					= 	{ slot = _W , champName = "Syndra"				, spellType = "circular" 	, projectileSpeed = 1450		, spellDelay = 250	, spellRange = 925		, spellRadius = 220		, collision = false	},
-["SyndraE"]						= 	{ slot = _E , champName = "Syndra"				, spellType = "line" 		, projectileSpeed = 1500		, spellDelay = 250	, spellRange = 800		, spellRadius = 150		, collision = false	},
+["SyndraE"]						= 	{ slot = _E , champName = "Syndra"				, spellType = "line" 		, projectileSpeed = 1500		, spellDelay = 250	, spellRange = 800		, spellRadius = 150		, collision = false	, projectileName = ""},
 -- TahmKench
-["TahmKenchQ"]					= 	{ slot = _Q , champName = "TahmKench"			, spellType = "line" 		, projectileSpeed = 2000		, spellDelay = 250	, spellRange = 950		, spellRadius = 90		, collision = true	},
+["TahmKenchQ"]					= 	{ slot = _Q , champName = "TahmKench"			, spellType = "line" 		, projectileSpeed = 2000		, spellDelay = 250	, spellRange = 950		, spellRadius = 90		, collision = true	, projectileName = ""},
 ["TahmKenchE"]					= 	{ slot = _E , champName = "TahmKench"			, spellType = "target" 		, projectileSpeed = math.huge	, spellDelay = 250	, spellRange = 250		, spellRadius = 0		, collision = false	}, -- check spellname
 -- Taric
 ["Dazzle"]						= 	{ slot = _E , champName = "Taric"				, spellType = "target" 		, projectileSpeed = math.huge	, spellDelay = 250	, spellRange = 625		, spellRadius = 0		, collision = false	}, -- check spellname
 -- Teemo
 ["BlindingDart"]				= 	{ slot = _Q , champName = "Teemo"				, spellType = "target" 		, projectileSpeed = 2000		, spellDelay = 250	, spellRange = 580		, spellRadius = 0		, collision = false	},
 -- Thresh
-["ThreshQ"]						= 	{ slot = _Q , champName = "Thresh"				, spellType = "line" 		, projectileSpeed = 1900		, spellDelay = 500	, spellRange = 1100		, spellRadius = 70		, collision = true	},
-["ThreshE"]						= 	{ slot = _E , champName = "Thresh"				, spellType = "line" 		, projectileSpeed = 2000		, spellDelay = 0	, spellRange = 1075/2	, spellRadius = 110		, collision = false	},
+["ThreshQ"]						= 	{ slot = _Q , champName = "Thresh"				, spellType = "line" 		, projectileSpeed = 1900		, spellDelay = 500	, spellRange = 1100		, spellRadius = 70		, collision = true	, projectileName = ""},
+["ThreshE"]						= 	{ slot = _E , champName = "Thresh"				, spellType = "line" 		, projectileSpeed = 2000		, spellDelay = 0	, spellRange = 1075/2	, spellRadius = 110		, collision = false	, projectileName = ""},
 -- Tristana
 ["TristanaR"]					= 	{ slot = _R , champName = "Tristana"			, spellType = "target" 		, projectileSpeed = 2000		, spellDelay = 250	, spellRange = 669		, spellRadius = 0		, collision = false	},
 -- Tryndamere
@@ -206,29 +206,29 @@ CC = {
 -- Urgot
 ["UrgotR"]						= 	{ slot = _R , champName = "Urgot"				, spellType = "target" 		, projectileSpeed = math.huge	, spellDelay = 250	, spellRange = 850		, spellRadius = 0		, collision = false	}, -- check spellName
 -- Varus
-["VarusR"]						= 	{ slot = _R , champName = "Varus"				, spellType = "line" 		, projectileSpeed = 1950		, spellDelay = 250	, spellRange = 1200		, spellRadius = 100		, collision = false	},
+["VarusR"]						= 	{ slot = _R , champName = "Varus"				, spellType = "line" 		, projectileSpeed = 1950		, spellDelay = 250	, spellRange = 1200		, spellRadius = 100		, collision = false	, projectileName = ""},
 -- Vayne
 ["VayneCondemn"]				= 	{ slot = _E , champName = "Vayne"				, spellType = "target" 		, projectileSpeed = 2000		, spellDelay = 250	, spellRange = 550		, spellRadius = 0		, collision = false	},
 -- Veigar
 ["VeigarEventHorizon"]			= 	{ slot = _E , champName = "Veigar"				, spellType = "circular" 	, projectileSpeed = math.huge	, spellDelay = 500	, spellRange = 700		, spellRadius = 425		, collision = false	},
 -- VelKoz
-["VelkozQMissile"]				= 	{ slot = _Q , champName = "Velkoz"				, spellType = "line" 		, projectileSpeed = 1300		, spellDelay = 250	, spellRange = 1250		, spellRadius = 50		, collision = true	},
-["VelkozQMissileSplit"]			= 	{ slot = _Q , champName = "Velkoz"				, spellType = "line" 		, projectileSpeed = 2100		, spellDelay = 0	, spellRange = 1100		, spellRadius = 45		, collision = true	},
+["VelkozQMissile"]				= 	{ slot = _Q , champName = "Velkoz"				, spellType = "line" 		, projectileSpeed = 1300		, spellDelay = 250	, spellRange = 1250		, spellRadius = 50		, collision = true	, projectileName = ""},
+["VelkozQMissileSplit"]			= 	{ slot = _Q , champName = "Velkoz"				, spellType = "line" 		, projectileSpeed = 2100		, spellDelay = 0	, spellRange = 1100		, spellRadius = 45		, collision = true	, projectileName = ""},
 ["VelkozE"]						= 	{ slot = _E , champName = "Velkoz"				, spellType = "circular" 	, projectileSpeed = 1500		, spellDelay = 0	, spellRange = 950		, spellRadius = 225		, collision = false	},
 -- Vi
-["ViQMissile"]					= 	{ slot = _Q , champName = "Vi"					, spellType = "line" 		, projectileSpeed = 1500		, spellDelay = 0	, spellRange = 725		, spellRadius = 90		, collision = false	},
-["ViR"]							= 	{ slot = _R , champName = "Vi"					, spellType = "line" 		, projectileSpeed = 1000		, spellDelay = 250	, spellRange = 800		, spellRadius = 0		, collision = false	}, -- check spellname
+["ViQMissile"]					= 	{ slot = _Q , champName = "Vi"					, spellType = "line" 		, projectileSpeed = 1500		, spellDelay = 0	, spellRange = 725		, spellRadius = 90		, collision = false	, projectileName = ""},
+["ViR"]							= 	{ slot = _R , champName = "Vi"					, spellType = "line" 		, projectileSpeed = 1000		, spellDelay = 250	, spellRange = 800		, spellRadius = 0		, collision = false	, projectileName = ""}, -- check spellname
 -- Viktor
 ["ViktorGravitonField"]			= 	{ slot = _W , champName = "Viktor"				, spellType = "circular" 	, projectileSpeed = math.huge	, spellDelay = 1500	, spellRange = 625		, spellRadius = 300		, collision = false	},
 -- Warwick
 ["InfiniteDuress"]				= 	{ slot = _R , champName = "Warwick"				, spellType = "target" 		, projectileSpeed = math.huge	, spellDelay = 0	, spellRange = 700		, spellRadius = 0		, collision = false	}, -- check spellname
 -- Xerath
 ["XerathArcaneBarrage2"]		= 	{ slot = _W , champName = "Xerath"				, spellType = "circular" 	, projectileSpeed = 1600		, spellDelay = 250	, spellRange = 1125		, spellRadius = 60		, collision = true	},
-["XerathMageSpear"]				= 	{ slot = _E , champName = "Xerath"				, spellType = "line" 		, projectileSpeed = math.huge	, spellDelay = 750	, spellRange = 1100		, spellRadius = 280		, collision = false	},
+["XerathMageSpear"]				= 	{ slot = _E , champName = "Xerath"				, spellType = "line" 		, projectileSpeed = math.huge	, spellDelay = 750	, spellRange = 1100		, spellRadius = 280		, collision = false	, projectileName = ""},
 -- Yasou
-["yasuoq3w"]					= 	{ slot = _Q , champName = "Yasou"				, spellType = "line" 		, projectileSpeed = 1200		, spellDelay = 250	, spellRange = 1025		, spellRadius = 90		, collision = false	},
+["yasuoq3w"]					= 	{ slot = _Q , champName = "Yasou"				, spellType = "line" 		, projectileSpeed = 1200		, spellDelay = 250	, spellRange = 1025		, spellRadius = 90		, collision = false	, projectileName = ""},
 -- Zac
-["ZacQ"]						= 	{ slot = _Q , champName = "Zac"					, spellType = "line" 		, projectileSpeed = math.huge	, spellDelay = 500	, spellRange = 550		, spellRadius = 120		, collision = false	},
+["ZacQ"]						= 	{ slot = _Q , champName = "Zac"					, spellType = "line" 		, projectileSpeed = math.huge	, spellDelay = 500	, spellRange = 550		, spellRadius = 120		, collision = false	, projectileName = ""},
 ["ZacE"]						= 	{ slot = _E , champName = "Zac"					, spellType = "circular" 	, projectileSpeed = 1500		, spellDelay = 0	, spellRange = 1800		, spellRadius = 300		, collision = false	}, -- check spellname, projectileSpeed
 -- Ziggs
 ["ZiggsW"]						= 	{ slot = _W , champName = "Ziggs"				, spellType = "circular" 	, projectileSpeed = 3000		, spellDelay = 250	, spellRange = 2000		, spellRadius = 275		, collision = false	},
@@ -236,11 +236,10 @@ CC = {
 ["ZileanQ"]						= 	{ slot = _Q , champName = "Zilean"				, spellType = "circular" 	, projectileSpeed = 2000		, spellDelay = 300	, spellRange = 900		, spellRadius = 250		, collision = false	},
 ["TimeWarp"]					= 	{ slot = _E , champName = "Zilean"				, spellType = "target" 		, projectileSpeed = math.huge	, spellDelay = 0	, spellRange = 550		, spellRadius = 0		, collision = false	},
 -- Zyra
-["ZyraGraspingRoots"]			= 	{ slot = _E , champName = "Zyra"				, spellType = "line" 		, projectileSpeed = 1400		, spellDelay = 250	, spellRange = 1150		, spellRadius = 70		, collision = false	},
+["ZyraGraspingRoots"]			= 	{ slot = _E , champName = "Zyra"				, spellType = "line" 		, projectileSpeed = 1400		, spellDelay = 250	, spellRange = 1150		, spellRadius = 70		, collision = false	, projectileName = ""},
 ["ZyraBrambleZone"]				= 	{ slot = _R , champName = "Zyra"				, spellType = "circular" 	, projectileSpeed = math.huge	, spellDelay = 500	, spellRange = 700		, spellRadius = 525		, collision = false	}
 }
 
-local myHero = GetMyHero()
 local global_ticks = 0
 local global_ticks1 = 0
 
@@ -253,7 +252,7 @@ local CCSpell = CC[spellProc.name]
 			if spellProc.target == myHero and CCSpell.spellType == "target" then
 				CastSpell(_E)
 			end
-			if CCSpell.spellType == "line" and GoS:IsInDistance(unit, CCSpell.spellRange + GetMoveSpeed(myHero)) then
+			if CCSpell.spellType == "line" and IsInDistance(unit, CCSpell.spellRange + GetMoveSpeed(myHero)) then
 				-- local CCPred = GetPredictionForPlayer(GetOrigin(unit),myHero,GetMoveSpeed(myHero),CCSpell.projectileSpeed,CCSpell.spellDelay,CCSpell.spellRange,CCSpell.spellRadius,CCSpell.collision,false)
 					-- if CCPred.HitChance == 1 then
 				CCVector = VectorWay(spellProc.startPos, spellProc.endPos)
@@ -270,20 +269,20 @@ local CCSpell = CC[spellProc.name]
 
 				--
 			end
-			if CCSpell.spellType == "circular" and GoS:IsInDistance(unit, CCSpell.spellRange + GetMoveSpeed(myHero)) then
+			if CCSpell.spellType == "circular" and IsInDistance(unit, CCSpell.spellRange + GetMoveSpeed(myHero)) then
 				local spellTime = (DistanceBetween((GetOrigin(unit)),spellProc.endPos) / CCSpell.projectileSpeed) * 1000 + CCSpell.spellDelay
 				local Ticker = GetTickCount()	
 				if (global_ticks) < Ticker then
-					GoS:DelayAction(function()
+					DelayAction(function()
 								
-						if GoS:GetDistance(spellProc.endPos) < CCSpell.spellRadius then
+						if GetDistance(spellProc.endPos) < CCSpell.spellRadius then
 							CastSpell(_E)
 						end
 					end, (spellTime)-200)
 					global_ticks = Ticker
 				end	
 			end
-			if CCSpell.spellType == "aoe"  and GoS:IsInDistance(unit, CCSpell.spellRange) then
+			if CCSpell.spellType == "aoe"  and IsInDistance(unit, CCSpell.spellRange) then
 				CastSpell(_E)
 			end
 		end
@@ -294,17 +293,17 @@ end)
 
 OnProcessSpellComplete(function(Object,spellProc)
 if mainMenu.Combo.useW:Value() and mainMenu.Combo.Combo1:Value() then
-	if Object == myHero and CanUseSpell(myHero,_W) == READY and spellProc.name:lower():find("attack") and spellProc.target == GetCurrentTarget() and GoS:ValidTarget(GetCurrentTarget(), 550+GetHitBox(GetCurrentTarget())) then
+	if Object == myHero and CanUseSpell(myHero,_W) == READY and spellProc.name:lower():find("attack") and spellProc.target == GetCurrentTarget() and ValidTarget(GetCurrentTarget(), 550+GetHitBox(GetCurrentTarget())) then
 		CastSpell(_W)
-		GoS:DelayAction(function()
+		DelayAction(function()
 			AttackUnit(GetCurrentTarget())
 		end, 1)
 	end
 end
-if mainMenu.Harass.useW:Value() and mainMenu.Harass.Harass1:Value() and 100*GetCurrentMana(myHero)/GetMaxMana(myHero) >= mainMenu.Harass.Mana:Value() and GoS:ValidTarget(GetCurrentTarget(), 550+GetHitBox(GetCurrentTarget())) then
+if mainMenu.Harass.useW:Value() and mainMenu.Harass.Harass1:Value() and 100*GetCurrentMana(myHero)/GetMaxMana(myHero) >= mainMenu.Harass.Mana:Value() and ValidTarget(GetCurrentTarget(), 550+GetHitBox(GetCurrentTarget())) then
 	if Object == myHero and CanUseSpell(myHero,_W) == READY and spellProc.name:lower():find("attack") and spellProc.target == GetCurrentTarget() then
 		CastSpell(_W)
-		GoS:DelayAction(function()
+		DelayAction(function()
 			AttackUnit(GetCurrentTarget())
 		end, 1)
 	end
@@ -327,19 +326,19 @@ OnTick(function (myHero)
 			-- DrawCircle(spellPos0, radius+GetHitBox(myHero)*1.8,1,255,0xffffffff)
 			-- DrawCircle(spellPos1, radius+GetHitBox(myHero)*1.8,1,255,0xffffffff)
 			if CanUseSpell(myHero,_E) == READY then
-				if GoS:GetDistance(spellPos0) <= radius+GetHitBox(myHero)*1.2 then
+				if GetDistance(spellPos0) <= radius+GetHitBox(myHero)*1.2 then
 					-- CastSpell(_E)
 				end
-				if GoS:GetDistance(spellPos) <= radius+GetHitBox(myHero)*1.2 then
+				if GetDistance(spellPos) <= radius+GetHitBox(myHero)*1.2 then
 					CastSpell(_E)
 				end
-				if GoS:GetDistance(spellPos1) <= radius+GetHitBox(myHero)*1.2 then
+				if GetDistance(spellPos1) <= radius+GetHitBox(myHero)*1.2 then
 					CastSpell(_E)
 				end
-				if GoS:GetDistance(spellPos2) <= radius+GetHitBox(myHero)*1.2 then
+				if GetDistance(spellPos2) <= radius+GetHitBox(myHero)*1.2 then
 					CastSpell(_E)
 				end
-				if GoS:GetDistance(spellPos3) <= radius+GetHitBox(myHero)*1.2 then
+				if GetDistance(spellPos3) <= radius+GetHitBox(myHero)*1.2 then
 					CastSpell(_E)
 				end
 			end
@@ -361,23 +360,23 @@ local redpot = GetItemSlot(myHero,2140)
 -- [Combo
 if mainMenu.Combo.Combo1:Value() then
 
-	if CutBlade >= 1 and GoS:ValidTarget(target,550) and mainMenu.Items.useCut:Value() then
+	if CutBlade >= 1 and ValidTarget(target,550) and mainMenu.Items.useCut:Value() then
 		if CanUseSpell(myHero,GetItemSlot(myHero,3144)) == READY then
 			CastTargetSpell(target, GetItemSlot(myHero,3144))
 		end	
-	elseif bork >= 1 and GoS:ValidTarget(target,550) and (GetMaxHP(myHero) / GetCurrentHP(myHero)) >= 1.25 and mainMenu.Items.useBork:Value() then 
+	elseif bork >= 1 and ValidTarget(target,550) and (GetMaxHP(myHero) / GetCurrentHP(myHero)) >= 1.25 and mainMenu.Items.useBork:Value() then 
 		if CanUseSpell(myHero,GetItemSlot(myHero,3153)) == READY then
 			CastTargetSpell(target,GetItemSlot(myHero,3153))
 		end
 	end
 
-	if ghost >= 1 and GoS:ValidTarget(target,550) and mainMenu.Items.useGhost:Value() then
+	if ghost >= 1 and ValidTarget(target,550) and mainMenu.Items.useGhost:Value() then
 		if CanUseSpell(myHero,GetItemSlot(myHero,3142)) == READY then
 			CastSpell(GetItemSlot(myHero,3142))
 		end
 	end
 	
-	if redpot >= 1 and GoS:ValidTarget(target,550) and mainMenu.Items.useRedPot:Value() then
+	if redpot >= 1 and ValidTarget(target,550) and mainMenu.Items.useRedPot:Value() then
 		if CanUseSpell(myHero,GetItemSlot(myHero,2140)) == READY then
 			CastSpell(GetItemSlot(myHero,2140))
 		end
@@ -385,7 +384,7 @@ if mainMenu.Combo.Combo1:Value() then
 
 -- Q
 	if mainMenu.Combo.useQ:Value() then
-		if CanUseSpell(myHero,_Q) == READY and IsTargetable(target) and GoS:ValidTarget(target,GetCastRange(myHero,_Q)) then
+		if CanUseSpell(myHero,_Q) == READY and IsTargetable(target) and ValidTarget(target,GetCastRange(myHero,_Q)) then
 			local QPred = GetPredictionForPlayer(myHeroPos,target,GetMoveSpeed(target)*1.25,2000,250,1150,70,false,false)
 			if QPred.HitChance == 1 then
 				CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
@@ -398,7 +397,7 @@ end --Combo]
 if mainMenu.Harass.Harass1:Value() then
 -- Q
 	if mainMenu.Harass.useQ:Value() and 100*GetCurrentMana(myHero)/GetMaxMana(myHero) >= mainMenu.Harass.Mana:Value() then
-		if CanUseSpell(myHero,_Q) == READY and IsTargetable(target) and GoS:ValidTarget(target,GetCastRange(myHero,_Q)) then
+		if CanUseSpell(myHero,_Q) == READY and IsTargetable(target) and ValidTarget(target,GetCastRange(myHero,_Q)) then
 			local QPred = GetPredictionForPlayer(myHeroPos,target,GetMoveSpeed(target)*1.25,2000,250,1150,70,false,false)
 			if QPred.HitChance == 1 then
 				CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
