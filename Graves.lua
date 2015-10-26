@@ -1,11 +1,10 @@
-require('Inspired')
+if GetObjectName(GetMyHero()) ~= "Graves" then return end
 
 PrintChat("ADC MAIN | Graves loaded.")
 PrintChat("by Noddy")
 
-
-mainMenu = Menu("ADC MAIN | Graves", "Graves")
-mainMenu:SubMenu("Combo", "Combo")
+local mainMenu = Menu("ADC MAIN | Graves", "Graves")
+mainMenu:Menu("Combo", "Combo")
 mainMenu.Combo:Boolean("useQ", "Use Q in combo", true)
 mainMenu.Combo:Boolean("useW", "Use W in combo", true)
 mainMenu.Combo:Boolean("useE", "Use E to mouse", false)
@@ -14,40 +13,55 @@ mainMenu.Combo:Boolean("Burst", "Burst-Combo", true)
 mainMenu.Combo:Boolean("BurstE", "Burst-E helper", true)
 mainMenu.Combo:Key("Combo1", "Combo", string.byte(" "))
 ---------------------------------------------------------------------------------
-mainMenu:SubMenu("Harass", "Harass")
+mainMenu:Menu("Harass", "Harass")
 mainMenu.Harass:Boolean("hQ", "Use Q", true)
 mainMenu.Harass:Key("Harass1", "Harass", string.byte("C"))
 ---------------------------------------------------------------------------------
-mainMenu:SubMenu("Killsteal", "Killsteal")
+mainMenu:Menu("Killsteal", "Killsteal")
 mainMenu.Killsteal:Boolean("ksQ", "Use Q - KS", true)
 mainMenu.Killsteal:Boolean("ksR", "Use R - KS", true)
 mainMenu.Killsteal:Boolean("ksE", "KS-E helper", false)
 ---------------------------------------------------------------------------------
-mainMenu:SubMenu("Items", "Items")
+mainMenu:Menu("Items", "Items")
 mainMenu.Items:Boolean("useCut", "Bilgewater Cutlass", true)
 mainMenu.Items:Boolean("useBork", "Blade of the Ruined King", true)
 mainMenu.Items:Boolean("useGhost", "Youmuu's Ghostblade", true)
 mainMenu.Items:Boolean("useRedPot", "Elixir of Wrath", true)
 ---------------------------------------------------------------------------------
-mainMenu:SubMenu("Drawings", "Drawings")
+mainMenu:Menu("Drawings", "Drawings")
 mainMenu.Drawings:Boolean("drawR", "Draw R-Damage", true)
 mainMenu.Drawings:Boolean("drawBurst", "Draw Burst-Damage", true)
 
-
-
-
---TODO: Graves
--- Simple Combo Q/W/E/R(ifkillable) [DONE]
--- Burst Combo [DONE]
-
--- KS Q, R, W
--- KS E Helper
-
--- Harass aa-Q [UN]
-
 DPS = 0
 
-OnLoop(function(myHero)
+OnDraw(function(myHero)
+local target = GetCurrentTarget()
+-- R-Damage
+if CanUseSpell(myHero,_R) == READY and ValidTarget(target, 1800) and mainMenu.Drawings.drawR:Value() then
+for _,enemy in pairs(GetEnemyHeroes()) do
+	local rDMG = CalcDamage(myHero,enemy,(150*GetCastLevel(myHero,_R)+100+(1.5*GetBonusDmg(myHero))),0)
+	DrawDmgOverHpBar(enemy,GetCurrentHP(enemy),rDMG,0,0xff00ff00)
+end
+end
+-- Burst-Combo Damage
+if CanUseSpell(myHero,_Q) == READY and CanUseSpell(myHero,_R) == READY and ValidTarget(target,950) and mainMenu.Combo.Burst:Value() then
+	SKILLDPS = CalcDamage(myHero,target,(30*GetCastLevel(myHero,_Q)+30+(0.75*(GetBaseDamage(myHero) + GetBonusDmg(myHero)))),0) + CalcDamage(myHero,target,(120*GetCastLevel(myHero,_R)+80+(1.2*GetBonusDmg(myHero))),0) + CalcDamage(myHero,target,(GetBaseDamage(myHero)+GetBonusDmg(myHero)),0)
+	-- ADD statik
+	if GotBuff(myHero,"itemstatikshankcharge") == 100 then
+		extraDMG = CalcDamage(myHero,target,0,100)
+	else
+		extraDMG = 0
+	end
+	
+	DPS = SKILLDPS + extraDMG
+	
+	if mainMenu.Drawings.drawBurst:Value() then
+		DrawDmgOverHpBar(target,GetCurrentHP(target),DPS,0,0xff00ff00)
+	end	
+end
+end)
+
+OnTick(function(myHero)
 
 local target = GetCurrentTarget()
 local mouse = GetMousePos()
@@ -61,23 +75,23 @@ local redpot = GetItemSlot(myHero,2140)
 
 -- Use Items
 if mainMenu.Combo.Combo1:Value() then
-	if CutBlade >= 1 and GoS:ValidTarget(target,550) and mainMenu.Items.useCut:Value() then
+	if CutBlade >= 1 and ValidTarget(target,550) and mainMenu.Items.useCut:Value() then
 		if CanUseSpell(myHero,GetItemSlot(myHero,3144)) == READY then
 			CastTargetSpell(target, GetItemSlot(myHero,3144))
 		end	
-	elseif bork >= 1 and GoS:ValidTarget(target,550) and (GetMaxHP(myHero) / GetCurrentHP(myHero)) >= 1.25 and mainMenu.Items.useBork:Value() then 
+	elseif bork >= 1 and ValidTarget(target,550) and (GetMaxHP(myHero) / GetCurrentHP(myHero)) >= 1.25 and mainMenu.Items.useBork:Value() then 
 		if CanUseSpell(myHero,GetItemSlot(myHero,3153)) == READY then
 			CastTargetSpell(target,GetItemSlot(myHero,3153))
 		end
 	end
 
-	if ghost >= 1 and GoS:ValidTarget(target,550) and mainMenu.Items.useGhost:Value() then
+	if ghost >= 1 and ValidTarget(target,550) and mainMenu.Items.useGhost:Value() then
 		if CanUseSpell(myHero,GetItemSlot(myHero,3142)) == READY then
 			CastSpell(GetItemSlot(myHero,3142))
 		end
 	end
 	
-	if redpot >= 1 and GoS:ValidTarget(target,550) and mainMenu.Items.useRedPot:Value() then
+	if redpot >= 1 and ValidTarget(target,550) and mainMenu.Items.useRedPot:Value() then
 		if CanUseSpell(myHero,GetItemSlot(myHero,2140)) == READY then
 			CastSpell(GetItemSlot(myHero,2140))
 		end
@@ -86,10 +100,10 @@ end
 
 -- Killsteal
 if mainMenu.Killsteal.ksQ:Value() then
-for i,enemy in pairs(GoS:GetEnemyHeroes()) do
-		if CanUseSpell(myHero,_Q) == READY and GoS:ValidTarget(enemy, 1500) and mainMenu.Killsteal.ksQ:Value() and GetCurrentHP(enemy) < GoS:CalcDamage(myHero,enemy,(30*GetCastLevel(myHero,_Q)+30+(0.75*(GetBaseDamage(myHero) + GetBonusDmg(myHero)))),0) then
+for i,enemy in pairs(GetEnemyHeroes()) do
+		if CanUseSpell(myHero,_Q) == READY and ValidTarget(enemy, 1500) and mainMenu.Killsteal.ksQ:Value() and GetCurrentHP(enemy) < CalcDamage(myHero,enemy,(30*GetCastLevel(myHero,_Q)+30+(0.75*(GetBaseDamage(myHero) + GetBonusDmg(myHero)))),0) then
 			
-			if GoS:ValidTarget(enemy,1500) and CanUseSpell(myHero,_E) == READY and not GoS:IsInDistance(enemy, 925) and mainMenu.Killsteal.ksE:Value() then
+			if ValidTarget(enemy,1500) and CanUseSpell(myHero,_E) == READY and not IsInDistance(enemy, 925) and mainMenu.Killsteal.ksE:Value() then
 				local targetPos = GetOrigin(enemy)
 				CastSkillShot(_E, targetPos.x, targetPos.y, targetPos.z)
 			end
@@ -103,10 +117,10 @@ for i,enemy in pairs(GoS:GetEnemyHeroes()) do
 end	
 
 if mainMenu.Killsteal.ksR:Value() then
-	for i,enemy in pairs(GoS:GetEnemyHeroes()) do
-		if CanUseSpell(myHero,_R) == READY and GoS:ValidTarget(enemy, 2300) and mainMenu.Killsteal.ksR:Value() and GetCurrentHP(enemy) < GoS:CalcDamage(myHero,enemy,(120*GetCastLevel(myHero,_R)+80+(1.2*GetBonusDmg(myHero))),0) then
+	for i,enemy in pairs(GetEnemyHeroes()) do
+		if CanUseSpell(myHero,_R) == READY and ValidTarget(enemy, 2300) and mainMenu.Killsteal.ksR:Value() and GetCurrentHP(enemy) < CalcDamage(myHero,enemy,(120*GetCastLevel(myHero,_R)+80+(1.2*GetBonusDmg(myHero))),0) then
 			
-			if GoS:ValidTarget(enemy,2300) and CanUseSpell(myHero,_E) == READY and not GoS:IsInDistance(enemy, 1800) and mainMenu.Killsteal.ksE:Value() then
+			if ValidTarget(enemy,2300) and CanUseSpell(myHero,_E) == READY and not IsInDistance(enemy, 1800) and mainMenu.Killsteal.ksE:Value() then
 				local targetPos = GetOrigin(enemy)
 				CastSkillShot(_E, targetPos.x, targetPos.y, targetPos.z)
 			end			
@@ -123,36 +137,36 @@ end
 if mainMenu.Combo.Combo1:Value() then
 
 -- Burstcombo
-if CanUseSpell(myHero,_Q) and CanUseSpell(myHero,_R) and GoS:ValidTarget(target,950) and mainMenu.Combo.Burst:Value() and GetCurrentHP(target) < DPS then
-	if GoS:ValidTarget(target, 950) and GoS:IsInDistance(target, 550) then
+if CanUseSpell(myHero,_Q) and CanUseSpell(myHero,_R) and ValidTarget(target,950) and mainMenu.Combo.Burst:Value() and GetCurrentHP(target) < DPS then
+	if ValidTarget(target, 950) and IsInDistance(target, 550) then
 		local RPredBurst = GetPredictionForPlayer(myHeroPos,target,GetMoveSpeed(target),2100,250,1800,100,false,false)
 		local QPredBurst = GetPredictionForPlayer(myHeroPos,target,GetMoveSpeed(target),2000,250,925,50,false,false)
 			if CanUseSpell(myHero,_R) == READY and RPredBurst.HitChance == 1 and CanUseSpell(myHero,_Q) == READY and QPredBurst.HitChance == 1 then
 				CastSkillShot(_R,RPredBurst.PredPos.x,RPredBurst.PredPos.y,RPredBurst.PredPos.z)
-					GoS:DelayAction(function ()
+					DelayAction(function ()
 						CastSkillShot(_Q,QPredBurst.PredPos.x,QPredBurst.PredPos.y,QPredBurst.PredPos.z)
 					end, 50)
 			end
 	end
-	if GoS:ValidTarget(target,950) and not GoS:IsInDistance(target,550) and CanUseSpell(myHero,_E) == READY and mainMenu.Combo.BurstE:Value() then
+	if ValidTarget(target,950) and not IsInDistance(target,550) and CanUseSpell(myHero,_E) == READY and mainMenu.Combo.BurstE:Value() then
 		local targetPos = GetOrigin(target)
 		CastSkillShot(_E, targetPos.x, targetPos.y, targetPos.z)
 	end	
 end
 
 -- Standart
-	if CanUseSpell(myHero,_E) == READY and GoS:ValidTarget(target, 950) and mainMenu.Combo.useE:Value() then
+	if CanUseSpell(myHero,_E) == READY and ValidTarget(target, 950) and mainMenu.Combo.useE:Value() then
 		CastSkillShot(_E, mouse.x, mouse.y, mouse.z)
 	end
 
-	if CanUseSpell(myHero,_Q) == READY and GoS:ValidTarget(target, 950) and mainMenu.Combo.useQ:Value() then
+	if CanUseSpell(myHero,_Q) == READY and ValidTarget(target, 950) and mainMenu.Combo.useQ:Value() then
 		local QPred = GetPredictionForPlayer(myHeroPos,target,GetMoveSpeed(target),2000,250,925,50,false,false)
 		if QPred.HitChance == 1 then
 			CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
 		end
 	end
 
-	if CanUseSpell(myHero,_W) == READY and GoS:ValidTarget(target, 950) and GetCurrentMana(myHero) > 170 and mainMenu.Combo.useW:Value() then
+	if CanUseSpell(myHero,_W) == READY and ValidTarget(target, 950) and GetCurrentMana(myHero) > 170 and mainMenu.Combo.useW:Value() then
 		local WPred = GetPredictionForPlayer(myHeroPos,target,GetMoveSpeed(target),1500,250,950,50,false,false)
 		if WPred.HitChance == 1 then
 			CastSkillShot(_W,WPred.PredPos.x,WPred.PredPos.y,WPred.PredPos.z)
@@ -160,7 +174,7 @@ end
 	end
 	
 	--R 1
-	if CanUseSpell(myHero,_R) == READY and mainMenu.Combo.useR:Value() and GoS:ValidTarget(target,1000) and GetCurrentHP(target) < GoS:CalcDamage(myHero,target,(150*GetCastLevel(myHero,_R)+100+(1.5*GetBonusDmg(myHero))),0) then
+	if CanUseSpell(myHero,_R) == READY and mainMenu.Combo.useR:Value() and ValidTarget(target,1000) and GetCurrentHP(target) < CalcDamage(myHero,target,(150*GetCastLevel(myHero,_R)+100+(1.5*GetBonusDmg(myHero))),0) then
 		-- PrintChat("R1")
 		local RPred1 = GetPredictionForPlayer(myHeroPos,target,GetMoveSpeed(target),2100,250,1800,100,false,false)
 		if RPred1.HitChance == 1 then
@@ -168,7 +182,7 @@ end
 		end
 	end
 	--R 2
-	if GoS:ValidTarget(target,2000) and CanUseSpell(myHero,_R) == READY and mainMenu.Combo.useR:Value() and not GoS:IsInDistance(target, 1000) and GoS:IsInDistance(target,1800) and GetCurrentHP(target) < GoS:CalcDamage(myHero,target,(120*GetCastLevel(myHero,_R)+80+(1.2*GetBonusDmg(myHero))),0) then
+	if ValidTarget(target,2000) and CanUseSpell(myHero,_R) == READY and mainMenu.Combo.useR:Value() and not IsInDistance(target, 1000) and IsInDistance(target,1800) and GetCurrentHP(target) < CalcDamage(myHero,target,(120*GetCastLevel(myHero,_R)+80+(1.2*GetBonusDmg(myHero))),0) then
 		local RPred2 = GetPredictionForPlayer(myHeroPos,target,GetMoveSpeed(target),2100,250,1800,100,false,false)
 		if RPred2.HitChance == 1 then
 			CastSkillShot(_R,RPred2.PredPos.x,RPred2.PredPos.y,RPred2.PredPos.z)
@@ -180,8 +194,8 @@ end
 -- Harass Q
 if mainMenu.Harass.Harass1:Value() then
 	MoveToXYZ(mouse)
-if CanUseSpell(myHero,_Q) == READY and GoS:ValidTarget(target, 700) and mainMenu.Harass.hQ:Value() and (GetMaxMana(myHero) / GetCurrentMana(myHero)) <= 1.5 then
--- if CanUseSpell(myHero,_Q) == READY and GoS:ValidTarget(target, 700) and mainMenu.Harass.hQ:Value() then
+if CanUseSpell(myHero,_Q) == READY and ValidTarget(target, 700) and mainMenu.Harass.hQ:Value() and (GetMaxMana(myHero) / GetCurrentMana(myHero)) <= 1.5 then
+-- if CanUseSpell(myHero,_Q) == READY and ValidTarget(target, 700) and mainMenu.Harass.hQ:Value() then
 	local QPred = GetPredictionForPlayer(myHeroPos,target,GetMoveSpeed(target),2000,250,950,50,false,false)
 	if QPred.HitChance == 1 then
 		CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
@@ -190,27 +204,4 @@ if CanUseSpell(myHero,_Q) == READY and GoS:ValidTarget(target, 700) and mainMenu
 end
 end
 
--- R-Damage
-if CanUseSpell(myHero,_R) == READY and GoS:ValidTarget(target, 1800) and mainMenu.Drawings.drawR:Value() then
-for _,enemy in pairs(GoS:GetEnemyHeroes()) do
-	rDMG = GoS:CalcDamage(myHero,enemy,(150*GetCastLevel(myHero,_R)+100+(1.5*GetBonusDmg(myHero))),0)
-	DrawDmgOverHpBar(enemy,GetCurrentHP(enemy),rDMG,0,0xff00ff00)
-end
-end
--- Burst-Combo Damage
-if CanUseSpell(myHero,_Q) == READY and CanUseSpell(myHero,_R) == READY and GoS:ValidTarget(target,950) and mainMenu.Combo.Burst:Value() then
-	SKILLDPS = GoS:CalcDamage(myHero,target,(30*GetCastLevel(myHero,_Q)+30+(0.75*(GetBaseDamage(myHero) + GetBonusDmg(myHero)))),0) + GoS:CalcDamage(myHero,target,(120*GetCastLevel(myHero,_R)+80+(1.2*GetBonusDmg(myHero))),0) + GoS:CalcDamage(myHero,target,(GetBaseDamage(myHero)+GetBonusDmg(myHero)),0)
-	-- ADD statik
-	if GotBuff(myHero,"itemstatikshankcharge") == 100 then
-		extraDMG = GoS:CalcDamage(myHero,target,0,100)
-	else
-		extraDMG = 0
-	end
-	
-	DPS = SKILLDPS + extraDMG
-	
-	if mainMenu.Drawings.drawBurst:Value() then
-		DrawDmgOverHpBar(target,GetCurrentHP(target),DPS,0,0xff00ff00)
-	end	
-end
 end)
