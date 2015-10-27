@@ -1,5 +1,7 @@
 if GetObjectName(GetMyHero()) ~= "Sivir" then return end
 
+if not pcall( require, "Inspired" ) then PrintChat("You are missing Inspired.lua!") return end
+
 PrintChat("ADC MAIN | Sivir loaded.")
 PrintChat("by Noddy")
 
