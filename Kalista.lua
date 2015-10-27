@@ -129,9 +129,9 @@ if mainMenu.Combo.useR:Value() then
 for _, ally in pairs(GetAllyHeroes()) do
 	if CanUseSpell(myHero,_R) == READY and GotBuff(ally,"kalistacoopstrikeally") == 1 and ValidTarget(target, 1200) then
 		local extraDelay = (GetDistance(ally) / 1500) * 1000
-		local RPred = GetPredictionForPlayer(myHeroPos(),target,GetMoveSpeed(target),1500,100+extraDelay,1250,150,false,true)
+		local RPred = GetPredictionForPlayer(GetOrigin(myHero),target,GetMoveSpeed(target),1500,100+extraDelay,1250,150,false,true)
 		if RPred.HitChance == 1 then
-			CastSpell(_R)	
+			CastSpell(_R)
 		end	
 	end
 end
@@ -172,7 +172,7 @@ if mainMenu.Misc.saveAlly:Value() then
 end
 -- JungleSteal
 if mainMenu.Misc.Jungle:Value() then
-for _,mob in pairs(MinionsAround(myHeroPos(),GetCastRange(myHero,_E),MINION_JUNGLE)) do
+for _,mob in pairs(MinionsAround(GetOrigin(myHero),GetCastRange(myHero,_E),MINION_JUNGLE)) do
 	if CanUseSpell(myHero,_E) == READY and GotBuff(mob,"kalistaexpungemarker") >= 1 and ValidTarget(mob,GetCastRange(myHero,_E)) and GetCurrentHP(mob) < CalcDamage(myHero, mob, (10*GetCastLevel(myHero,_E)+10+(0.6*(GetBaseDamage(myHero)+GetBonusDmg(myHero)))) + (((({[1]=10,[2]=14,[3]=19,[4]=25,[5]=32})[GetCastLevel(myHero,_E)])+((0.025*GetCastLevel(myHero,_E)+0.175)*(GetBaseDamage(myHero)+GetBonusDmg(myHero))))*(GotBuff(mob,"kalistaexpungemarker")-1)),0) then
 		CastSpell(_E)
 	end
@@ -191,7 +191,7 @@ if CanUseSpell(myHero,_Q) == READY and IsTargetable(enemy) and ValidTarget(enemy
 			if unit and unit == myHero and spell then
 				if spell.name:lower():find("attack") then
 						DelayAction(function()
-						local QPred = GetPredictionForPlayer(myHeroPos(),enemy,GetMoveSpeed(enemy),2000,350,1150,70,true,false)
+						local QPred = GetPredictionForPlayer(GetOrigin(myHero),enemy,GetMoveSpeed(enemy),2000,350,1150,70,true,false)
 							if QPred.HitChance == 1 and CanUseSpell(myHero,_Q) == READY and mainMenu.Combo.useQ:Value() and mainMenu.Combo.Combo1:Value() and IsTargetable(enemy) and ValidTarget(enemy,GetCastRange(myHero,_Q)) then
 								CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
 							end
@@ -204,7 +204,7 @@ if CanUseSpell(myHero,_Q) == READY and IsTargetable(enemy) and ValidTarget(enemy
 		end)
 		
 	elseif not IsInDistance(enemy,GetRange(myHero)) then
-	local QPred = GetPredictionForPlayer(myHeroPos(),enemy,GetMoveSpeed(enemy),2000,350,1150,70,true,false)
+	local QPred = GetPredictionForPlayer(GetOrigin(myHero),enemy,GetMoveSpeed(enemy),2000,350,1150,70,true,false)
 		if QPred.HitChance == 1 and CanUseSpell(myHero,_Q) == READY then
 			CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
 		end	
@@ -227,7 +227,7 @@ end
 function ksQ()
 for i,enemy in pairs(GetEnemyHeroes()) do
 	if CanUseSpell(myHero,_Q) == READY and IsTargetable(enemy) and ValidTarget(enemy,GetCastRange(myHero,_Q)) and GetCurrentHP(enemy)+GetDmgShield(enemy) < CalcDamage(myHero, enemy, 60*GetCastLevel(myHero,_Q)-50+(GetBaseDamage(myHero)+GetBonusDmg(myHero)),0) then
-		local QPred = GetPredictionForPlayer(myHeroPos(),enemy,GetMoveSpeed(enemy),2000,350,1150,70,true,false)
+		local QPred = GetPredictionForPlayer(GetOrigin(myHero),enemy,GetMoveSpeed(enemy),2000,350,1150,70,true,false)
 			if QPred.HitChance == 1 then
 			CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
 			end	
@@ -239,7 +239,7 @@ end
 function farmE()
 	local minionX = 0
 	
-    for _,minion in pairs(MinionsAround(myHeroPos(),GetCastRange(myHero,_E),MINION_ENEMY)) do
+    for _,minion in pairs(MinionsAround(GetOrigin(myHero),GetCastRange(myHero,_E),MINION_ENEMY)) do
 		if CanUseSpell(myHero,_E) == READY and GotBuff(minion,"kalistaexpungemarker") >= 1 and ValidTarget(minion,GetCastRange(myHero,_E)) and GetCurrentHP(minion) + GetDmgShield(minion) < CalcDamage(myHero, minion, (10*GetCastLevel(myHero,_E)+10+(0.6*(GetBaseDamage(myHero)+GetBonusDmg(myHero)))) + (((({[1]=10,[2]=14,[3]=19,[4]=25,[5]=32})[GetCastLevel(myHero,_E)])+((0.025*GetCastLevel(myHero,_E)+0.175)*(GetBaseDamage(myHero)+GetBonusDmg(myHero))))*(GotBuff(minion,"kalistaexpungemarker")-1)),0) then
 			minionX = minionX + 1
 			
@@ -254,7 +254,7 @@ end
 -- E if Minion killable + Target
 function useEx()
 local minionXe = 0
-    for _,minion in pairs(MinionsAround(myHeroPos(),GetCastRange(myHero,_E),MINION_ENEMY)) do
+    for _,minion in pairs(MinionsAround(GetOrigin(myHero),GetCastRange(myHero,_E),MINION_ENEMY)) do
 		if CanUseSpell(myHero,_E) == READY and GotBuff(minion,"kalistaexpungemarker") >= 1 and ValidTarget(minion,GetCastRange(myHero,_E)) and GetCurrentHP(minion) + GetDmgShield(minion) < CalcDamage(myHero, minion, (10*GetCastLevel(myHero,_E)+10+(0.6*(GetBaseDamage(myHero)+GetBonusDmg(myHero)))) + (((({[1]=10,[2]=14,[3]=19,[4]=25,[5]=32})[GetCastLevel(myHero,_E)])+((0.025*GetCastLevel(myHero,_E)+0.175)*(GetBaseDamage(myHero)+GetBonusDmg(myHero))))*(GotBuff(minion,"kalistaexpungemarker")-1)),0) then
 			minionXe = minionXe + 1
 		end
@@ -274,7 +274,7 @@ end
 -- E Harass
 function hEx()
 local minionXeh = 0
-    for _,minion in pairs(MinionsAround(myHeroPos(),GetCastRange(myHero,_E),MINION_ENEMY)) do
+    for _,minion in pairs(MinionsAround(GetOrigin(myHero),GetCastRange(myHero,_E),MINION_ENEMY)) do
 		if CanUseSpell(myHero,_E) == READY and GotBuff(minion,"kalistaexpungemarker") >= 1 and ValidTarget(minion,GetCastRange(myHero,_E)) and GetCurrentHP(minion) + GetDmgShield(minion) < CalcDamage(myHero, minion, (10*GetCastLevel(myHero,_E)+10+(0.6*(GetBaseDamage(myHero)+GetBonusDmg(myHero)))) + (((({[1]=10,[2]=14,[3]=19,[4]=25,[5]=32})[GetCastLevel(myHero,_E)])+((0.025*GetCastLevel(myHero,_E)+0.175)*(GetBaseDamage(myHero)+GetBonusDmg(myHero))))*(GotBuff(minion,"kalistaexpungemarker")-1)),0) then
 			minionXeh = minionXeh + 1
 		end
