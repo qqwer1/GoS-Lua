@@ -58,9 +58,8 @@ dmg = function(target) return CalcDamage(myHero, target, 0, 100*GetCastLevel(myH
 if not supportedChamp[GetObjectName(myHero)] then return end
 
 local recallMenu = Menu("RecallUlt", "RecallUlt1")
-recallMenu:Menu("recallult", "Recall Ult (Beta)")
-recallMenu.recallult:Boolean("recallult1", "Recall Ult (Beta)", true)
-recallMenu.recallult:Boolean("recalldraw", "Draw Ult Pos", true)
+recallMenu:Boolean("recallult1", "Recall Ult (Beta)", true)
+recallMenu:Boolean("recalldraw", "Draw Ult Pos", true)
 
 PrintChat("Noddy | RecallUlt loaded.")
 
@@ -78,7 +77,7 @@ OnTick (function (myHero)
 
 Ticker1 = GetTickCount()
 
-if EndPos ~= nil and recallMenu.recallult.recalldraw:Value() then
+if EndPos ~= nil and recallMenu.recalldraw:Value() then
 DrawCircle(EndPos,25,1,255,0xff00ffff)
 DrawCircle(enemyPos1,circlerange,1,100,0xff00ffff)
 	DelayAction(function ()	
@@ -88,8 +87,8 @@ end
 
 for i,enemy in pairs(GetEnemyHeroes()) do	
 
-	if CanUseSpell(myHero,_R) == READY and recallMenu.recallult.recallult1:Value() and ValidTarget(enemy) and GetCurrentHP(enemy) < dmg(enemy) then
-
+	if CanUseSpell(myHero,_R) == READY and recallMenu.recallult1:Value() and ValidTarget(enemy) and GetCurrentHP(enemy) < dmg(enemy) then
+	
 		Ticker = GetTickCount()
 		
 		if (global_ticks + 1000) < Ticker then
@@ -135,7 +134,7 @@ OnProcessRecall(function(Object,recallProc)
 
 if recallProc.isStart == true then
 
-if CanUseSpell(myHero,_R) == READY and GetTeam(Object) ~= GetTeam(myHero) and GetObjectType(Object) == GetObjectType(myHero) and GetCurrentHP(Object)+GetHPRegen(Object)*3 < dmg(Object) and recallMenu.recallult.recallult1:Value() then
+if CanUseSpell(myHero,_R) == READY and GetTeam(Object) ~= GetTeam(myHero) and GetObjectType(Object) == GetObjectType(myHero) and GetCurrentHP(Object)+GetHPRegen(Object)*3 < dmg(Object) and recallMenu.recallult1:Value() then
 
 enemyPos1 = GetOrigin(Object)
 
