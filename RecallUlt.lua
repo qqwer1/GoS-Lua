@@ -149,7 +149,7 @@ local z1 = enemyPos2.z - enemyPos1.z
 		local s = TickerEnd - TickerStart
 		local ssec = s / 1000
 	
-	PrintChat("Sec: "..ssec)
+	-- PrintChat("Sec: "..ssec)
 	
 	local t = recallProc.totalTime
 
