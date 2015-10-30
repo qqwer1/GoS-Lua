@@ -60,6 +60,7 @@ if not supportedChamp[GetObjectName(myHero)] then return end
 local recallMenu = Menu("RecallUlt", "RecallUlt1")
 recallMenu:Boolean("recallult1", "Recall Ult (Beta)", true)
 recallMenu:Boolean("recalldraw", "Draw Ult Pos", true)
+recallMenu:Slider("timex","HitChance: 1=High 5=Low", 2, 1, 5, 1)
 
 PrintChat("Noddy | RecallUlt loaded.")
 
@@ -134,7 +135,7 @@ OnProcessRecall(function(Object,recallProc)
 
 if recallProc.isStart == true then
 
-if CanUseSpell(myHero,_R) == READY and GetTeam(Object) ~= GetTeam(myHero) and GetObjectType(Object) == GetObjectType(myHero) and GetCurrentHP(Object)+GetHPRegen(Object)*3 < dmg(Object) and recallMenu.recallult1:Value() then
+if CanUseSpell(myHero,_R) == READY and GetTeam(Object) ~= GetTeam(myHero) and GetObjectType(Object) == GetObjectType(myHero) and GetCurrentHP(Object)+GetHPRegen(Object)*recallMenu.timex:Value() < dmg(Object) and recallMenu.recallult1:Value() then
 
 enemyPos1 = GetOrigin(Object)
 
@@ -148,7 +149,7 @@ local z1 = enemyPos2.z - enemyPos1.z
 		local s = TickerEnd - TickerStart
 		local ssec = s / 1000
 	
-	-- PrintChat("Sec: "..ssec)
+	PrintChat("Sec: "..ssec)
 	
 	local t = recallProc.totalTime
 
@@ -168,7 +169,7 @@ local z1 = enemyPos2.z - enemyPos1.z
 
 	if GetDistance(targetPos,EndPos) < GetMoveSpeed(Object)*ssec then
 	
-		if tChamp < t and ssec < 3 and distanceChamp <= skillrange then
+		if tChamp < t and ssec < recallMenu.timex:Value() and distanceChamp <= skillrange then
 
 			PrintChat("RecallUlt on "..GetObjectName(Object))
 			CastSkillShot(_R, EndPosX, EndPosY, EndPosZ)
