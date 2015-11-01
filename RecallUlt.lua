@@ -14,7 +14,7 @@ skillrange = 50000,
 speedChamp = 2000,
 delay = 400,
 colision = false,
-dmg = function(target) return CalcDamage(myHero, target, 0, 60*GetCastLevel(myHero,_R)+ 30 + (0.44*GetBonusDmg(myHero)+GetBaseDamage(myHero))) end
+dmg = function(target) return CalcDamage(myHero, target, 60*GetCastLevel(myHero,_R)+ 30 + (0.44*GetBonusDmg(myHero)+GetBaseDamage(myHero)),0) end
 },
 ["Ezreal"] = {
 skillrange = 50000,
@@ -27,7 +27,6 @@ dmg = function(target) return CalcDamage(myHero, target, 0, 45*GetCastLevel(myHe
 ["Jinx"] = {
 skillrange = 50000,
 speedChamp = 2000,
--- speedSpawn = (GetDistance(enemyBasePos) / (1 + (GetDistance(enemyBasePos)-1700)/2600)),
 delay = 600,
 colision = true,
 dmg = function(target) return CalcDamage(myHero, target, ((GetMaxHP(target)-GetCurrentHP(target))*(0.2+0.05*GetCastLevel(myHero, _R))) + 100*GetCastLevel(myHero,_R) + 150 + GetBonusDmg(myHero)) end
@@ -46,7 +45,7 @@ delay = 500,
 colision = false,
 dmg = function(target) return CalcDamage(myHero, target, 0, 100*GetCastLevel(myHero,_R)+ 200 + 0.75*GetBonusAP(myHero)) end
 },
-["Lux"] = {
+["Ziggs"] = {
 skillrange = 5400,
 speedChamp = 5400/3.5,
 delay = 0,
@@ -60,124 +59,230 @@ if not supportedChamp[GetObjectName(myHero)] then return end
 local recallMenu = Menu("RecallUlt", "RecallUlt1")
 recallMenu:Boolean("recallult1", "Recall Ult (Beta)", true)
 recallMenu:Boolean("recalldraw", "Draw Ult Pos", true)
-recallMenu:Slider("timex","HitChance: 1=High 5=Low", 2, 1, 5, 1)
+recallMenu:Slider("timex","HitChance: 1=High 5=Low", 3, 1, 5, 1)
+recallMenu:Slider("extraDelay","Extra Delay (sec)", 2, 0, 5, 1)
+recallMenu:Boolean("print", "Print Information", true)
+recallMenu:Key("dontUlt", "Don't Ult if Combo is active", string.byte(" "))
 
 PrintChat("Noddy | RecallUlt loaded.")
-
-global_ticks = 0
-global_ticks1 = 0
-TickerStart = 0
 
 local skillrange = supportedChamp[GetObjectName(myHero)].skillrange
 local speedChamp = supportedChamp[GetObjectName(myHero)].speedChamp
 local delay = supportedChamp[GetObjectName(myHero)].delay
 local dmg = supportedChamp[GetObjectName(myHero)].dmg
 
--- RECALL ULT
-OnTick (function (myHero)
+global_ticks = 0
 
-Ticker1 = GetTickCount()
+WP1 = {}
+WP2 = {}
+WP3 = {}
+WP4 = {}
 
-if EndPos ~= nil and recallMenu.recalldraw:Value() then
-DrawCircle(EndPos,25,1,255,0xff00ffff)
-DrawCircle(enemyPos1,circlerange,1,100,0xff00ffff)
-	DelayAction(function ()	
-		EndPos = nil	
-	end, 8000)
-end
+OnProcessWaypoint(function(Object,waypointProc)
 
-for i,enemy in pairs(GetEnemyHeroes()) do	
+if GetTeam(Object) ~= GetTeam(myHero) and GetObjectType(Object) == Obj_AI_Hero then
 
-	if CanUseSpell(myHero,_R) == READY and recallMenu.recallult1:Value() and ValidTarget(enemy) and GetCurrentHP(enemy) < dmg(enemy) then
-	
-		Ticker = GetTickCount()
-		
-		if (global_ticks + 1000) < Ticker then
-		DelayAction( function ()
-		
-			if IsVisible(enemy) then
-			enemyPos2 = GetOrigin(enemy)
-			-- PrintChat("enemyPos2")
-			end
-			
-		end,1000)
-		
-		global_ticks = Ticker
-		
-		end
-
-		
--- Start Timers
-
-	if (global_ticks1 + 10) < Ticker1 and GetCurrentHP(enemy) < dmg(enemy) then
-	
-		DelayAction( function ()
-			if not IsVisible(enemy) then
-				-- PrintChat("Start!")
-				enemyPos1 = GetOrigin(enemy)
-				TickerStart = GetTickCount()
-			end
-			if IsVisible(enemy) and GotBuff(enemy,"recall") == 1 then
-				TickerStart = GetTickCount()
-				-- PrintChat("Start! Visible")
-			end
-			
-		 end , 10) 
-		global_ticks1 = Ticker1
-
-	end	
-	
-end
+-- Del
+if WP1[GetNetworkID(Object)] ~= nil then
+	WP1[GetNetworkID(Object)] = nil
 end	
+if WP2[GetNetworkID(Object)] ~= nil then
+	WP2[GetNetworkID(Object)] = nil
+end	
+if WP3[GetNetworkID(Object)] ~= nil then
+	WP3[GetNetworkID(Object)] = nil
+end	
+if WP4[GetNetworkID(Object)] ~= nil then
+	WP4[GetNetworkID(Object)] = nil
+end
+
+-- Add
+check = true
+
+DelayAction(function()
+
+	if waypointProc.index == 1 then
+		startTime = GetGameTimer()
+		WP1[GetNetworkID(Object)] = waypointProc.position;
+		end
+	if waypointProc.index == 2 then
+		WP2[GetNetworkID(Object)] = waypointProc.position;
+		end
+	if waypointProc.index == 3 then
+		WP3[GetNetworkID(Object)] = waypointProc.position;
+		end	
+	if waypointProc.index == 4 then
+		WP4[GetNetworkID(Object)] = waypointProc.position;
+		if GetDistance(Object,waypointProc.position) > 50 then
+		 check = false
+		end
+		end		
+		
+end, 1)
+
+end
 end)
 
-OnProcessRecall(function(Object,recallProc)
+global_ticks1 = 0
 
-if recallProc.isStart == true then
+OnTick(function(myHero)
 
-if CanUseSpell(myHero,_R) == READY and GetTeam(Object) ~= GetTeam(myHero) and GetObjectType(Object) == GetObjectType(myHero) and GetCurrentHP(Object)+GetHPRegen(Object)*recallMenu.timex:Value() < dmg(Object) and recallMenu.recallult1:Value() then
+for i,enemy in pairs(GetEnemyHeroes()) do
+-- if WP1[GetNetworkID(enemy)] ~= nil then
+	-- DrawCircle(WP1[GetNetworkID(enemy)],25,2,0,ARGB(255,255,255,255));
+	-- end
+-- if WP2[GetNetworkID(enemy)] ~= nil then
+	-- DrawCircle(WP2[GetNetworkID(enemy)],25,5,0,ARGB(255,255,255,255));
+	-- end
+-- if WP3[GetNetworkID(enemy)] ~= nil then
+	-- DrawCircle(WP3[GetNetworkID(enemy)],25,7,0,ARGB(255,255,255,255));
+	-- end	
+-- if WP4[GetNetworkID(enemy)] ~= nil then
+	-- DrawCircle(WP4[GetNetworkID(enemy)],25,9,0,ARGB(255,255,255,255));
+	-- end
 
-enemyPos1 = GetOrigin(Object)
+-- Start Timers
+if ValidTarget(enemy) and GetCurrentHP(enemy) < dmg(enemy) and CanUseSpell(myHero,_R) == READY then
+local Ticker1 = GetTickCount()
+	if (global_ticks1 + 1) < Ticker1 then
+		DelayAction(function ()
+			if not IsVisible(enemy) then
+				-- if recallMenu.print:Value() and 8 > GetDistance(myHero,enemy)/speedChamp + recallMenu.extraDelay:Value() then
+					-- PrintChat("Possible RecallUlt on "..GetObjectName(enemy).."! Is backing with "..math.floor(GetCurrentHP(enemy)).." HP")
+				-- end
+				inStart = GetGameTimer()
+				-- PrintChat("Start!")
+			end			
+		 end , 1) 
+		global_ticks1 = Ticker1
+	end	
+end
 
-if enemyPos2 ~= nil and enemyPos1 ~= nil then
+end
 
-local x1 = enemyPos2.x - enemyPos1.x
-local y1 = enemyPos2.y - enemyPos1.y
-local z1 = enemyPos2.z - enemyPos1.z
-
-		local TickerEnd = GetTickCount()
-		local s = TickerEnd - TickerStart
-		local ssec = s / 1000
-	
-	-- PrintChat("Sec: "..ssec)
-	
-	local t = recallProc.totalTime
-
-	local myHeroPos = GetOrigin(myHero)
-	local targetPos = GetOrigin(Object)
-	circlerange = GetMoveSpeed(Object)*ssec
-	
-		local EndPosX = targetPos.x + (-ssec*(x1))
-		local EndPosY = targetPos.y + (-ssec*(y1))
-		local EndPosZ = targetPos.z + (-ssec*(z1))
-
-		EndPos = Vector(EndPosX,EndPosY,EndPosZ)
-		
-	local distanceChamp = math.sqrt(math.pow((myHeroPos.x - EndPosX),2) + math.pow((myHeroPos.y - EndPosY),2) + math.pow((myHeroPos.z - EndPosZ),2))
-
-	tChamp = ((distanceChamp / speedChamp) + (delay/1000)) * 1000
-
-	if GetDistance(targetPos,EndPos) < GetMoveSpeed(Object)*ssec then
-	
-		if tChamp < t and ssec < recallMenu.timex:Value() and distanceChamp <= skillrange then
-
-			PrintChat("RecallUlt on "..GetObjectName(Object))
-			CastSkillShot(_R, EndPosX, EndPosY, EndPosZ)
-			enemyPos2 = nil
+if Pos ~= nil and ultON == true then
+	DelayAction(function()
+		if ultON == true and Pos ~= nil and not recallMenu.dontUlt:Value() then
+			CastSkillShot(_R,Pos)
+			DelayAction(function()
+				Pos = nil
+			end,(GetDistance(myHero,Pos)/speedChamp)*1000)
 		end
+	end, recallMenu.extraDelay:Value()*1000)
+end
+
+end)
+
+OnDraw(function(myHero)
+	if Pos ~= nil and recallMenu.recalldraw:Value() then
+		DrawCircle(Pos,25,2,0,ARGB(255,55,255,255));
+		DrawCircle(unitPos,circleRange,2,100,ARGB(255,55,255,255));
+	end
+end)
+
+OnProcessRecall(function(unit,recall)
+
+if CanUseSpell(myHero,_R) == READY and GetTeam(unit) ~= GetTeam(myHero) and GetObjectType(unit) == GetObjectType(myHero) and GetCurrentHP(unit)+GetHPRegen(unit)*(recallMenu.timex:Value() + GetDistance(myHero,unit)/speedChamp) < dmg(unit) and recallMenu.recallult1:Value() and inStart ~= nil then
+if recall.isStart == true then
+
+	if recallMenu.print:Value() and recall.totalTime/1000 > GetDistance(myHero,unit)/speedChamp + recallMenu.extraDelay:Value() then
+		PrintChat("Possible RecallUlt on "..GetObjectName(unit).."! Is backing with "..math.floor(GetCurrentHP(unit)).." HP")
+	end
+	passedTime = GetGameTimer() - inStart
+
+	if check == true and passedTime <= recallMenu.timex:Value() then
+	local movespd = GetMoveSpeed(unit)
+	circleRange = movespd * passedTime
+	unitPos = GetOrigin(unit)
+-- WP2
+	if WP1[GetNetworkID(unit)] ~= nil and WP2[GetNetworkID(unit)] ~= nil and WP3[GetNetworkID(unit)] == nil and WP4[GetNetworkID(unit)] == nil then
+		local xTime = DistanceBetween(WP1[GetNetworkID(unit)],WP2[GetNetworkID(unit)])/movespd
+
+		local moveTime = xTime-passedTime
+		local WayVector =  VectorWay(WP1[GetNetworkID(unit)],WP2[GetNetworkID(unit)])
+		Pos = WP1[GetNetworkID(unit)] + (-moveTime*(WayVector/-xTime))
+		-- DrawCircle(Pos,25,2,0,ARGB(255,55,255,255));
 	end
 	
-end		
+-- WP3
+	if WP1[GetNetworkID(unit)] ~= nil and WP2[GetNetworkID(unit)] ~= nil and WP3[GetNetworkID(unit)] ~= nil and WP4[GetNetworkID(unit)] == nil then
+		
+		local xTime1 = DistanceBetween(WP1[GetNetworkID(unit)],WP2[GetNetworkID(unit)])/movespd
+		local xTime2 = DistanceBetween(WP2[GetNetworkID(unit)],WP3[GetNetworkID(unit)])/movespd
+		
+		local moveTime1 = xTime1-(passedTime-xTime2)
+		local moveTime2 = xTime2-(passedTime)
+
+		local WayVector1 =  VectorWay(WP1[GetNetworkID(unit)],WP2[GetNetworkID(unit)])
+		local WayVector2 =  VectorWay(WP2[GetNetworkID(unit)],WP3[GetNetworkID(unit)])
+
+		if moveTime2 > 0 then
+			Pos = WP2[GetNetworkID(unit)] + (-moveTime2*(WayVector2/-xTime2))
+		end
+		if moveTime2 < 0 then
+			Pos = WP1[GetNetworkID(unit)] + (-moveTime1*(WayVector1/-xTime1))
+		end
+
+		-- DrawCircle(Pos,25,2,0,ARGB(255,55,255,255));
+
+	end
+-- WP4
+	if WP1[GetNetworkID(unit)] ~= nil and WP2[GetNetworkID(unit)] ~= nil and WP3[GetNetworkID(unit)] ~= nil and WP4[GetNetworkID(unit)] ~= nil then
+		
+		local xTime1 = DistanceBetween(WP1[GetNetworkID(unit)],WP2[GetNetworkID(unit)])/movespd
+		local xTime2 = DistanceBetween(WP2[GetNetworkID(unit)],WP3[GetNetworkID(unit)])/movespd
+		local xTime3 = DistanceBetween(WP3[GetNetworkID(unit)],WP4[GetNetworkID(unit)])/movespd
+		
+		local moveTime1 = xTime1-(passedTime-xTime3-xTime2)
+		local moveTime2 = xTime2-(passedTime-xTime3)
+		local moveTime3 = xTime3-(passedTime)
+
+		local WayVector1 =  VectorWay(WP1[GetNetworkID(unit)],WP2[GetNetworkID(unit)])
+		local WayVector2 =  VectorWay(WP2[GetNetworkID(unit)],WP3[GetNetworkID(unit)])
+		local WayVector3 =  VectorWay(WP3[GetNetworkID(unit)],WP4[GetNetworkID(unit)])
+		
+		if moveTime3 > 0 then
+			Pos = WP3[GetNetworkID(unit)] + (-moveTime3*(WayVector3/-xTime3))
+		end
+		if moveTime3 < 0 and moveTime2 > 0 then
+			Pos = WP2[GetNetworkID(unit)] + (-moveTime2*(WayVector2/-xTime2))
+		end
+		if moveTime2 < 0 and moveTime3 < 0 then
+			Pos = WP1[GetNetworkID(unit)] + (-moveTime1*(WayVector1/-xTime1))
+		end
+
+		-- DrawCircle(Pos,25,2,0,ARGB(255,55,255,255));
+
+	end
+	
+	if recall.totalTime/1000 > GetDistance(myHero,Pos)/speedChamp + recallMenu.extraDelay:Value() then
+		ultON = true
+	end
+	
 end
-end	
+
+-- end
+
+elseif recall.isFinish == true then
+	ultON = false
+	Pos = nil
+else
+	ultON = false
+	Pos = nil
+end
+
+end
+
 end)
+
+-- DistanceBetween2Points
+function DistanceBetween(p1,p2)
+return  math.sqrt(math.pow((p2.x - p1.x),2) + math.pow((p2.y - p1.y),2) + math.pow((p2.z - p1.z),2))
+end
+-- GetVectorXYZNeeded
+function VectorWay(A,B)
+WayX = B.x - A.x
+WayY = B.y - A.y
+WayZ = B.z - A.z
+return Vector(WayX, WayY, WayZ)
+end
