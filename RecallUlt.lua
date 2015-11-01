@@ -162,7 +162,7 @@ end
 
 if Pos ~= nil and ultON == true then
 	DelayAction(function()
-		if ultON == true and Pos ~= nil and not recallMenu.dontUlt:Value() then
+		if ultON == true and Pos ~= nil and not recallMenu.dontUlt:Value() and GetDistance(myHero,Pos) <= skillrange then
 			CastSkillShot(_R,Pos)
 			DelayAction(function()
 				Pos = nil
@@ -182,7 +182,7 @@ end)
 
 OnProcessRecall(function(unit,recall)
 
-if CanUseSpell(myHero,_R) == READY and GetTeam(unit) ~= GetTeam(myHero) and GetObjectType(unit) == GetObjectType(myHero) and GetCurrentHP(unit)+GetHPRegen(unit)*(recallMenu.timex:Value() + GetDistance(myHero,unit)/speedChamp) < dmg(unit) and recallMenu.recallult1:Value() and inStart ~= nil then
+if CanUseSpell(myHero,_R) == READY and GetTeam(unit) ~= GetTeam(myHero) and GetObjectType(unit) == GetObjectType(myHero) and GetCurrentHP(unit)+GetHPRegen(unit)*(recallMenu.timex:Value() + GetDistance(myHero,unit)/speedChamp) < dmg(unit) and recallMenu.recallult1:Value() and inStart ~= nil and GetDistance(myHero,unit) <= skillrange then
 if recall.isStart == true then
 
 	if recallMenu.print:Value() and recall.totalTime/1000 > GetDistance(myHero,unit)/speedChamp + recallMenu.extraDelay:Value() then
@@ -286,3 +286,4 @@ WayY = B.y - A.y
 WayZ = B.z - A.z
 return Vector(WayX, WayY, WayZ)
 end
+
