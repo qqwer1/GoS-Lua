@@ -73,10 +73,17 @@ OnTick(function(myHero)
 local myHeroPos = GetOrigin(myHero)
 local target = GetCurrentTarget()
 	
+for i,enemy in pairs(GetEnemyHeroes()) do	
+	-- R KS
+	if CanUseSpell(myHero,_R) == READY and ValidTarget(enemy, GetCastRange(myHero,_R)) and GetCurrentHP(enemy) < CalcDamage(myHero, enemy, 0, (60*GetCastLevel(myHero,_R)+40+(0.6*(GetBonusAP(myHero))))) and mainMenu.Killsteal.ksR:Value() then
+		CastTargetSpell(enemy,_R)
+	end
+end
+	
 -- Harass
 if mainMenu.Harass.Harass1:Value() then
 	local mymouse = GetMousePos()
-	MoveToXYZ(mymouse)
+	-- MoveToXYZ(mymouse)
 	if ValidTarget(target, 1200) then
 	-- Q
 						if CanUseSpell(myHero, _Q) == READY and mainMenu.Harass.useQh:Value() then
@@ -101,7 +108,7 @@ if ValidTarget(target, 1250) then
 -- RQ-Combo 2.0
 	    	if CanUseSpell(myHero, _R) == READY and CanUseSpell(myHero, _Q) == READY and mainMenu.Combo.useQ:Value() and mainMenu.Combo.useR:Value() then
 
-					QPred = GetPredictionForPlayer(myHeroPos, target, GetMoveSpeed(target),1670, 250, 830, 150, false, true)
+					QPred = GetPredictionForPlayer(myHeroPos, target, GetMoveSpeed(target),1670, 250, 830+GetHitBox(target)/2, 150, false, true)
 
 						if QPred.HitChance == 1 and CanUseSpell(myHero, _Q) == READY and mainMenu.Combo.useQ:Value() then
 							CastSkillShot(_Q, QPred.PredPos.x, QPred.PredPos.y, QPred.PredPos.z)
@@ -122,11 +129,11 @@ if ValidTarget(target, 1250) then
 							end
 						end
 -- W
-						if ValidTarget(target, 200) and mainMenu.Combo.useW:Value() then
+						if ValidTarget(target, 200+GetHitBox(target)/2) and mainMenu.Combo.useW:Value() then
 							CastSpell(_W)
 						end
 -- E (Simple Logic)
-						if CanUseSpell(myHero, _E) == READY and not IsInDistance(target, 150) and IsInDistance(target, 245) and mainMenu.Combo.useE:Value() then
+						if CanUseSpell(myHero, _E) == READY and not IsInDistance(target, 150+GetHitBox(target)) and IsInDistance(target, 245+GetHitBox(target)/2) and mainMenu.Combo.useE:Value() then
 							CastSpell(_E)
 						end
 -- R (Simple Logic)
@@ -134,11 +141,7 @@ if ValidTarget(target, 1250) then
 							CastTargetSpell(target,_R)
 						end
 		end
-
--- R KS
-						if CanUseSpell(myHero,_R) == READY and ValidTarget(target, GetCastRange(myHero,_R)) and GetCurrentHP(target) < CalcDamage(myHero, target, 0, (60*GetCastLevel(myHero,_R)+40+(0.6*(GetBonusAP(myHero))))) and mainMenu.Killsteal.ksR:Value() then
-							CastTargetSpell(target,_R)
-						end
 	
-	end
-	end)
+end
+
+end)
