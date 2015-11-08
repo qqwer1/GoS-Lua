@@ -113,7 +113,7 @@ end
 end
 end)
 
-local ts = TargetSelector(1200, 1, DAMAGE_MAGICAL)
+local ts = TargetSelector(1200, 3, DAMAGE_MAGICAL)
 
 OnTick(function(myHero)
 
