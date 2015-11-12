@@ -1,6 +1,7 @@
 if GetObjectName(GetMyHero()) ~= "Graves" then return end
 
 if not pcall( require, "Inspired" ) then PrintChat("You are missing Inspired.lua!") return end
+if not pcall( require, "MapPositionGOS" ) then PrintChat("You are missing MapPositionGOS.lua!") return end
 
 PrintChat("ADC MAIN | Graves loaded.")
 PrintChat("by Noddy")
@@ -31,35 +32,15 @@ mainMenu.Items:Boolean("useGhost", "Youmuu's Ghostblade", true)
 mainMenu.Items:Boolean("useRedPot", "Elixir of Wrath", true)
 ---------------------------------------------------------------------------------
 mainMenu:Menu("Drawings", "Drawings")
-mainMenu.Drawings:Boolean("drawR", "Draw R-Damage", true)
-mainMenu.Drawings:Boolean("drawBurst", "Draw Burst-Damage", true)
+mainMenu.Drawings:Boolean("drawBurst", "Draw Damage", true)
 
 DPS = 0
 
-OnDraw(function(myHero)
-local target = GetCurrentTarget()
--- R-Damage
-if CanUseSpell(myHero,_R) == READY and ValidTarget(target, 1800) and mainMenu.Drawings.drawR:Value() then
-for _,enemy in pairs(GetEnemyHeroes()) do
-	local rDMG = CalcDamage(myHero,enemy,(150*GetCastLevel(myHero,_R)+100+(1.5*GetBonusDmg(myHero))),0)
-	DrawDmgOverHpBar(enemy,GetCurrentHP(enemy),rDMG,0,0xff00ff00)
-end
-end
--- Burst-Combo Damage
-if CanUseSpell(myHero,_Q) == READY and CanUseSpell(myHero,_R) == READY and ValidTarget(target,950) and mainMenu.Combo.Burst:Value() then
-	SKILLDPS = CalcDamage(myHero,target,(30*GetCastLevel(myHero,_Q)+30+(0.75*(GetBaseDamage(myHero) + GetBonusDmg(myHero)))),0) + CalcDamage(myHero,target,(120*GetCastLevel(myHero,_R)+80+(1.2*GetBonusDmg(myHero))),0) + CalcDamage(myHero,target,(GetBaseDamage(myHero)+GetBonusDmg(myHero)),0)
-	-- ADD statik
-	if GotBuff(myHero,"itemstatikshankcharge") == 100 then
-		extraDMG = CalcDamage(myHero,target,0,100)
-	else
-		extraDMG = 0
-	end
-	
-	DPS = SKILLDPS + extraDMG
-	
-	if mainMenu.Drawings.drawBurst:Value() then
-		DrawDmgOverHpBar(target,GetCurrentHP(target),DPS,0,0xff00ff00)
-	end	
+OnProcessSpellComplete(function(unit,spell)
+if unit == myHero and spell.name == "GravesMove" and mainMenu.Combo.Combo1:Value() then
+DelayAction(function()
+	AttackUnit(GetCurrentTarget())
+end, 50)
 end
 end)
 
@@ -74,6 +55,71 @@ local CutBlade = GetItemSlot(myHero,3144)
 local bork = GetItemSlot(myHero,3153)
 local ghost = GetItemSlot(myHero,3142)
 local redpot = GetItemSlot(myHero,2140)
+
+
+-- DAMAAAAAAAAAAAAAAAAGE!
+if ValidTarget(target, 1800) then
+if CanUseSpell(myHero,_Q) == READY then
+		local QPred = GetPredictionForPlayer(myHeroPos,target,GetMoveSpeed(target),2000,250,925,50,false,false)
+		if QPred.HitChance == 1 then
+		
+		local targetPos = GetOrigin(target)
+		
+		local checkPos1 = myHeroPos + ((VectorWay(myHeroPos, targetPos))/GetDistance(myHeroPos,targetPos))*930
+		local checkPos2 = myHeroPos + ((VectorWay(myHeroPos, targetPos))/GetDistance(myHeroPos,targetPos))*(925/1.2)
+		local checkPos3 = myHeroPos + ((VectorWay(myHeroPos, targetPos))/GetDistance(myHeroPos,targetPos))*(925/1.5)
+		local checkPos4 = myHeroPos + ((VectorWay(myHeroPos, targetPos))/GetDistance(myHeroPos,targetPos))*(925/2)
+		local checkPos5 = myHeroPos + ((VectorWay(myHeroPos, targetPos))/GetDistance(myHeroPos,targetPos))*(925/3)
+		local checkPos6 = myHeroPos + ((VectorWay(myHeroPos, targetPos))/GetDistance(myHeroPos,targetPos))*(925/6)
+
+		if MapPosition:inWall(checkPos6) == true then 
+			if GetDistance(myHeroPos, checkPos6) > GetDistance(myHeroPos, targetPos) then
+				qDMG = CalcDamage(myHero,target,(85*GetCastLevel(myHero,_Q)+65+((0.95+(0.20*GetCastLevel(myHero,_Q)))*(GetBonusDmg(myHero)))),0)
+			end
+		elseif MapPosition:inWall(checkPos5) == true then 
+			if GetDistance(myHeroPos, checkPos5) > GetDistance(myHeroPos, targetPos) then
+				qDMG = CalcDamage(myHero,target,(85*GetCastLevel(myHero,_Q)+65+((0.95+(0.20*GetCastLevel(myHero,_Q)))*(GetBonusDmg(myHero)))),0)
+			end
+		elseif MapPosition:inWall(checkPos4) == true then 
+			if GetDistance(myHeroPos, checkPos4) > GetDistance(myHeroPos, targetPos) then
+				qDMG = CalcDamage(myHero,target,(85*GetCastLevel(myHero,_Q)+65+((0.95+(0.20*GetCastLevel(myHero,_Q)))*(GetBonusDmg(myHero)))),0)
+			end
+		elseif MapPosition:inWall(checkPos3) == true then 
+			if GetDistance(myHeroPos, checkPos3) > GetDistance(myHeroPos, targetPos) then
+				qDMG = CalcDamage(myHero,target,(85*GetCastLevel(myHero,_Q)+65+((0.95+(0.20*GetCastLevel(myHero,_Q)))*(GetBonusDmg(myHero)))),0)
+			end
+		elseif MapPosition:inWall(checkPos2) == true then
+			if GetDistance(myHeroPos, checkPos2) > GetDistance(myHeroPos, targetPos) then
+				qDMG = CalcDamage(myHero,target,(85*GetCastLevel(myHero,_Q)+65+((0.95+(0.20*GetCastLevel(myHero,_Q)))*(GetBonusDmg(myHero)))),0)
+			end
+		elseif MapPosition:inWall(checkPos1) == true then 
+			if GetDistance(myHeroPos, checkPos1) > GetDistance(myHeroPos, targetPos) then
+				qDMG = CalcDamage(myHero,target,(85*GetCastLevel(myHero,_Q)+65+((0.95+(0.20*GetCastLevel(myHero,_Q)))*(GetBonusDmg(myHero)))),0)
+			end
+		else
+			qDMG = CalcDamage(myHero,target,(20*GetCastLevel(myHero,_Q)+40+(0.75*GetBonusDmg(myHero))),0)
+		end
+		
+		else qDMG = CalcDamage(myHero,target,(20*GetCastLevel(myHero,_Q)+40+(0.75*GetBonusDmg(myHero))),0)
+		
+		end
+	else qDMG = 0
+end
+
+if CanUseSpell(myHero,_R) == READY then
+	rDMG = CalcDamage(myHero,target,(120*GetCastLevel(myHero,_R)+80+(1.2*GetBonusDmg(myHero))),0)
+else rDMG = 0
+end
+
+if GotBuff(myHero,"itemstatikshankcharge") == 100 then
+	extraDMG = CalcDamage(myHero,target,0,100)
+else
+	extraDMG = 0
+end
+
+DPS = qDMG + rDMG + extraDMG
+
+end
 
 -- Use Items
 if mainMenu.Combo.Combo1:Value() then
@@ -103,7 +149,7 @@ end
 -- Killsteal
 if mainMenu.Killsteal.ksQ:Value() then
 for i,enemy in pairs(GetEnemyHeroes()) do
-		if CanUseSpell(myHero,_Q) == READY and ValidTarget(enemy, 1500) and mainMenu.Killsteal.ksQ:Value() and GetCurrentHP(enemy) < CalcDamage(myHero,enemy,(30*GetCastLevel(myHero,_Q)+30+(0.75*(GetBaseDamage(myHero) + GetBonusDmg(myHero)))),0) then
+		if CanUseSpell(myHero,_Q) == READY and ValidTarget(enemy, 1500) and mainMenu.Killsteal.ksQ:Value() and GetCurrentHP(enemy) < qDMG then
 			
 			if ValidTarget(enemy,1500) and CanUseSpell(myHero,_E) == READY and not IsInDistance(enemy, 925) and mainMenu.Killsteal.ksE:Value() then
 				local targetPos = GetOrigin(enemy)
@@ -139,14 +185,16 @@ end
 if mainMenu.Combo.Combo1:Value() then
 
 -- Burstcombo
-if CanUseSpell(myHero,_Q) and CanUseSpell(myHero,_R) and ValidTarget(target,950) and mainMenu.Combo.Burst:Value() and GetCurrentHP(target) < DPS then
+if CanUseSpell(myHero,_Q) == READY and CanUseSpell(myHero,_R) == READY and ValidTarget(target,950) and mainMenu.Combo.Burst:Value() and GetCurrentHP(target) < DPS then
 	if ValidTarget(target, 950) and IsInDistance(target, 550) then
 		local RPredBurst = GetPredictionForPlayer(myHeroPos,target,GetMoveSpeed(target),2100,250,1800,100,false,false)
 		local QPredBurst = GetPredictionForPlayer(myHeroPos,target,GetMoveSpeed(target),2000,250,925,50,false,false)
 			if CanUseSpell(myHero,_R) == READY and RPredBurst.HitChance == 1 and CanUseSpell(myHero,_Q) == READY and QPredBurst.HitChance == 1 then
-				CastSkillShot(_R,RPredBurst.PredPos.x,RPredBurst.PredPos.y,RPredBurst.PredPos.z)
+				-- CastSkillShot(_R,RPredBurst.PredPos.x,RPredBurst.PredPos.y,RPredBurst.PredPos.z)
+				CastSkillShot(_Q,QPredBurst.PredPos.x,QPredBurst.PredPos.y,QPredBurst.PredPos.z)
 					DelayAction(function ()
-						CastSkillShot(_Q,QPredBurst.PredPos.x,QPredBurst.PredPos.y,QPredBurst.PredPos.z)
+						-- CastSkillShot(_Q,QPredBurst.PredPos.x,QPredBurst.PredPos.y,QPredBurst.PredPos.z)
+						CastSkillShot(_R,RPredBurst.PredPos.x,RPredBurst.PredPos.y,RPredBurst.PredPos.z)
 					end, 50)
 			end
 	end
@@ -157,15 +205,56 @@ if CanUseSpell(myHero,_Q) and CanUseSpell(myHero,_R) and ValidTarget(target,950)
 end
 
 -- Standart
-	if CanUseSpell(myHero,_E) == READY and ValidTarget(target, 950) and mainMenu.Combo.useE:Value() then
+	if CanUseSpell(myHero,_E) == READY and ValidTarget(target, 950) and GotBuff(myHero, "gravesbasicattackammo2") == 0 and mainMenu.Combo.useE:Value() then
 		CastSkillShot(_E, mouse.x, mouse.y, mouse.z)
 	end
 
 	if CanUseSpell(myHero,_Q) == READY and ValidTarget(target, 950) and mainMenu.Combo.useQ:Value() then
+---------------------------- Q		
 		local QPred = GetPredictionForPlayer(myHeroPos,target,GetMoveSpeed(target),2000,250,925,50,false,false)
 		if QPred.HitChance == 1 then
-			CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
+			local targetPos = GetOrigin(target)
+		
+		local checkPos1 = myHeroPos + ((VectorWay(myHeroPos, targetPos))/GetDistance(myHeroPos,targetPos))*930
+		local checkPos2 = myHeroPos + ((VectorWay(myHeroPos, targetPos))/GetDistance(myHeroPos,targetPos))*(925/1.2)
+		local checkPos3 = myHeroPos + ((VectorWay(myHeroPos, targetPos))/GetDistance(myHeroPos,targetPos))*(925/1.5)
+		local checkPos4 = myHeroPos + ((VectorWay(myHeroPos, targetPos))/GetDistance(myHeroPos,targetPos))*(925/2)
+		local checkPos5 = myHeroPos + ((VectorWay(myHeroPos, targetPos))/GetDistance(myHeroPos,targetPos))*(925/3)
+		local checkPos6 = myHeroPos + ((VectorWay(myHeroPos, targetPos))/GetDistance(myHeroPos,targetPos))*(925/6)
+
+		if MapPosition:inWall(checkPos6) == true then 
+			if GetDistance(myHeroPos, checkPos6) > GetDistance(myHeroPos, targetPos) then
+				CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
+			end
+		elseif MapPosition:inWall(checkPos5) == true then 
+			if GetDistance(myHeroPos, checkPos5) > GetDistance(myHeroPos, targetPos) then
+				CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
+			end
+		elseif MapPosition:inWall(checkPos4) == true then 
+			if GetDistance(myHeroPos, checkPos4) > GetDistance(myHeroPos, targetPos) then
+				CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
+			end
+		elseif MapPosition:inWall(checkPos3) == true then 
+			if GetDistance(myHeroPos, checkPos3) > GetDistance(myHeroPos, targetPos) then
+				CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
+			end
+		elseif MapPosition:inWall(checkPos2) == true then
+			if GetDistance(myHeroPos, checkPos2) > GetDistance(myHeroPos, targetPos) then
+				CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
+			end
+		elseif MapPosition:inWall(checkPos1) == true then 
+			if GetDistance(myHeroPos, checkPos1) > GetDistance(myHeroPos, targetPos) then
+				CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
+			end
+		else
+			if 100*GetCurrentMana(myHero)/GetMaxMana(myHero) >= 40 then
+				CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
+			end
 		end
+		
+		end
+		
+------------------------ Q	
 	end
 
 	if CanUseSpell(myHero,_W) == READY and ValidTarget(target, 950) and GetCurrentMana(myHero) > 170 and mainMenu.Combo.useW:Value() then
@@ -195,15 +284,65 @@ end
 
 -- Harass Q
 if mainMenu.Harass.Harass1:Value() then
-	MoveToXYZ(mouse)
+	-- MoveToXYZ(mouse)
 if CanUseSpell(myHero,_Q) == READY and ValidTarget(target, 700) and mainMenu.Harass.hQ:Value() and (GetMaxMana(myHero) / GetCurrentMana(myHero)) <= 1.5 then
--- if CanUseSpell(myHero,_Q) == READY and ValidTarget(target, 700) and mainMenu.Harass.hQ:Value() then
-	local QPred = GetPredictionForPlayer(myHeroPos,target,GetMoveSpeed(target),2000,250,950,50,false,false)
-	if QPred.HitChance == 1 then
-		CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
+		local QPred = GetPredictionForPlayer(myHeroPos,target,GetMoveSpeed(target),2000,250,925,50,false,false)
+		if QPred.HitChance == 1 then
+			local targetPos = GetOrigin(target)
 		
-	end
+		local checkPos1 = myHeroPos + ((VectorWay(myHeroPos, targetPos))/GetDistance(myHeroPos,targetPos))*930
+		local checkPos2 = myHeroPos + ((VectorWay(myHeroPos, targetPos))/GetDistance(myHeroPos,targetPos))*(925/1.2)
+		local checkPos3 = myHeroPos + ((VectorWay(myHeroPos, targetPos))/GetDistance(myHeroPos,targetPos))*(925/1.5)
+		local checkPos4 = myHeroPos + ((VectorWay(myHeroPos, targetPos))/GetDistance(myHeroPos,targetPos))*(925/2)
+		local checkPos5 = myHeroPos + ((VectorWay(myHeroPos, targetPos))/GetDistance(myHeroPos,targetPos))*(925/3)
+		local checkPos6 = myHeroPos + ((VectorWay(myHeroPos, targetPos))/GetDistance(myHeroPos,targetPos))*(925/6)
+
+		if MapPosition:inWall(checkPos6) == true then 
+			if GetDistance(myHeroPos, checkPos6) > GetDistance(myHeroPos, targetPos) then
+				CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
+			end
+		elseif MapPosition:inWall(checkPos5) == true then 
+			if GetDistance(myHeroPos, checkPos5) > GetDistance(myHeroPos, targetPos) then
+				CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
+			end
+		elseif MapPosition:inWall(checkPos4) == true then 
+			if GetDistance(myHeroPos, checkPos4) > GetDistance(myHeroPos, targetPos) then
+				CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
+			end
+		elseif MapPosition:inWall(checkPos3) == true then 
+			if GetDistance(myHeroPos, checkPos3) > GetDistance(myHeroPos, targetPos) then
+				CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
+			end
+		elseif MapPosition:inWall(checkPos2) == true then
+			if GetDistance(myHeroPos, checkPos2) > GetDistance(myHeroPos, targetPos) then
+				CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
+			end
+		elseif MapPosition:inWall(checkPos1) == true then 
+			if GetDistance(myHeroPos, checkPos1) > GetDistance(myHeroPos, targetPos) then
+				CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
+			end
+		else
+			CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
+		end
+		
+		end
 end
 end
 
 end)
+
+OnDraw(function(myHero)
+local target = GetCurrentTarget()
+
+if mainMenu.Drawings.drawBurst:Value() and ValidTarget(target, 1800) then
+	DrawDmgOverHpBar(target,GetCurrentHP(target),DPS,0,0xff00ff00)
+end	
+
+end)
+
+function VectorWay(A,B)
+WayX = B.x - A.x
+WayY = B.y - A.y
+WayZ = B.z - A.z
+return Vector(WayX, WayY, WayZ)
+end
