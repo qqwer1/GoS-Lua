@@ -173,7 +173,7 @@ if mainMenu.Killsteal.ksR:Value() then
 				CastSkillShot(_E, targetPos.x, targetPos.y, targetPos.z)
 			end			
 			
-			local RPred2 = GetPredictionForPlayer(myHeroPos,enemy,GetMoveSpeed(enemy),2100,250,1800,100,false,false)
+			local RPred2 = GetPredictionForPlayer(myHeroPos,enemy,GetMoveSpeed(enemy),2000,250,1800,100,false,false)
 			if RPred2.HitChance == 1 then
 				CastSkillShot(_R,RPred2.PredPos.x,RPred2.PredPos.y,RPred2.PredPos.z)
 			end
@@ -187,7 +187,7 @@ if mainMenu.Combo.Combo1:Value() then
 -- Burstcombo
 if CanUseSpell(myHero,_Q) == READY and CanUseSpell(myHero,_R) == READY and ValidTarget(target,950) and mainMenu.Combo.Burst:Value() and GetCurrentHP(target) < DPS then
 	if ValidTarget(target, 950) and IsInDistance(target, 550) then
-		local RPredBurst = GetPredictionForPlayer(myHeroPos,target,GetMoveSpeed(target),2100,250,1800,100,false,false)
+		local RPredBurst = GetPredictionForPlayer(myHeroPos,target,GetMoveSpeed(target),2000,250,1800,100,false,false)
 		local QPredBurst = GetPredictionForPlayer(myHeroPos,target,GetMoveSpeed(target),2000,250,925,50,false,false)
 			if CanUseSpell(myHero,_R) == READY and RPredBurst.HitChance == 1 and CanUseSpell(myHero,_Q) == READY and QPredBurst.HitChance == 1 then
 				-- CastSkillShot(_R,RPredBurst.PredPos.x,RPredBurst.PredPos.y,RPredBurst.PredPos.z)
@@ -274,7 +274,7 @@ end
 	end
 	--R 2
 	if ValidTarget(target,2000) and CanUseSpell(myHero,_R) == READY and mainMenu.Combo.useR:Value() and not IsInDistance(target, 1000) and IsInDistance(target,1800) and GetCurrentHP(target) < CalcDamage(myHero,target,(120*GetCastLevel(myHero,_R)+80+(1.2*GetBonusDmg(myHero))),0) then
-		local RPred2 = GetPredictionForPlayer(myHeroPos,target,GetMoveSpeed(target),2100,250,1800,100,false,false)
+		local RPred2 = GetPredictionForPlayer(myHeroPos,target,GetMoveSpeed(target),2000,250,1800,100,false,false)
 		if RPred2.HitChance == 1 then
 			CastSkillShot(_R,RPred2.PredPos.x,RPred2.PredPos.y,RPred2.PredPos.z)
 		end
