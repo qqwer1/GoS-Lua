@@ -5,7 +5,6 @@ if not pcall( require, "Inspired" ) then PrintChat("You are missing Inspired.lua
 local mainMenu = Menu("ADC MAIN | Caitlyn", "Caitlyn")
 mainMenu:Menu("Combo", "Combo")
 mainMenu.Combo:Boolean("useQ", "Use Q in combo", true)
-mainMenu.Combo:Boolean("useW", "Use W on close enemy", false)
 mainMenu.Combo:Boolean("useR", "Use R in combo", true)
 mainMenu.Combo:Key("Combo1", "Combo", string.byte(" "))
 ---------------------------------------------------------------------------------
@@ -336,12 +335,6 @@ if mainMenu.Combo.Combo1:Value() then
 		end
 	end
 --
-if mainMenu.Combo.useW:Value() and ValidTarget(target, 500) and CanUseSpell(myHero,_W) == READY then
-	local WPred = GetPredictionForPlayer(myHeroPos,target,GetMoveSpeed(target),math.huge, 1500, 800, 70, false, true)
-	if WPred.HitChance == 1 and GetDistance(myHeroPos, WPred.PredPos) < 250+GetHitBox(target) then
-		CastSkillShot(_W, WPred.PredPos.x, WPred.PredPos.y, WPred.PredPos.z)
-	end
-end
 
 if mainMenu.Combo.useQ:Value() and ValidTarget(target, 1300) and CanUseSpell(myHero,_Q) == READY then
 	local AA = (CalcDamage(myHero,target,GetBaseDamage(myHero)+GetBonusDmg(myHero),0) * (baseATKSpeed*GetAttackSpeed(myHero)))
@@ -376,11 +369,18 @@ end
 end -- Combo
 
 -- Harass
-if mainMenu.Harass.Harass1:Value() and CanUseSpell(myHero,_Q) == READY and 100*GetCurrentMana(myHero)/GetMaxMana(myHero) >= mainMenu.Harass.Mana:Value() and ValidTarget(target, 1300) then
+if mainMenu.Harass.Harass1:Value() then
+
+	if GotBuff(target, "caitlynyordletrapinternal") == 1 and ValidTarget(target, GetRange(myHero)+GetHitBox(myHero) + 650 ) then
+		AttackUnit(target)
+	end
+
+if CanUseSpell(myHero,_Q) == READY and 100*GetCurrentMana(myHero)/GetMaxMana(myHero) >= mainMenu.Harass.Mana:Value() and ValidTarget(target, 1300) then
 	local QPred = GetPredictionForPlayer(myHeroPos,target,GetMoveSpeed(target),2200, 625, 1300, 90, true, false)
 	if QPred.HitChance == 1 then
 		CastSkillShot(_Q, QPred.PredPos.x, QPred.PredPos.y, QPred.PredPos.z)
 	end
+end
 end
 
 end)
