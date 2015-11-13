@@ -5,7 +5,7 @@ if not pcall( require, "Inspired" ) then PrintChat("You are missing Inspired.lua
 local mainMenu = Menu("ADC MAIN | Caitlyn", "Caitlyn")
 mainMenu:Menu("Combo", "Combo")
 mainMenu.Combo:Boolean("useQ", "Use Q in combo", true)
-mainMenu.Combo:Boolean("useW", "Use W on close enemy", true)
+mainMenu.Combo:Boolean("useW", "Use W on close enemy", false)
 mainMenu.Combo:Boolean("useR", "Use R in combo", true)
 mainMenu.Combo:Key("Combo1", "Combo", string.byte(" "))
 ---------------------------------------------------------------------------------
