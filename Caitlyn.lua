@@ -19,11 +19,6 @@ mainMenu.Harass:Boolean("hQ", "Use Q", true)
 mainMenu.Harass:Slider("Mana","Mana-Manager", 60, 1, 100, 1)
 mainMenu.Harass:Key("Harass1", "Harass", string.byte("C"))
 ---------------------------------------------------------------------------------
--- mainMenu:Menu("Killsteal", "Killsteal")
--- mainMenu.Killsteal:Boolean("ksQ", "Use Q - KS", true)
--- mainMenu.Killsteal:Boolean("ksE", "Use E - KS", true)
--- mainMenu.Killsteal:Boolean("ksR", "Use R - KS", true)
----------------------------------------------------------------------------------
 mainMenu:Menu("Items", "Items")
 mainMenu.Items:Boolean("useCut", "Bilgewater Cutlass", true)
 mainMenu.Items:Boolean("useBork", "Blade of the Ruined King", true)
@@ -44,14 +39,12 @@ CHANELLING_SPELLS = {
     ["GalioIdolOfDurand"]           = {Name = "Galio",        Spellslot = _R},
     ["FallenOne"]                   = {Name = "Karthus",      Spellslot = _R},
     ["KatarinaR"]                   = {Name = "Katarina",     Spellslot = _R},
-    -- ["LucianR"]                     = {Name = "Lucian",       Spellslot = _R},
     ["AlZaharNetherGrasp"]          = {Name = "Malzahar",     Spellslot = _R},
     ["MissFortuneBulletTime"]       = {Name = "MissFortune",  Spellslot = _R},
     ["AbsoluteZero"]                = {Name = "Nunu",         Spellslot = _R},                        
     ["Pantheon_GrandSkyfall_Jump"]  = {Name = "Pantheon",     Spellslot = _R},
     ["ShenStandUnited"]             = {Name = "Shen",         Spellslot = _R},
     ["UrgotSwap2"]                  = {Name = "Urgot",        Spellslot = _R},
-    -- ["VarusQ"]                      = {Name = "Varus",        Spellslot = _Q},
     ["InfiniteDuress"]              = {Name = "Warwick",      Spellslot = _R} 
 }
 
@@ -151,55 +144,91 @@ if mainMenu.AutoW.useWs:Value() then
 		if buff.Type == 11  and IsInDistance(unit, 825+GetHitBox(unit)) then
 			snaredtarget = unit
 			snared = true
+			bufftimesnared = buff.ExpireTime
+			if snared == true then
+				DelayAction(function()
+					snared = false
+				end, (bufftimesnared - GetGameTimer())*1000)
+			end
 		end
 		if buff.Type == 5  and IsInDistance(unit, 825+GetHitBox(unit)) then
 			stunedtarget = unit
 			stuned = true
+			bufftimestuned = buff.ExpireTime
+			if stuned == true then
+				DelayAction(function()
+					stuned = false
+				end, (bufftimestuned - GetGameTimer())*1000)
+			end
 		end
 		if buff.Type == 29  and IsInDistance(unit, 800+GetHitBox(unit)) then
 			uptarget = unit
 			up = true
+			bufftimeup = buff.ExpireTime
+			if up == true then
+				DelayAction(function()
+					up = false
+				end, (bufftimeup - GetGameTimer())*1000)
+			end
 		end
 		if buff.Type == 28  and IsInDistance(unit, 850+GetHitBox(unit)) then
 			fleetarget = unit
 			flee = true
+			bufftimeflee = buff.ExpireTime
+			if flee == true then
+				DelayAction(function()
+					flee = false
+				end, (bufftimeflee - GetGameTimer())*1000)
+			end
 		end
 		if buff.Type == 8  and IsInDistance(unit, 850+GetHitBox(unit)) then
 			taunttarget = unit
 			taunt = true
+			bufftimetaunt = buff.ExpireTime
+			if taunt == true then
+				DelayAction(function()
+					taunt = false
+				end, (bufftimetaunt - GetGameTimer())*1000)
+			end
 		end
 		if buff.Type == 22  and IsInDistance(unit, 825+GetHitBox(unit)) then
 			charmtarget = unit
 			charm = true
+			bufftimecharm = buff.ExpireTime
+			if charm == true then
+				DelayAction(function()
+					charm = false
+				end, (bufftimecharm - GetGameTimer())*1000)
+			end
 		end
 	end
 end
 end)
 
-OnRemoveBuff(function(unit, buff)
-if mainMenu.AutoW.useWs:Value() then
-	if GetTeam(unit) ~= GetTeam(myHero) and GetObjectType(unit) == Obj_AI_Hero then
-		if buff.Type == 11  and IsInDistance(unit, 800+GetHitBox(unit)+1000) then
-			snared = false
-		end
-		if buff.Type == 5  and IsInDistance(unit, 800+GetHitBox(unit)+1000) then
-			stuned = false
-		end
-		if buff.Type == 29  and IsInDistance(unit, 800+GetHitBox(unit)+1000) then
-			up = false
-		end
-		if buff.Type == 28  and IsInDistance(unit, 800+GetHitBox(unit)+1000) then
-			flee = false
-		end
-		if buff.Type == 8  and IsInDistance(unit, 800+GetHitBox(unit)+1000) then
-			taunt = false
-		end
-		if buff.Type == 22  and IsInDistance(unit, 800+GetHitBox(unit)+1000) then
-			charm = false
-		end
-	end
-end
-end)
+-- OnRemoveBuff(function(unit, buff)
+-- if mainMenu.AutoW.useWs:Value() then
+	-- if GetTeam(unit) ~= GetTeam(myHero) and GetObjectType(unit) == Obj_AI_Hero then
+		-- if buff.Type == 11  and IsInDistance(unit, 800+GetHitBox(unit)+1000) then
+			-- snared = false
+		-- end
+		-- if buff.Type == 5  and IsInDistance(unit, 800+GetHitBox(unit)+1000) then
+			-- stuned = false
+		-- end
+		-- if buff.Type == 29  and IsInDistance(unit, 800+GetHitBox(unit)+1000) then
+			-- up = false
+		-- end
+		-- if buff.Type == 28  and IsInDistance(unit, 800+GetHitBox(unit)+1000) then
+			-- flee = false
+		-- end
+		-- if buff.Type == 8  and IsInDistance(unit, 800+GetHitBox(unit)+1000) then
+			-- taunt = false
+		-- end
+		-- if buff.Type == 22  and IsInDistance(unit, 800+GetHitBox(unit)+1000) then
+			-- charm = false
+		-- end
+	-- end
+-- end
+-- end)
 
 OnDraw(function(myHero)
 -- Draw R Damage
@@ -224,37 +253,49 @@ local redpot = GetItemSlot(myHero,2140)
 
 if mainMenu.AutoW.useWs:Value() then
 	if snared ~= nil and snared == true and IsInDistance(snaredtarget, 800) then
-		CastSkillShot(_W, GetOrigin(snaredtarget))
+		if bufftimesnared - GetGameTimer() > 1 then
+			CastSkillShot(_W, GetOrigin(snaredtarget))
+		end
 	end
 	if stuned ~= nil and stuned == true and IsInDistance(stunedtarget, 800) then
-		CastSkillShot(_W, GetOrigin(stunedtarget))
+		if bufftimestuned - GetGameTimer() > 1 then
+			CastSkillShot(_W, GetOrigin(stunedtarget))
+		end
 	end
 	if up ~= nil and up == true and IsInDistance(uptarget, 800) then
-		CastSkillShot(_W, GetOrigin(uptarget))
+		if bufftimeup - GetGameTimer() > 1 then
+			CastSkillShot(_W, GetOrigin(uptarget))
+		end
 	end
 	if flee ~= nil and flee == true and IsInDistance(fleetarget, 800) then
-		DelayAction(function()
-		local fleeWPred = GetPredictionForPlayer(myHeroPos,fleetarget,GetMoveSpeed(fleetarget),math.huge, 1500, 800, 70, false, true)
-			if fleeWPred.HitChance == 1 then
-				CastSkillShot(_W, fleeWPred.PredPos.x, fleeWPred.PredPos.y, fleeWPred.PredPos.z)
-			end
-		end,100)
+		if bufftimeflee - GetGameTimer() > 1.1 then
+			DelayAction(function()
+			local fleeWPred = GetPredictionForPlayer(myHeroPos,fleetarget,GetMoveSpeed(fleetarget),math.huge, 1500, 800, 70, false, true)
+				if fleeWPred.HitChance == 1 then
+					CastSkillShot(_W, fleeWPred.PredPos.x, fleeWPred.PredPos.y, fleeWPred.PredPos.z)
+				end
+			end,100)
+		end
 	end
 	if taunt ~= nil and taunt == true and IsInDistance(taunttarget, 800) then
-		DelayAction(function()
-		local tauntWPred = GetPredictionForPlayer(myHeroPos,taunttarget,GetMoveSpeed(taunttarget),math.huge, 1500, 800, 70, false, true)
-			if tauntWPred.HitChance == 1 then
-				CastSkillShot(_W, tauntWPred.PredPos.x, tauntWPred.PredPos.y, tauntWPred.PredPos.z)
-			end
-		end,100)
+		if bufftimetaunt - GetGameTimer() > 1.1 then
+			DelayAction(function()
+			local tauntWPred = GetPredictionForPlayer(myHeroPos,taunttarget,GetMoveSpeed(taunttarget),math.huge, 1500, 800, 70, false, true)
+				if tauntWPred.HitChance == 1 then
+					CastSkillShot(_W, tauntWPred.PredPos.x, tauntWPred.PredPos.y, tauntWPred.PredPos.z)
+				end
+			end,100)
+		end
 	end
 	if charm ~= nil and charm == true and IsInDistance(charmtarget, 800) then
-		DelayAction(function()
-		local charmWPred = GetPredictionForPlayer(myHeroPos,charmtarget,GetMoveSpeed(charmtarget),math.huge, 1500, 800, 70, false, true)
-			if charmWPred.HitChance == 1 then
-				CastSkillShot(_W, charmWPred.PredPos.x, charmWPred.PredPos.y, charmWPred.PredPos.z)
-			end
-		end,100)
+		if bufftimecharm - GetGameTimer() > 1.1 then
+			DelayAction(function()
+			local charmWPred = GetPredictionForPlayer(myHeroPos,charmtarget,GetMoveSpeed(charmtarget),math.huge, 1500, 800, 70, false, true)
+				if charmWPred.HitChance == 1 then
+					CastSkillShot(_W, charmWPred.PredPos.x, charmWPred.PredPos.y, charmWPred.PredPos.z)
+				end
+			end,100)
+		end
 	end
 end
 
@@ -267,6 +308,10 @@ end
 
 -- Combo
 if mainMenu.Combo.Combo1:Value() then
+
+	if GotBuff(target, "caitlynyordletrapinternal") == 1 and ValidTarget(target, GetRange(myHero)+GetHitBox(myHero) + 650 ) then
+		AttackUnit(target)
+	end
 
 -- Items
 	if CutBlade >= 1 and ValidTarget(target,550+50) and mainMenu.Items.useCut:Value() then
