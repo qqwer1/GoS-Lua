@@ -1165,7 +1165,7 @@ smiteDMG = (({[1]=390,[2]=410,[3]=430,[4]=450,[5]=480,[6]=510,[7]=540,[8]=570,[9
 if smiteON == true then
 	if GetCastName(myHero,useSmite) == "s5_summonersmiteplayerganker" and smiteMenu.ks:Value() then
 		for i,enemy in pairs(GetEnemyHeroes()) do
-			if GetCurrentHP(enemy) + GetDmgShield(enemy) <= 20+8*GetLevel(myHero) then
+			if ValidTarget(enemy, 750) and GetCurrentHP(enemy) + GetDmgShield(enemy) <= 20+8*GetLevel(myHero) then
 				CastTargetSpell(enemy,useSmite)
 			end
 		end
