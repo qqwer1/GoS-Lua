@@ -984,17 +984,11 @@ local text = "ON"
 -- PrintChat(GetItemID(myHero,ITEM_1))
 -- s5_summonersmiteplayerganker
 
+-- Blue 1,7
+-- red 4,10
+-- drake 6
+
 OnObjectLoop(function(Object,myHero)
--- if GetObjectType(Object) == Obj_AI_Camp then
-	-- if red ~= nil and ValidTarget(red) then
-		-- if GetDistance(Object,red) < 1500 then
-			-- redSpot = Object
-			-- if GetDistance(redSpot, red) < 1500 then
-				-- DrawCircle(GetOrigin(redSpot),1500,0,155,ARGB(255,55,255,55))
-			-- end	
-		-- end
-	-- end
--- end
 	if GetObjectType(Object) == Obj_AI_Minion then
 		if IsObjectAlive(Object) and GetTeam(Object) == 300 then
 			if GetObjectName(Object) == "SRU_Dragon" then
@@ -1003,7 +997,7 @@ OnObjectLoop(function(Object,myHero)
 			if GetObjectName(Object) == "SRU_Red" then
 				red = Object
 			end
-			if GetObjectName(Object) == "SRU_Blue" then
+			if GetObjectName(Object) == "SRU_Blue"then
 				blue = Object
 			end
 			if GetObjectName(Object) == "SRU_RiftHerald" then
@@ -1037,36 +1031,31 @@ end
 
 if smiteON == true then
 	if CanUseSpell(myHero,useSmite) == READY then
-	-- for i,mob in pairs(minionManager.objects) do
-		-- if GetTeam(mob) == 300 then
-			-- DrawCircle(GetOrigin(mob),50,0,155,ARGB(255,55,255,255))
-		-- end
-	-- end
-			if dragon ~= nil and ValidTarget(dragon, 750) and smiteMenu.dragon:Value() then
+			if dragon ~= nil and GetObjectName(dragon) == "SRU_Dragon" and ValidTarget(dragon, 750) and smiteMenu.dragon:Value() then
 				DrawCircle(GetOrigin(dragon),100,0,155,ARGB(255,55,255,55))
 				if GetCurrentHP(dragon) <= smiteDMG then
 					CastTargetSpell(dragon,useSmite)
 				end
 			end
-			if herald ~= nil and ValidTarget(herald, 750) and smiteMenu.herald:Value() then
+			if herald ~= nil and GetObjectName(herald) == "SRU_RiftHerald" and ValidTarget(herald, 750) and smiteMenu.herald:Value() then
 				DrawCircle(GetOrigin(herald),100,0,155,ARGB(255,55,255,55))
 				if GetCurrentHP(herald) <= smiteDMG then
 					CastTargetSpell(herald,useSmite)
 				end
 			end
-			if red ~= nil and ValidTarget(red, 750) and smiteMenu.red:Value() then
+			if red ~= nil and GetObjectName(red) == "SRU_Red" and ValidTarget(red, 750) and smiteMenu.red:Value() then
 				DrawCircle(GetOrigin(red),100,0,155,ARGB(255,55,255,55))
 				if GetCurrentHP(red) <= smiteDMG then
 					CastTargetSpell(red,useSmite)
 				end
 			end
-			if blue ~= nil and ValidTarget(blue, 750) and smiteMenu.blue:Value() then
+			if blue ~= nil and GetObjectName(blue) == "SRU_Blue" and ValidTarget(blue, 750) and smiteMenu.blue:Value() then
 				DrawCircle(GetOrigin(blue),100,0,155,ARGB(255,55,255,55))
 				if GetCurrentHP(blue) <= smiteDMG then
 					CastTargetSpell(blue,useSmite)
 				end
 			end
-			if baron ~= nil and ValidTarget(baron, 750) and smiteMenu.baron:Value() then
+			if baron ~= nil and GetObjectName(baron) == "SRU_Baron" and ValidTarget(baron, 750) and smiteMenu.baron:Value() then
 				DrawCircle(GetOrigin(baron),100,0,155,ARGB(255,55,255,55))
 				if GetCurrentHP(baron) <= smiteDMG then
 					CastTargetSpell(baron,useSmite)
@@ -1187,27 +1176,27 @@ if CanUseSpell(myHero,useSmite) ~= READY then
 --0-NoSmite v
 if Champ[GetObjectName(myHero)][GetCastName(myHero,0)] ~= nil and CanUseSpell(myHero,0) == READY and CanUseSpell(myHero,useSmite) ~= READY and smiteMenu.useQ:Value() then
 
-		if dragon ~= nil and ValidTarget(dragon, Champ[GetObjectName(myHero)][GetCastName(myHero,0)].spellRange0) and smiteMenu.dragon:Value() then
+		if dragon ~= nil and GetObjectName(dragon) == "SRU_Dragon" and ValidTarget(dragon, Champ[GetObjectName(myHero)][GetCastName(myHero,0)].spellRange0) and smiteMenu.dragon:Value() then
 			if GetCurrentHP(dragon) - GetDamagePrediction(dragon,Champ[GetObjectName(myHero)][GetCastName(myHero,0)].spellDelay0(dragon)) <= Champ[GetObjectName(myHero)][GetCastName(myHero,0)].spellDMG0(dragon) then
 				Champ[GetObjectName(myHero)][GetCastName(myHero,0)].spellCast0(dragon)
 			end
 		end
-		if red ~= nil and ValidTarget(red, Champ[GetObjectName(myHero)][GetCastName(myHero,0)].spellRange0) and smiteMenu.red:Value() then
+		if red ~= nil and GetObjectName(red) == "SRU_Red" and ValidTarget(red, Champ[GetObjectName(myHero)][GetCastName(myHero,0)].spellRange0) and smiteMenu.red:Value() then
 			if GetCurrentHP(red) - GetDamagePrediction(red,Champ[GetObjectName(myHero)][GetCastName(myHero,0)].spellDelay0(red)) <= Champ[GetObjectName(myHero)][GetCastName(myHero,0)].spellDMG0(red) then
 				Champ[GetObjectName(myHero)][GetCastName(myHero,0)].spellCast0(red)
 			end
 		end
-		if blue ~= nil and ValidTarget(blue, Champ[GetObjectName(myHero)][GetCastName(myHero,0)].spellRange0) and smiteMenu.blue:Value() then
+		if blue ~= nil and GetObjectName(blue) == "SRU_Blue" and ValidTarget(blue, Champ[GetObjectName(myHero)][GetCastName(myHero,0)].spellRange0) and smiteMenu.blue:Value() then
 			if GetCurrentHP(blue) - GetDamagePrediction(blue,Champ[GetObjectName(myHero)][GetCastName(myHero,0)].spellDelay0(blue)) <= Champ[GetObjectName(myHero)][GetCastName(myHero,0)].spellDMG0(blue) then
 				Champ[GetObjectName(myHero)][GetCastName(myHero,0)].spellCast0(blue)
 			end
 		end
-		if herald ~= nil and ValidTarget(herald, Champ[GetObjectName(myHero)][GetCastName(myHero,0)].spellRange0) and smiteMenu.herald:Value() then
+		if herald ~= nil and GetObjectName(herald) == "SRU_RiftHerald" and ValidTarget(herald, Champ[GetObjectName(myHero)][GetCastName(myHero,0)].spellRange0) and smiteMenu.herald:Value() then
 			if GetCurrentHP(herald) - GetDamagePrediction(herald,Champ[GetObjectName(myHero)][GetCastName(myHero,0)].spellDelay0(herald)) <= Champ[GetObjectName(myHero)][GetCastName(myHero,0)].spellDMG0(herald) then
 				Champ[GetObjectName(myHero)][GetCastName(myHero,0)].spellCast0(herald)
 			end
 		end
-		if baron ~= nil and ValidTarget(baron, Champ[GetObjectName(myHero)][GetCastName(myHero,0)].spellRange0) and smiteMenu.baron:Value() then
+		if baron ~= nil and GetObjectName(baron) == "SRU_Baron" and ValidTarget(baron, Champ[GetObjectName(myHero)][GetCastName(myHero,0)].spellRange0) and smiteMenu.baron:Value() then
 			if GetCurrentHP(baron) - GetDamagePrediction(baron,Champ[GetObjectName(myHero)][GetCastName(myHero,0)].spellDelay0(baron)) <= Champ[GetObjectName(myHero)][GetCastName(myHero,0)].spellDMG0(baron) then
 				Champ[GetObjectName(myHero)][GetCastName(myHero,0)].spellCast0(baron)
 			end
@@ -1217,27 +1206,27 @@ end
 --1-NoSmite v
 if Champ[GetObjectName(myHero)][GetCastName(myHero,1)] ~= nil and CanUseSpell(myHero,1) == READY and CanUseSpell(myHero,useSmite) ~= READY and smiteMenu.useW:Value() then
 
-		if dragon ~= nil and ValidTarget(dragon, Champ[GetObjectName(myHero)][GetCastName(myHero,1)].spellRange1) and smiteMenu.dragon:Value() then
+		if dragon ~= nil and GetObjectName(dragon) == "SRU_Dragon" and ValidTarget(dragon, Champ[GetObjectName(myHero)][GetCastName(myHero,1)].spellRange1) and smiteMenu.dragon:Value() then
 			if GetCurrentHP(dragon) - GetDamagePrediction(dragon,Champ[GetObjectName(myHero)][GetCastName(myHero,1)].spellDelay1(dragon)) <= Champ[GetObjectName(myHero)][GetCastName(myHero,1)].spellDMG1(dragon) then
 				Champ[GetObjectName(myHero)][GetCastName(myHero,1)].spellCast1(dragon)
 			end
 		end
-		if red ~= nil and ValidTarget(red, Champ[GetObjectName(myHero)][GetCastName(myHero,1)].spellRange1) and smiteMenu.red:Value() then
+		if red ~= nil and GetObjectName(red) == "SRU_Red" and ValidTarget(red, Champ[GetObjectName(myHero)][GetCastName(myHero,1)].spellRange1) and smiteMenu.red:Value() then
 			if GetCurrentHP(red) - GetDamagePrediction(red,Champ[GetObjectName(myHero)][GetCastName(myHero,1)].spellDelay1(red)) <= Champ[GetObjectName(myHero)][GetCastName(myHero,1)].spellDMG1(red) then
 				Champ[GetObjectName(myHero)][GetCastName(myHero,1)].spellCast1(red)
 			end
 		end
-		if blue ~= nil and ValidTarget(blue, Champ[GetObjectName(myHero)][GetCastName(myHero,1)].spellRange1) and smiteMenu.blue:Value() then
+		if blue ~= nil and GetObjectName(blue) == "SRU_Blue" and ValidTarget(blue, Champ[GetObjectName(myHero)][GetCastName(myHero,1)].spellRange1) and smiteMenu.blue:Value() then
 			if GetCurrentHP(blue) - GetDamagePrediction(blue,Champ[GetObjectName(myHero)][GetCastName(myHero,1)].spellDelay1(blue)) <= Champ[GetObjectName(myHero)][GetCastName(myHero,1)].spellDMG1(blue) then
 				Champ[GetObjectName(myHero)][GetCastName(myHero,1)].spellCast1(blue)
 			end
 		end
-		if herald ~= nil and ValidTarget(herald, Champ[GetObjectName(myHero)][GetCastName(myHero,1)].spellRange1) and smiteMenu.herald:Value() then
+		if herald ~= nil and GetObjectName(herald) == "SRU_RiftHerald" and ValidTarget(herald, Champ[GetObjectName(myHero)][GetCastName(myHero,1)].spellRange1) and smiteMenu.herald:Value() then
 			if GetCurrentHP(herald) - GetDamagePrediction(herald,Champ[GetObjectName(myHero)][GetCastName(myHero,1)].spellDelay1(herald)) <= Champ[GetObjectName(myHero)][GetCastName(myHero,1)].spellDMG1(herald) then
 				Champ[GetObjectName(myHero)][GetCastName(myHero,1)].spellCast1(herald)
 			end
 		end
-		if baron ~= nil and ValidTarget(baron, Champ[GetObjectName(myHero)][GetCastName(myHero,1)].spellRange1) and smiteMenu.baron:Value() then
+		if baron ~= nil and GetObjectName(baron) == "SRU_Baron" and ValidTarget(baron, Champ[GetObjectName(myHero)][GetCastName(myHero,1)].spellRange1) and smiteMenu.baron:Value() then
 			if GetCurrentHP(baron) - GetDamagePrediction(baron,Champ[GetObjectName(myHero)][GetCastName(myHero,1)].spellDelay1(baron)) <= Champ[GetObjectName(myHero)][GetCastName(myHero,1)].spellDMG1(baron) then
 				Champ[GetObjectName(myHero)][GetCastName(myHero,1)].spellCast1(baron)
 			end
@@ -1247,27 +1236,27 @@ end
 --2-NoSmite v
 if Champ[GetObjectName(myHero)][GetCastName(myHero,2)] ~= nil and CanUseSpell(myHero,2) == READY and CanUseSpell(myHero,useSmite) ~= READY and smiteMenu.useE:Value() then
 
-		if dragon ~= nil and ValidTarget(dragon, Champ[GetObjectName(myHero)][GetCastName(myHero,2)].spellRange2) and smiteMenu.dragon:Value() then
+		if dragon ~= nil and GetObjectName(dragon) == "SRU_Dragon" and ValidTarget(dragon, Champ[GetObjectName(myHero)][GetCastName(myHero,2)].spellRange2) and smiteMenu.dragon:Value() then
 			if GetCurrentHP(dragon) - GetDamagePrediction(dragon,Champ[GetObjectName(myHero)][GetCastName(myHero,2)].spellDelay2(dragon)) <= Champ[GetObjectName(myHero)][GetCastName(myHero,2)].spellDMG2(dragon) then
 				Champ[GetObjectName(myHero)][GetCastName(myHero,2)].spellCast2(dragon)
 			end
 		end
-		if red ~= nil and ValidTarget(red, Champ[GetObjectName(myHero)][GetCastName(myHero,2)].spellRange2) and smiteMenu.red:Value() then
+		if red ~= nil and GetObjectName(red) == "SRU_Red" and ValidTarget(red, Champ[GetObjectName(myHero)][GetCastName(myHero,2)].spellRange2) and smiteMenu.red:Value() then
 			if GetCurrentHP(red) - GetDamagePrediction(red,Champ[GetObjectName(myHero)][GetCastName(myHero,2)].spellDelay2(red)) <= Champ[GetObjectName(myHero)][GetCastName(myHero,2)].spellDMG2(red) then
 				Champ[GetObjectName(myHero)][GetCastName(myHero,2)].spellCast2(red)
 			end
 		end
-		if blue ~= nil and ValidTarget(blue, Champ[GetObjectName(myHero)][GetCastName(myHero,2)].spellRange2) and smiteMenu.blue:Value() then
+		if blue ~= nil and GetObjectName(blue) == "SRU_Blue" and ValidTarget(blue, Champ[GetObjectName(myHero)][GetCastName(myHero,2)].spellRange2) and smiteMenu.blue:Value() then
 			if GetCurrentHP(blue) - GetDamagePrediction(blue,Champ[GetObjectName(myHero)][GetCastName(myHero,2)].spellDelay2(blue)) <= Champ[GetObjectName(myHero)][GetCastName(myHero,2)].spellDMG2(blue) then
 				Champ[GetObjectName(myHero)][GetCastName(myHero,2)].spellCast2(blue)
 			end
 		end
-		if herald ~= nil and ValidTarget(herald, Champ[GetObjectName(myHero)][GetCastName(myHero,2)].spellRange2) and smiteMenu.herald:Value() then
+		if herald ~= nil and GetObjectName(herald) == "SRU_RiftHerald" and ValidTarget(herald, Champ[GetObjectName(myHero)][GetCastName(myHero,2)].spellRange2) and smiteMenu.herald:Value() then
 			if GetCurrentHP(herald) - GetDamagePrediction(herald,Champ[GetObjectName(myHero)][GetCastName(myHero,2)].spellDelay2(herald)) <= Champ[GetObjectName(myHero)][GetCastName(myHero,2)].spellDMG2(herald) then
 				Champ[GetObjectName(myHero)][GetCastName(myHero,2)].spellCast2(herald)
 			end
 		end
-		if baron ~= nil and ValidTarget(baron, Champ[GetObjectName(myHero)][GetCastName(myHero,2)].spellRange2) and smiteMenu.baron:Value() then
+		if baron ~= nil and GetObjectName(baron) == "SRU_Baron" and ValidTarget(baron, Champ[GetObjectName(myHero)][GetCastName(myHero,2)].spellRange2) and smiteMenu.baron:Value() then
 			if GetCurrentHP(baron) - GetDamagePrediction(baron,Champ[GetObjectName(myHero)][GetCastName(myHero,2)].spellDelay2(baron)) <= Champ[GetObjectName(myHero)][GetCastName(myHero,2)].spellDMG2(baron) then
 				Champ[GetObjectName(myHero)][GetCastName(myHero,2)].spellCast2(baron)
 			end
@@ -1277,27 +1266,27 @@ end
 --3-NoSmite v
 if Champ[GetObjectName(myHero)][GetCastName(myHero,3)] ~= nil and CanUseSpell(myHero,3) == READY and CanUseSpell(myHero,useSmite) ~= READY and smiteMenu.useR:Value() then
 
-		if dragon ~= nil and ValidTarget(dragon, Champ[GetObjectName(myHero)][GetCastName(myHero,3)].spellRange3) and smiteMenu.dragon:Value() then
+		if dragon ~= nil and GetObjectName(dragon) == "SRU_Dragon" and ValidTarget(dragon, Champ[GetObjectName(myHero)][GetCastName(myHero,3)].spellRange3) and smiteMenu.dragon:Value() then
 			if GetCurrentHP(dragon) - GetDamagePrediction(dragon,Champ[GetObjectName(myHero)][GetCastName(myHero,3)].spellDelay3(dragon)) <= Champ[GetObjectName(myHero)][GetCastName(myHero,3)].spellDMG3(dragon) then
 				Champ[GetObjectName(myHero)][GetCastName(myHero,3)].spellCast3(dragon)
 			end
 		end
-		if red ~= nil and ValidTarget(red, Champ[GetObjectName(myHero)][GetCastName(myHero,3)].spellRange3) and smiteMenu.red:Value() then
+		if red ~= nil and GetObjectName(red) == "SRU_Red" and ValidTarget(red, Champ[GetObjectName(myHero)][GetCastName(myHero,3)].spellRange3) and smiteMenu.red:Value() then
 			if GetCurrentHP(red) - GetDamagePrediction(red,Champ[GetObjectName(myHero)][GetCastName(myHero,3)].spellDelay3(red)) <= Champ[GetObjectName(myHero)][GetCastName(myHero,3)].spellDMG3(red) then
 				Champ[GetObjectName(myHero)][GetCastName(myHero,3)].spellCast3(red)
 			end
 		end
-		if blue ~= nil and ValidTarget(blue, Champ[GetObjectName(myHero)][GetCastName(myHero,3)].spellRange3) and smiteMenu.blue:Value() then
+		if blue ~= nil and GetObjectName(blue) == "SRU_Blue" and ValidTarget(blue, Champ[GetObjectName(myHero)][GetCastName(myHero,3)].spellRange3) and smiteMenu.blue:Value() then
 			if GetCurrentHP(blue) - GetDamagePrediction(blue,Champ[GetObjectName(myHero)][GetCastName(myHero,3)].spellDelay3(blue)) <= Champ[GetObjectName(myHero)][GetCastName(myHero,3)].spellDMG3(blue) then
 				Champ[GetObjectName(myHero)][GetCastName(myHero,3)].spellCast3(blue)
 			end
 		end
-		if herald ~= nil and ValidTarget(herald, Champ[GetObjectName(myHero)][GetCastName(myHero,3)].spellRange3) and smiteMenu.herald:Value() then
+		if herald ~= nil and GetObjectName(herald) == "SRU_RiftHerald" and ValidTarget(herald, Champ[GetObjectName(myHero)][GetCastName(myHero,3)].spellRange3) and smiteMenu.herald:Value() then
 			if GetCurrentHP(herald) - GetDamagePrediction(herald,Champ[GetObjectName(myHero)][GetCastName(myHero,3)].spellDelay3(herald)) <= Champ[GetObjectName(myHero)][GetCastName(myHero,3)].spellDMG3(herald) then
 				Champ[GetObjectName(myHero)][GetCastName(myHero,3)].spellCast3(herald)
 			end
 		end
-		if baron ~= nil and ValidTarget(baron, Champ[GetObjectName(myHero)][GetCastName(myHero,3)].spellRange3) and smiteMenu.baron:Value() then
+		if baron ~= nil and GetObjectName(baron) == "SRU_Baron" and ValidTarget(baron, Champ[GetObjectName(myHero)][GetCastName(myHero,3)].spellRange3) and smiteMenu.baron:Value() then
 			if GetCurrentHP(baron) - GetDamagePrediction(baron,Champ[GetObjectName(myHero)][GetCastName(myHero,3)].spellDelay3(baron)) <= Champ[GetObjectName(myHero)][GetCastName(myHero,3)].spellDMG3(baron) then
 				Champ[GetObjectName(myHero)][GetCastName(myHero,3)].spellCast3(baron)
 			end
@@ -1309,7 +1298,7 @@ end
 --0-Smite v
 if Champ[GetObjectName(myHero)][GetCastName(myHero,0)] ~= nil and CanUseSpell(myHero,0) == READY and CanUseSpell(myHero,useSmite) == READY and smiteMenu.useQ:Value() then
 
-		if dragon ~= nil and ValidTarget(dragon, Champ[GetObjectName(myHero)][GetCastName(myHero,0)].spellRange0) and smiteMenu.dragon:Value() then
+		if dragon ~= nil and GetObjectName(dragon) == "SRU_Dragon" and ValidTarget(dragon, Champ[GetObjectName(myHero)][GetCastName(myHero,0)].spellRange0) and smiteMenu.dragon:Value() then
 			if GetCurrentHP(dragon) - GetDamagePrediction(dragon,Champ[GetObjectName(myHero)][GetCastName(myHero,0)].spellDelay0(dragon)) <= Champ[GetObjectName(myHero)][GetCastName(myHero,0)].spellDMG0(dragon) + smiteDMG then
 				Champ[GetObjectName(myHero)][GetCastName(myHero,0)].spellCast0(dragon)
 				DelayAction(function()
@@ -1317,7 +1306,7 @@ if Champ[GetObjectName(myHero)][GetCastName(myHero,0)] ~= nil and CanUseSpell(my
 				end,Champ[GetObjectName(myHero)][GetCastName(myHero,0)].spellDelay0(dragon))
 			end
 		end
-		if red ~= nil and ValidTarget(red, Champ[GetObjectName(myHero)][GetCastName(myHero,0)].spellRange0) and smiteMenu.red:Value() then
+		if red ~= nil and GetObjectName(red) == "SRU_Red" and ValidTarget(red, Champ[GetObjectName(myHero)][GetCastName(myHero,0)].spellRange0) and smiteMenu.red:Value() then
 			if GetCurrentHP(red) - GetDamagePrediction(red,Champ[GetObjectName(myHero)][GetCastName(myHero,0)].spellDelay0(red)) <= Champ[GetObjectName(myHero)][GetCastName(myHero,0)].spellDMG0(red) + smiteDMG then
 				Champ[GetObjectName(myHero)][GetCastName(myHero,0)].spellCast0(red)
 				DelayAction(function()
@@ -1325,7 +1314,7 @@ if Champ[GetObjectName(myHero)][GetCastName(myHero,0)] ~= nil and CanUseSpell(my
 				end,Champ[GetObjectName(myHero)][GetCastName(myHero,0)].spellDelay0(red))
 			end
 		end
-		if blue ~= nil and ValidTarget(blue, Champ[GetObjectName(myHero)][GetCastName(myHero,0)].spellRange0) and smiteMenu.blue:Value() then
+		if blue ~= nil and GetObjectName(blue) == "SRU_Blue" and ValidTarget(blue, Champ[GetObjectName(myHero)][GetCastName(myHero,0)].spellRange0) and smiteMenu.blue:Value() then
 			if GetCurrentHP(blue) - GetDamagePrediction(blue,Champ[GetObjectName(myHero)][GetCastName(myHero,0)].spellDelay0(blue)) <= Champ[GetObjectName(myHero)][GetCastName(myHero,0)].spellDMG0(blue) + smiteDMG then
 				Champ[GetObjectName(myHero)][GetCastName(myHero,0)].spellCast0(blue)
 				DelayAction(function()
@@ -1333,7 +1322,7 @@ if Champ[GetObjectName(myHero)][GetCastName(myHero,0)] ~= nil and CanUseSpell(my
 				end,Champ[GetObjectName(myHero)][GetCastName(myHero,0)].spellDelay0(blue))
 			end
 		end
-		if herald ~= nil and ValidTarget(herald, Champ[GetObjectName(myHero)][GetCastName(myHero,0)].spellRange0) and smiteMenu.herald:Value() then
+		if herald ~= nil and GetObjectName(herald) == "SRU_RiftHerald" and ValidTarget(herald, Champ[GetObjectName(myHero)][GetCastName(myHero,0)].spellRange0) and smiteMenu.herald:Value() then
 			if GetCurrentHP(herald) - GetDamagePrediction(herald,Champ[GetObjectName(myHero)][GetCastName(myHero,0)].spellDelay0(herald)) <= Champ[GetObjectName(myHero)][GetCastName(myHero,0)].spellDMG0(herald) + smiteDMG then
 				Champ[GetObjectName(myHero)][GetCastName(myHero,0)].spellCast0(herald)
 				DelayAction(function()
@@ -1341,7 +1330,7 @@ if Champ[GetObjectName(myHero)][GetCastName(myHero,0)] ~= nil and CanUseSpell(my
 				end,Champ[GetObjectName(myHero)][GetCastName(myHero,0)].spellDelay0(herald))
 			end
 		end
-		if baron ~= nil and ValidTarget(baron, Champ[GetObjectName(myHero)][GetCastName(myHero,0)].spellRange0) and smiteMenu.baron:Value() then
+		if baron ~= nil and GetObjectName(baron) == "SRU_Baron" and ValidTarget(baron, Champ[GetObjectName(myHero)][GetCastName(myHero,0)].spellRange0) and smiteMenu.baron:Value() then
 			if GetCurrentHP(baron) - GetDamagePrediction(baron,Champ[GetObjectName(myHero)][GetCastName(myHero,0)].spellDelay0(baron)) <= Champ[GetObjectName(myHero)][GetCastName(myHero,0)].spellDMG0(baron) + smiteDMG then
 				Champ[GetObjectName(myHero)][GetCastName(myHero,0)].spellCast0(baron)
 				DelayAction(function()
@@ -1354,7 +1343,7 @@ end
 --1-Smite v
 if Champ[GetObjectName(myHero)][GetCastName(myHero,1)] ~= nil and CanUseSpell(myHero,1) == READY and CanUseSpell(myHero,useSmite) == READY and smiteMenu.useW:Value() then
 
-		if dragon ~= nil and ValidTarget(dragon, Champ[GetObjectName(myHero)][GetCastName(myHero,1)].spellRange1) and smiteMenu.dragon:Value() then
+		if dragon ~= nil and GetObjectName(dragon) == "SRU_Dragon" and ValidTarget(dragon, Champ[GetObjectName(myHero)][GetCastName(myHero,1)].spellRange1) and smiteMenu.dragon:Value() then
 			if GetCurrentHP(dragon) - GetDamagePrediction(dragon,Champ[GetObjectName(myHero)][GetCastName(myHero,1)].spellDelay1(dragon)) <= Champ[GetObjectName(myHero)][GetCastName(myHero,1)].spellDMG1(dragon) + smiteDMG then
 				Champ[GetObjectName(myHero)][GetCastName(myHero,1)].spellCast1(dragon)
 				DelayAction(function()
@@ -1362,7 +1351,7 @@ if Champ[GetObjectName(myHero)][GetCastName(myHero,1)] ~= nil and CanUseSpell(my
 				end,Champ[GetObjectName(myHero)][GetCastName(myHero,1)].spellDelay1(dragon))
 			end
 		end
-		if red ~= nil and ValidTarget(red, Champ[GetObjectName(myHero)][GetCastName(myHero,1)].spellRange1) and smiteMenu.red:Value() then
+		if red ~= nil and GetObjectName(red) == "SRU_Red" and ValidTarget(red, Champ[GetObjectName(myHero)][GetCastName(myHero,1)].spellRange1) and smiteMenu.red:Value() then
 			if GetCurrentHP(red) - GetDamagePrediction(red,Champ[GetObjectName(myHero)][GetCastName(myHero,1)].spellDelay1(red)) <= Champ[GetObjectName(myHero)][GetCastName(myHero,1)].spellDMG1(red) + smiteDMG then
 				Champ[GetObjectName(myHero)][GetCastName(myHero,1)].spellCast1(red)
 				DelayAction(function()
@@ -1370,7 +1359,7 @@ if Champ[GetObjectName(myHero)][GetCastName(myHero,1)] ~= nil and CanUseSpell(my
 				end,Champ[GetObjectName(myHero)][GetCastName(myHero,1)].spellDelay1(red))
 			end
 		end
-		if blue ~= nil and ValidTarget(blue, Champ[GetObjectName(myHero)][GetCastName(myHero,1)].spellRange1) and smiteMenu.blue:Value() then
+		if blue ~= nil and GetObjectName(blue) == "SRU_Blue" and ValidTarget(blue, Champ[GetObjectName(myHero)][GetCastName(myHero,1)].spellRange1) and smiteMenu.blue:Value() then
 			if GetCurrentHP(blue) - GetDamagePrediction(blue,Champ[GetObjectName(myHero)][GetCastName(myHero,1)].spellDelay1(blue)) <= Champ[GetObjectName(myHero)][GetCastName(myHero,1)].spellDMG1(blue) + smiteDMG then
 				Champ[GetObjectName(myHero)][GetCastName(myHero,1)].spellCast1(blue)
 				DelayAction(function()
@@ -1378,7 +1367,7 @@ if Champ[GetObjectName(myHero)][GetCastName(myHero,1)] ~= nil and CanUseSpell(my
 				end,Champ[GetObjectName(myHero)][GetCastName(myHero,1)].spellDelay1(blue))
 			end
 		end
-		if herald ~= nil and ValidTarget(herald, Champ[GetObjectName(myHero)][GetCastName(myHero,1)].spellRange1) and smiteMenu.herald:Value() then
+		if herald ~= nil and GetObjectName(herald) == "SRU_RiftHerald" and ValidTarget(herald, Champ[GetObjectName(myHero)][GetCastName(myHero,1)].spellRange1) and smiteMenu.herald:Value() then
 			if GetCurrentHP(herald) - GetDamagePrediction(herald,Champ[GetObjectName(myHero)][GetCastName(myHero,1)].spellDelay1(herald)) <= Champ[GetObjectName(myHero)][GetCastName(myHero,1)].spellDMG1(herald) + smiteDMG then
 				Champ[GetObjectName(myHero)][GetCastName(myHero,1)].spellCast1(herald)
 				DelayAction(function()
@@ -1386,7 +1375,7 @@ if Champ[GetObjectName(myHero)][GetCastName(myHero,1)] ~= nil and CanUseSpell(my
 				end,Champ[GetObjectName(myHero)][GetCastName(myHero,1)].spellDelay1(herald))
 			end
 		end
-		if baron ~= nil and ValidTarget(baron, Champ[GetObjectName(myHero)][GetCastName(myHero,1)].spellRange1) and smiteMenu.baron:Value() then
+		if baron ~= nil and GetObjectName(baron) == "SRU_Baron" and ValidTarget(baron, Champ[GetObjectName(myHero)][GetCastName(myHero,1)].spellRange1) and smiteMenu.baron:Value() then
 			if GetCurrentHP(baron) - GetDamagePrediction(baron,Champ[GetObjectName(myHero)][GetCastName(myHero,1)].spellDelay1(baron)) <= Champ[GetObjectName(myHero)][GetCastName(myHero,1)].spellDMG1(baron) + smiteDMG then
 				Champ[GetObjectName(myHero)][GetCastName(myHero,1)].spellCast1(baron)
 				DelayAction(function()
@@ -1399,7 +1388,7 @@ end
 --2-Smite v
 if Champ[GetObjectName(myHero)][GetCastName(myHero,2)] ~= nil and CanUseSpell(myHero,2) == READY and CanUseSpell(myHero,useSmite) == READY and smiteMenu.useE:Value() then
 
-		if dragon ~= nil and ValidTarget(dragon, Champ[GetObjectName(myHero)][GetCastName(myHero,2)].spellRange2) and smiteMenu.dragon:Value() then
+		if dragon ~= nil and GetObjectName(dragon) == "SRU_Dragon" and ValidTarget(dragon, Champ[GetObjectName(myHero)][GetCastName(myHero,2)].spellRange2) and smiteMenu.dragon:Value() then
 			if GetCurrentHP(dragon) - GetDamagePrediction(dragon,Champ[GetObjectName(myHero)][GetCastName(myHero,2)].spellDelay2(dragon)) <= Champ[GetObjectName(myHero)][GetCastName(myHero,2)].spellDMG2(dragon) + smiteDMG then
 				Champ[GetObjectName(myHero)][GetCastName(myHero,2)].spellCast2(dragon)
 				DelayAction(function()
@@ -1407,7 +1396,7 @@ if Champ[GetObjectName(myHero)][GetCastName(myHero,2)] ~= nil and CanUseSpell(my
 				end,Champ[GetObjectName(myHero)][GetCastName(myHero,2)].spellDelay2(dragon))
 			end
 		end
-		if red ~= nil and ValidTarget(red, Champ[GetObjectName(myHero)][GetCastName(myHero,2)].spellRange2) and smiteMenu.red:Value() then
+		if red ~= nil and GetObjectName(red) == "SRU_Red" and ValidTarget(red, Champ[GetObjectName(myHero)][GetCastName(myHero,2)].spellRange2) and smiteMenu.red:Value() then
 			if GetCurrentHP(red) - GetDamagePrediction(red,Champ[GetObjectName(myHero)][GetCastName(myHero,2)].spellDelay2(red)) <= Champ[GetObjectName(myHero)][GetCastName(myHero,2)].spellDMG2(red) + smiteDMG then
 				Champ[GetObjectName(myHero)][GetCastName(myHero,2)].spellCast2(red)
 				DelayAction(function()
@@ -1415,7 +1404,7 @@ if Champ[GetObjectName(myHero)][GetCastName(myHero,2)] ~= nil and CanUseSpell(my
 				end,Champ[GetObjectName(myHero)][GetCastName(myHero,2)].spellDelay2(red))
 			end
 		end
-		if blue ~= nil and ValidTarget(blue, Champ[GetObjectName(myHero)][GetCastName(myHero,2)].spellRange2) and smiteMenu.blue:Value() then
+		if blue ~= nil and GetObjectName(blue) == "SRU_Blue" and ValidTarget(blue, Champ[GetObjectName(myHero)][GetCastName(myHero,2)].spellRange2) and smiteMenu.blue:Value() then
 			if GetCurrentHP(blue) - GetDamagePrediction(blue,Champ[GetObjectName(myHero)][GetCastName(myHero,2)].spellDelay2(blue)) <= Champ[GetObjectName(myHero)][GetCastName(myHero,2)].spellDMG2(blue) + smiteDMG then
 				Champ[GetObjectName(myHero)][GetCastName(myHero,2)].spellCast2(blue)
 				DelayAction(function()
@@ -1423,7 +1412,7 @@ if Champ[GetObjectName(myHero)][GetCastName(myHero,2)] ~= nil and CanUseSpell(my
 				end,Champ[GetObjectName(myHero)][GetCastName(myHero,2)].spellDelay2(blue))
 			end
 		end
-		if herald ~= nil and ValidTarget(herald, Champ[GetObjectName(myHero)][GetCastName(myHero,2)].spellRange2) and smiteMenu.herald:Value() then
+		if herald ~= nil and GetObjectName(herald) == "SRU_RiftHerald" and ValidTarget(herald, Champ[GetObjectName(myHero)][GetCastName(myHero,2)].spellRange2) and smiteMenu.herald:Value() then
 			if GetCurrentHP(herald) - GetDamagePrediction(herald,Champ[GetObjectName(myHero)][GetCastName(myHero,2)].spellDelay2(herald)) <= Champ[GetObjectName(myHero)][GetCastName(myHero,2)].spellDMG2(herald) + smiteDMG then
 				Champ[GetObjectName(myHero)][GetCastName(myHero,2)].spellCast2(herald)
 				DelayAction(function()
@@ -1431,7 +1420,7 @@ if Champ[GetObjectName(myHero)][GetCastName(myHero,2)] ~= nil and CanUseSpell(my
 				end,Champ[GetObjectName(myHero)][GetCastName(myHero,2)].spellDelay2(herald))
 			end
 		end
-		if baron ~= nil and ValidTarget(baron, Champ[GetObjectName(myHero)][GetCastName(myHero,2)].spellRange2) and smiteMenu.baron:Value() then
+		if baron ~= nil and GetObjectName(baron) == "SRU_Baron" and ValidTarget(baron, Champ[GetObjectName(myHero)][GetCastName(myHero,2)].spellRange2) and smiteMenu.baron:Value() then
 			if GetCurrentHP(baron) - GetDamagePrediction(baron,Champ[GetObjectName(myHero)][GetCastName(myHero,2)].spellDelay2(baron)) <= Champ[GetObjectName(myHero)][GetCastName(myHero,2)].spellDMG2(baron) + smiteDMG then
 				Champ[GetObjectName(myHero)][GetCastName(myHero,2)].spellCast2(baron)
 				DelayAction(function()
@@ -1444,7 +1433,7 @@ end
 --3-Smite v
 if Champ[GetObjectName(myHero)][GetCastName(myHero,3)] ~= nil and CanUseSpell(myHero,3) == READY and CanUseSpell(myHero,useSmite) == READY and smiteMenu.useR:Value() then
 
-		if dragon ~= nil and ValidTarget(dragon, Champ[GetObjectName(myHero)][GetCastName(myHero,3)].spellRange3) and smiteMenu.dragon:Value() then
+		if dragon ~= nil and GetObjectName(dragon) == "SRU_Dragon" and ValidTarget(dragon, Champ[GetObjectName(myHero)][GetCastName(myHero,3)].spellRange3) and smiteMenu.dragon:Value() then
 			if GetCurrentHP(dragon) - GetDamagePrediction(dragon,Champ[GetObjectName(myHero)][GetCastName(myHero,3)].spellDelay3(dragon)) <= Champ[GetObjectName(myHero)][GetCastName(myHero,3)].spellDMG3(dragon) + smiteDMG then
 				Champ[GetObjectName(myHero)][GetCastName(myHero,3)].spellCast3(dragon)
 				DelayAction(function()
@@ -1452,7 +1441,7 @@ if Champ[GetObjectName(myHero)][GetCastName(myHero,3)] ~= nil and CanUseSpell(my
 				end,Champ[GetObjectName(myHero)][GetCastName(myHero,3)].spellDelay3(dragon))
 			end
 		end
-		if red ~= nil and ValidTarget(red, Champ[GetObjectName(myHero)][GetCastName(myHero,3)].spellRange3) and smiteMenu.red:Value() then
+		if red ~= nil and GetObjectName(red) == "SRU_Red" and ValidTarget(red, Champ[GetObjectName(myHero)][GetCastName(myHero,3)].spellRange3) and smiteMenu.red:Value() then
 			if GetCurrentHP(red) - GetDamagePrediction(red,Champ[GetObjectName(myHero)][GetCastName(myHero,3)].spellDelay3(red)) <= Champ[GetObjectName(myHero)][GetCastName(myHero,3)].spellDMG3(red) + smiteDMG then
 				Champ[GetObjectName(myHero)][GetCastName(myHero,3)].spellCast3(red)
 				DelayAction(function()
@@ -1460,7 +1449,7 @@ if Champ[GetObjectName(myHero)][GetCastName(myHero,3)] ~= nil and CanUseSpell(my
 				end,Champ[GetObjectName(myHero)][GetCastName(myHero,3)].spellDelay3(red))
 			end
 		end
-		if blue ~= nil and ValidTarget(blue, Champ[GetObjectName(myHero)][GetCastName(myHero,3)].spellRange3) and smiteMenu.blue:Value() then
+		if blue ~= nil and GetObjectName(blue) == "SRU_Blue" and ValidTarget(blue, Champ[GetObjectName(myHero)][GetCastName(myHero,3)].spellRange3) and smiteMenu.blue:Value() then
 			if GetCurrentHP(blue) - GetDamagePrediction(blue,Champ[GetObjectName(myHero)][GetCastName(myHero,3)].spellDelay3(blue)) <= Champ[GetObjectName(myHero)][GetCastName(myHero,3)].spellDMG3(blue) + smiteDMG then
 				Champ[GetObjectName(myHero)][GetCastName(myHero,3)].spellCast3(blue)
 				DelayAction(function()
@@ -1468,7 +1457,7 @@ if Champ[GetObjectName(myHero)][GetCastName(myHero,3)] ~= nil and CanUseSpell(my
 				end,Champ[GetObjectName(myHero)][GetCastName(myHero,3)].spellDelay3(blue))
 			end
 		end
-		if herald ~= nil and ValidTarget(herald, Champ[GetObjectName(myHero)][GetCastName(myHero,3)].spellRange3) and smiteMenu.herald:Value() then
+		if herald ~= nil and GetObjectName(herald) == "SRU_RiftHerald" and ValidTarget(herald, Champ[GetObjectName(myHero)][GetCastName(myHero,3)].spellRange3) and smiteMenu.herald:Value() then
 			if GetCurrentHP(herald) - GetDamagePrediction(herald,Champ[GetObjectName(myHero)][GetCastName(myHero,3)].spellDelay3(herald)) <= Champ[GetObjectName(myHero)][GetCastName(myHero,3)].spellDMG3(herald) + smiteDMG then
 				Champ[GetObjectName(myHero)][GetCastName(myHero,3)].spellCast3(herald)
 				DelayAction(function()
@@ -1476,7 +1465,7 @@ if Champ[GetObjectName(myHero)][GetCastName(myHero,3)] ~= nil and CanUseSpell(my
 				end,Champ[GetObjectName(myHero)][GetCastName(myHero,3)].spellDelay3(herald))
 			end
 		end
-		if baron ~= nil and ValidTarget(baron, Champ[GetObjectName(myHero)][GetCastName(myHero,3)].spellRange3) and smiteMenu.baron:Value() then
+		if baron ~= nil and GetObjectName(baron) == "SRU_Baron" and ValidTarget(baron, Champ[GetObjectName(myHero)][GetCastName(myHero,3)].spellRange3) and smiteMenu.baron:Value() then
 			if GetCurrentHP(baron) - GetDamagePrediction(baron,Champ[GetObjectName(myHero)][GetCastName(myHero,3)].spellDelay3(baron)) <= Champ[GetObjectName(myHero)][GetCastName(myHero,3)].spellDMG3(baron) + smiteDMG then
 				Champ[GetObjectName(myHero)][GetCastName(myHero,3)].spellCast3(baron)
 				DelayAction(function()
