@@ -172,9 +172,11 @@ if mainMenu.Misc.saveAlly:Value() then
 end
 -- JungleSteal
 if mainMenu.Misc.Jungle:Value() then
-for _,mob in pairs(minionManager.objects) do
-	if CanUseSpell(myHero,_E) == READY and GotBuff(mob,"kalistaexpungemarker") >= 1 and ValidTarget(mob,GetCastRange(myHero,_E)) and GetCurrentHP(mob) < CalcDamage(myHero, mob, (10*GetCastLevel(myHero,_E)+10+(0.6*(GetBaseDamage(myHero)+GetBonusDmg(myHero)))) + (((({[1]=10,[2]=14,[3]=19,[4]=25,[5]=32})[GetCastLevel(myHero,_E)])+((0.025*GetCastLevel(myHero,_E)+0.175)*(GetBaseDamage(myHero)+GetBonusDmg(myHero))))*(GotBuff(mob,"kalistaexpungemarker")-1)),0) then
-		CastSpell(_E)
+for i,mob in pairs(minionManager.objects) do
+	if GetTeam(mob) == 300 then
+		if CanUseSpell(myHero,_E) == READY and GotBuff(mob,"kalistaexpungemarker") >= 1 and ValidTarget(mob,GetCastRange(myHero,_E)) and GetCurrentHP(mob) < CalcDamage(myHero, mob, (10*GetCastLevel(myHero,_E)+10+(0.6*(GetBaseDamage(myHero)+GetBonusDmg(myHero)))) + (((({[1]=10,[2]=14,[3]=19,[4]=25,[5]=32})[GetCastLevel(myHero,_E)])+((0.025*GetCastLevel(myHero,_E)+0.175)*(GetBaseDamage(myHero)+GetBonusDmg(myHero))))*(GotBuff(mob,"kalistaexpungemarker")-1)),0) then
+			CastSpell(_E)
+		end
 	end
 end
 end
@@ -240,6 +242,7 @@ function farmE()
 	local minionX = 0
 	
     for _,minion in pairs(minionManager.objects) do
+	if GetTeam(minion) ~= GetTeam(myHero) then
 		if CanUseSpell(myHero,_E) == READY and GotBuff(minion,"kalistaexpungemarker") >= 1 and ValidTarget(minion,GetCastRange(myHero,_E)) and GetCurrentHP(minion) + GetDmgShield(minion) < CalcDamage(myHero, minion, (10*GetCastLevel(myHero,_E)+10+(0.6*(GetBaseDamage(myHero)+GetBonusDmg(myHero)))) + (((({[1]=10,[2]=14,[3]=19,[4]=25,[5]=32})[GetCastLevel(myHero,_E)])+((0.025*GetCastLevel(myHero,_E)+0.175)*(GetBaseDamage(myHero)+GetBonusDmg(myHero))))*(GotBuff(minion,"kalistaexpungemarker")-1)),0) then
 			minionX = minionX + 1
 			
@@ -247,14 +250,16 @@ function farmE()
 				if CanUseSpell(myHero,_E) == READY and minionX >= mainMenu.Farm.farmEx:Value() then
 					CastSpell(_E)
 					minionX = 0
-				end		
+				end	
+	end
 	end
 end
 
 -- E if Minion killable + Target
 function useEx()
 local minionXe = 0
-    for _,minion in pairs(minionManager.objects) do
+    for i,minion in pairs(minionManager.objects) do
+	if GetTeam(minion) ~= GetTeam(myHero) then
 		if CanUseSpell(myHero,_E) == READY and GotBuff(minion,"kalistaexpungemarker") >= 1 and ValidTarget(minion,GetCastRange(myHero,_E)) and GetCurrentHP(minion) + GetDmgShield(minion) < CalcDamage(myHero, minion, (10*GetCastLevel(myHero,_E)+10+(0.6*(GetBaseDamage(myHero)+GetBonusDmg(myHero)))) + (((({[1]=10,[2]=14,[3]=19,[4]=25,[5]=32})[GetCastLevel(myHero,_E)])+((0.025*GetCastLevel(myHero,_E)+0.175)*(GetBaseDamage(myHero)+GetBonusDmg(myHero))))*(GotBuff(minion,"kalistaexpungemarker")-1)),0) then
 			minionXe = minionXe + 1
 		end
@@ -267,7 +272,8 @@ local minionXe = 0
 					CastSpell(_E)
 					minionXe = 0
 				end			
-			end		
+			end	
+	end
 	end
 end
 
@@ -275,6 +281,7 @@ end
 function hEx()
 local minionXeh = 0
     for _,minion in pairs(minionManager.objects) do
+	if GetTeam(minion) ~= GetTeam(myHero) then
 		if CanUseSpell(myHero,_E) == READY and GotBuff(minion,"kalistaexpungemarker") >= 1 and ValidTarget(minion,GetCastRange(myHero,_E)) and GetCurrentHP(minion) + GetDmgShield(minion) < CalcDamage(myHero, minion, (10*GetCastLevel(myHero,_E)+10+(0.6*(GetBaseDamage(myHero)+GetBonusDmg(myHero)))) + (((({[1]=10,[2]=14,[3]=19,[4]=25,[5]=32})[GetCastLevel(myHero,_E)])+((0.025*GetCastLevel(myHero,_E)+0.175)*(GetBaseDamage(myHero)+GetBonusDmg(myHero))))*(GotBuff(minion,"kalistaexpungemarker")-1)),0) then
 			minionXeh = minionXeh + 1
 		end
@@ -283,7 +290,8 @@ local minionXeh = 0
 					CastSpell(_E)
 					minionXeh = 0
 				end			
-			end		
+			end
+	end
 	end
 end
 
