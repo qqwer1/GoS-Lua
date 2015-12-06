@@ -46,10 +46,6 @@ OnDraw(function(myHero)
 if DPS ~= nil and ValidTarget(target, 2000) and mainMenu.drawDMG:Value() then
 	DrawDmgOverHpBar(target,GetCurrentHP(target),DPS,0,0xffffffff)
 end
-DrawCircle(GetOrigin(myHero),1750,0,155,ARGB(255,255,255,255))
-if targetPos ~= nil then
-	DrawCircle(targetPos,50,0,155,ARGB(255,255,255,255))
-end
 end)
 
 OnTick(function(myHero)
@@ -166,7 +162,7 @@ end
 if CanUseSpell(myHero,1) == READY and mainMenu.Combo.useW:Value() then
 	for i,enemy in pairs(GetEnemyHeroes()) do
 		if ValidTarget(enemy, 2100) then
-			if GetCurrentHP(enemy) + GetDmgShield(enemy) - GetDamagePrediction(enemy, 500 + GetLatency()) < 1 then
+			if GetCurrentHP(enemy) + GetDmgShield(enemy) - GetDamagePrediction(enemy, 750 + GetLatency()) < 1 then
 				CastSpell(1)
 			end
 		end
