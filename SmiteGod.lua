@@ -965,6 +965,7 @@ smiteMenu:Boolean("dragon", "Smite: Dragon", true)
 smiteMenu:Boolean("herald", "Smite: Rift Herald", true)
 smiteMenu:Boolean("baron", "Smite: Baron", true)
 smiteMenu:Boolean("draw", "Draw: Smite range", true)
+smiteMenu:Boolean("drawNOT", "Draw: Disable all drawings", false)
 smiteMenu:Boolean("ks", "Killsteal: Smite", true)
 smiteMenu:Key("dontUse", "Turn off/on", string.byte("G"))
 end, 10)
@@ -1032,41 +1033,52 @@ end
 if smiteON == true then
 	if CanUseSpell(myHero,useSmite) == READY then
 			if dragon ~= nil and GetObjectName(dragon) == "SRU_Dragon" and ValidTarget(dragon, 750) and smiteMenu.dragon:Value() then
-				DrawCircle(GetOrigin(dragon),100,0,155,ARGB(255,55,255,55))
+				if not smiteMenu.drawNOT:Value() then
+					DrawCircle(GetOrigin(dragon),100,0,155,ARGB(255,55,255,55))
+				end
 				if GetCurrentHP(dragon) <= smiteDMG then
 					CastTargetSpell(dragon,useSmite)
 				end
 			end
 			if herald ~= nil and GetObjectName(herald) == "SRU_RiftHerald" and ValidTarget(herald, 750) and smiteMenu.herald:Value() then
-				DrawCircle(GetOrigin(herald),100,0,155,ARGB(255,55,255,55))
+				if not smiteMenu.drawNOT:Value() then
+					DrawCircle(GetOrigin(herald),100,0,155,ARGB(255,55,255,55))
+				end
 				if GetCurrentHP(herald) <= smiteDMG then
 					CastTargetSpell(herald,useSmite)
 				end
 			end
 			if red ~= nil and GetObjectName(red) == "SRU_Red" and ValidTarget(red, 750) and smiteMenu.red:Value() then
-				DrawCircle(GetOrigin(red),100,0,155,ARGB(255,55,255,55))
+				if not smiteMenu.drawNOT:Value() then
+					DrawCircle(GetOrigin(red),100,0,155,ARGB(255,55,255,55))
+				end
 				if GetCurrentHP(red) <= smiteDMG then
 					CastTargetSpell(red,useSmite)
 				end
 			end
 			if blue ~= nil and GetObjectName(blue) == "SRU_Blue" and ValidTarget(blue, 750) and smiteMenu.blue:Value() then
-				DrawCircle(GetOrigin(blue),100,0,155,ARGB(255,55,255,55))
+				if not smiteMenu.drawNOT:Value() then
+					DrawCircle(GetOrigin(blue),100,0,155,ARGB(255,55,255,55))
+				end
 				if GetCurrentHP(blue) <= smiteDMG then
 					CastTargetSpell(blue,useSmite)
 				end
 			end
 			if baron ~= nil and GetObjectName(baron) == "SRU_Baron" and ValidTarget(baron, 750) and smiteMenu.baron:Value() then
-				DrawCircle(GetOrigin(baron),100,0,155,ARGB(255,55,255,55))
+				if not smiteMenu.drawNOT:Value() then
+					DrawCircle(GetOrigin(baron),100,0,155,ARGB(255,55,255,55))
+				end
 				if GetCurrentHP(baron) <= smiteDMG then
 					CastTargetSpell(baron,useSmite)
 				end
 			end
 	end
 end
-
-DrawText("SmiteGod: "..text,12,myscreenpos.x-GetHitBox(myHero)/2,myscreenpos.y+10,0xff00ff00)
+if not smiteMenu.drawNOT:Value() then
+	DrawText("SmiteGod: "..text,12,myscreenpos.x-GetHitBox(myHero)/2,myscreenpos.y+10,0xff00ff00)
 if smiteON == true and smiteMenu.draw:Value() then
 	DrawCircle(origin,650,0,155,ARGB(255,255,255,255))
+end
 end
 end)
 end,10)
