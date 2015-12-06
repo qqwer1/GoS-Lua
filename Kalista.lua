@@ -157,7 +157,7 @@ if mainMenu.Killsteal.ksE:Value() then
 ksE()
 end
 -- E Farm
-if mainMenu.Farm.Farm1:Value() and mainMenu.Farm.farmE.Value() then
+if mainMenu.Farm.Farm1:Value() and mainMenu.Farm.farmE:Value() then
 farmE()
 end
 -- Save Ally
@@ -241,7 +241,7 @@ end
 function farmE()
 	local minionX = 0
 	
-    for _,minion in pairs(minionManager.objects) do
+    for i,minion in pairs(minionManager.objects) do
 	if GetTeam(minion) ~= GetTeam(myHero) then
 		if CanUseSpell(myHero,_E) == READY and GotBuff(minion,"kalistaexpungemarker") >= 1 and ValidTarget(minion,GetCastRange(myHero,_E)) and GetCurrentHP(minion) + GetDmgShield(minion) < CalcDamage(myHero, minion, (10*GetCastLevel(myHero,_E)+10+(0.6*(GetBaseDamage(myHero)+GetBonusDmg(myHero)))) + (((({[1]=10,[2]=14,[3]=19,[4]=25,[5]=32})[GetCastLevel(myHero,_E)])+((0.025*GetCastLevel(myHero,_E)+0.175)*(GetBaseDamage(myHero)+GetBonusDmg(myHero))))*(GotBuff(minion,"kalistaexpungemarker")-1)),0) then
 			minionX = minionX + 1
@@ -280,7 +280,7 @@ end
 -- E Harass
 function hEx()
 local minionXeh = 0
-    for _,minion in pairs(minionManager.objects) do
+    for i,minion in pairs(minionManager.objects) do
 	if GetTeam(minion) ~= GetTeam(myHero) then
 		if CanUseSpell(myHero,_E) == READY and GotBuff(minion,"kalistaexpungemarker") >= 1 and ValidTarget(minion,GetCastRange(myHero,_E)) and GetCurrentHP(minion) + GetDmgShield(minion) < CalcDamage(myHero, minion, (10*GetCastLevel(myHero,_E)+10+(0.6*(GetBaseDamage(myHero)+GetBonusDmg(myHero)))) + (((({[1]=10,[2]=14,[3]=19,[4]=25,[5]=32})[GetCastLevel(myHero,_E)])+((0.025*GetCastLevel(myHero,_E)+0.175)*(GetBaseDamage(myHero)+GetBonusDmg(myHero))))*(GotBuff(minion,"kalistaexpungemarker")-1)),0) then
 			minionXeh = minionXeh + 1
