@@ -633,25 +633,20 @@ Champ =
         {
 			aaDMG = function(target) return CalcDamage(myHero,target,(GetBaseDamage(myHero)+GetBonusDmg(myHero)),0) end,
 			extraDelay = function(target) return 0 end,
-            ["PoppyDevastatingBlow"] = {
+            ["PoppyQ"] = {
 				spellSlot0 = 0, 
-				spellName0 = "PoppyDevastatingBlow", 
-				spellRange0 = 300,
-				spellDelay0 = function(target) return 260 - GetLatency() end, 
-				spellCast0 = function(target) CastSpell(_Q) DelayAction(function() AttackUnit(target) end, 10) end,
-				spellDMG0 = function(target) 
-					if CalcDamage(myHero,target,0,GetMaxHP(target)*0.08) > 65*GetCastLevel(myHero,_Q) then
-						qExtraDMG = CalcDamage(myHero,target,0,65*GetCastLevel(myHero,_Q))
-					else qExtraDMG = CalcDamage(myHero,target,0,GetMaxHP(target)*0.08)
-					end
-					return CalcDamage(myHero,target,0,20*GetCastLevel(myHero,_Q)+(GetBaseDamage(myHero)+GetBonusDmg(myHero))+GetBonusAP(myHero)*0.6) + qExtraDMG end },
-            ["PoppyHeroicCharge"] = {
+				spellName0 = "PoppyQ", 
+				spellRange0 = 400,
+				spellDelay0 = function(target) return 333 - GetLatency() end, 
+				spellCast0 = function(target) CastSkillShot(0,GetOrigin(target)) end,
+				spellDMG0 = function(target) return CalcDamage(myHero,target,28*GetCastLevel(myHero,0)-4+GetMaxHP(target)*0.045,0) end },
+            ["PoppyE"] = {
 				spellSlot2 = 2, 
-				spellName2 = "PoppyHeroicCharge", 
+				spellName2 = "PoppyE", 
 				spellRange2 = 550,
 				spellDelay2 = function(target) return (GetDistance(myHero,target)/2000)*1000 + 250 - GetLatency() end, 
 				spellCast2 = function(target) CastTargetSpell(target,_E) end, 
-				spellDMG2 = function(target) return CalcDamage(myHero,target,0,25*GetCastLevel(myHero,_E)+25+GetBonusAP(myHero)*0.4) end },
+				spellDMG2 = function(target) return CalcDamage(myHero,target,20*GetCastLevel(myHero,2)+30+GetBonusDmg(myHero)*0.5,0) end },
         },
 	["Renekton"] = 
         {
@@ -982,7 +977,7 @@ local global_ticks = 0
 local smiteON = true
 local text = "ON"
 
--- PrintChat(GetItemID(myHero,ITEM_1))
+-- PrintChat(GetCastName(myHero,2))
 -- s5_summonersmiteplayerganker
 
 -- Blue 1,7
