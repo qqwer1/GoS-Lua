@@ -143,7 +143,7 @@ if CanUseSpell(myHero,_W) == READY and mainMenu.Combo.useW:Value() and ValidTarg
 end
 
 -- Q
-if CanUseSpell(myHero,_Q) == READY and mainMenu.Combo.useQ:Value() and ValidTarget(target,650) and IsTargetable(target) and GotBuff(myHero,"asheqcastready") == 5 then
+if CanUseSpell(myHero,_Q) == READY and mainMenu.Combo.useQ:Value() and ValidTarget(target,650) and IsTargetable(target) and GotBuff(myHero,"asheqcastready") == 4 then
 	CastSpell(_Q)
 end
 
@@ -166,7 +166,7 @@ if CanUseSpell(myHero,_W) == READY and mainMenu.Harass.useW:Value() and ValidTar
 end
 
 -- Q
-if CanUseSpell(myHero,_Q) == READY and mainMenu.Harass.useQ:Value() and ValidTarget(target,650) and IsTargetable(target) and GotBuff(myHero,"asheqcastready") == 5 then
+if CanUseSpell(myHero,_Q) == READY and mainMenu.Harass.useQ:Value() and ValidTarget(target,650) and IsTargetable(target) and GotBuff(myHero,"asheqcastready") == 4 then
 	CastSpell(_Q)
 end
 
