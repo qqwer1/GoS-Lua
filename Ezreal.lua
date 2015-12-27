@@ -417,7 +417,7 @@ function Ezreal:drawDMG()
 					if GetCurrentHP(enemy) + GetDmgShield(enemy) + GetMagicShield(enemy) < rDMG then
 						local origin = GetOrigin(myHero)
 						local myscreenpos = WorldToScreen(1,origin.x,origin.y,origin.z)
-						DrawText("Killable with R: "..GetObjectName(enemy),14,myscreenpos.x+(-14+(14*i)),myscreenpos.y,0xff00ff00)
+						DrawText("Killable with R: "..GetObjectName(enemy),14,myscreenpos.x,myscreenpos.y+(-14+(14*i)),0xff00ff00)
 					end
 				end
 			end
