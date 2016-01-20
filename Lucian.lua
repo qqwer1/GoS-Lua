@@ -48,26 +48,26 @@ if unit == myHero then
     if spell.name:lower():find("lucianq") then
 		DelayAction(function()
 			CastEmote(EMOTE_DANCE)
-		end, 150)
+		end, .150)
 		Passive = 1
 		DelayAction(function()
 			Passive = 0
-		end, 3000)
+		end, 3)
 	elseif spell.name:lower():find("lucianw") then	
 		Passive = 1
 		DelayAction(function()
 			Passive = 0
-		end, 3000)
+		end, 3)
 	elseif spell.name:lower():find("luciane") then	
 		Passive = 1	
 		DelayAction(function()
 			Passive = 0
-		end, 3000)
+		end, 3)
 	elseif spell.name:lower():find("lucianr") then	
 		Passive = 1
 		DelayAction(function()
 			Passive = 0
-		end, 3000)
+		end, 3)
 	end
 end
 end)
@@ -100,18 +100,18 @@ OnProcessSpellComplete(function(unit, spell)
 				CastSkillShot(_W, WPred.PredPos.x, WPred.PredPos.y, WPred.PredPos.z)
 			end
 		end
-		end,3)
+		end,.003)
 		
 		DelayAction(function()
 			atk = true
-		end, ASDelay*1000- spell.windUpTime*1000)
+		end, ASDelay - spell.windUpTime)
 	end
 	if unit == myHero and not spell.name:lower():find("attack") and spell.name ~= "recall" and mainMenu.Combo.Combo1:Value() then
 		DelayAction(function()
 		if ValidTarget(GetCurrentTarget(), GetRange(myHero)+GetHitBox(myHero)) and mainMenu.Combo.Combo1:Value() and atk == true then
 			AttackUnit(GetCurrentTarget())
 		end
-		end, 2)
+		end, .002)
 	end
 end)
 
@@ -162,7 +162,7 @@ if mainMenu.Combo.lockR:Value() and CanUseSpell(myHero,_R) == READY and ValidTar
 				local luciMoveRPos = myHeroPos + ((VectorWay(pos1,pos2))/GetDistance(pos1,pos2))*100
 				-- DrawCircle(luciMoveRPos,50,0,mainMenu.Drawings.Quality:Value(),0xffffffff)
 				MoveToXYZ(luciMoveRPos)
-			end , 50) 
+			end , .050) 
 			global_ticks1 = Ticker1
 		end	
 		--------------
