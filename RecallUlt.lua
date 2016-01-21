@@ -5,21 +5,21 @@ local supportedChamp = {
 ["Ashe"] = {
 skillrange = 50000,
 speedChamp = 1600,
-delay = 250,
+delay = .250,
 colision = true,
 dmg = function(target) return CalcDamage(myHero, target, 0, 175*GetCastLevel(myHero,_R)+ 75 + GetBonusAP(myHero)) end
 },
 ["Draven"] = {
 skillrange = 50000,
 speedChamp = 2000,
-delay = 400,
+delay = .400,
 colision = false,
 dmg = function(target) return CalcDamage(myHero, target, 60*GetCastLevel(myHero,_R)+ 30 + (0.44*GetBonusDmg(myHero)+GetBaseDamage(myHero)),0) end
 },
 ["Ezreal"] = {
 skillrange = 50000,
 speedChamp = 2000,
-delay = 1000,
+delay = 1.000,
 colision = false,
 -- dmg = function(target) return CalcDamage(myHero, target, 0, (150*GetCastLevel(myHero,_R)+ 40 + (0.80*GetBonusAP(myHero)) + (0.90*(GetBaseDamage(myHero) + GetBonusDmg(myHero))))) end
 dmg = function(target) return CalcDamage(myHero, target, 0, 45*GetCastLevel(myHero,_R)+ 60 + (0.27*GetBonusAP(myHero)) + (0.90*(GetBaseDamage(myHero) + GetBonusDmg(myHero)))) end
@@ -27,7 +27,7 @@ dmg = function(target) return CalcDamage(myHero, target, 0, 45*GetCastLevel(myHe
 ["Jinx"] = {
 skillrange = 50000,
 speedChamp = 2000,
-delay = 600,
+delay = .600,
 colision = true,
 dmg = function(target) return CalcDamage(myHero, target, ((GetMaxHP(target)-GetCurrentHP(target))*(0.2+0.05*GetCastLevel(myHero, _R))) + 100*GetCastLevel(myHero,_R) + 150 + GetBonusDmg(myHero)) end
 },
@@ -41,7 +41,7 @@ dmg = function(target) return CalcDamage(myHero, target, 0, 20*GetCastLevel(myHe
 ["Lux"] = {
 skillrange = 3340,
 speedChamp = math.huge,
-delay = 500,
+delay = .500,
 colision = false,
 dmg = function(target) return CalcDamage(myHero, target, 0, 100*GetCastLevel(myHero,_R)+ 200 + 0.75*GetBonusAP(myHero)) end
 },
@@ -118,7 +118,7 @@ DelayAction(function()
 		end
 		end		
 		
-end, 1)
+end, 0.001)
 
 end
 end)
@@ -153,7 +153,7 @@ local Ticker1 = GetTickCount()
 				inStart = GetGameTimer()
 				-- PrintChat("Start!")
 			end			
-		 end , 1) 
+		 end , 0.001) 
 		global_ticks1 = Ticker1
 	end	
 end
@@ -166,9 +166,9 @@ if Pos ~= nil and ultON == true then
 			CastSkillShot(_R,Pos)
 			DelayAction(function()
 				Pos = nil
-			end,(GetDistance(myHero,Pos)/speedChamp)*1000)
+			end,(GetDistance(myHero,Pos)/speedChamp))
 		end
-	end, recallMenu.extraDelay:Value()*1000)
+	end, recallMenu.extraDelay:Value())
 end
 
 end)
