@@ -115,7 +115,7 @@ Ticker = GetTickCount()
 			if not IsVisible(target) then
 				targetPos = GetOrigin(target)
 			end		
-		 end , 10) 
+		 end , 0.010) 
 		global_ticks = Ticker
 
 	end	
