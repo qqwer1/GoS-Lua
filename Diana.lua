@@ -8,9 +8,8 @@ mainMenu.Combo:Boolean("useQ", "Use Q  in combo", true)
 mainMenu.Combo:Boolean("useW", "Use W in combo", true)
 mainMenu.Combo:Boolean("useE", "Use E in combo", true)
 mainMenu.Combo:Boolean("useR", "Use R in combo", true)
--- mainMenu.Combo:Boolean("useRQ", "Use R-Q Combo", true)
-mainMenu.Combo:Boolean("Burst", "Burst them down", true)
-mainMenu.Combo:Boolean("minionJumper", "What a nice minion there", true)
+mainMenu.Combo:Boolean("Burst", "Burst Combo", true)
+mainMenu.Combo:Boolean("minionJumper", "Minion Gapclose", true)
 mainMenu.Combo:Boolean("freeELO", "Free ELO ?", true)
 mainMenu.Combo:Key("Combo1", "Combo key", string.byte(" "))
 ------------------------
@@ -46,7 +45,7 @@ rCast = true
 if rCast == true then
 	DelayAction(function()
 		rCast = false
-	end, 1000)
+	end, 1)
 end
 
 end
@@ -60,12 +59,12 @@ if mainMenu.Combo.freeELO:Value() then
 		if ValidTarget(target, 1500) and target ~= nil and GetDistance(qEnd, target) < 160 and qEnd ~= nil and mainMenu.Combo.useR:Value() and mainMenu.Combo.Combo1:Value() and GetCurrentHP(target) > CalcDamage(myHero, target, 0, (35*GetCastLevel(myHero,_Q)+25+(0.7*(GetBonusAP(myHero))))) then
 			CastTargetSpell(target,_R)
 		end
-	end, willHit*1000 - 50)
+	end, willHit - .050)
 	
 end
 	DelayAction(function()
 		qEnd = nil
-	end, willHit*1000 + 500)
+	end, willHit + .5)
 
 end
 
@@ -80,7 +79,7 @@ atk = false
 -- PrintChat(spell.windUpTime)
 DelayAction(function()
 	atk = true
-end, ASDelay*1000- spell.windUpTime*1000)
+end, ASDelay - spell.windUpTime)
 end
 end)
 
@@ -113,7 +112,8 @@ end
 end
 end)
 
-local ts = TargetSelector(1200, 3, DAMAGE_MAGICAL)
+
+local ts = TargetSelector(1200, 2, DAMAGE_MAGICAL)
 
 OnTick(function(myHero)
 
@@ -200,7 +200,7 @@ end
 			CastSkillShot(_Q,QMax)
 				DelayAction(function()
 					QMax = nil
-				end, 300)
+				end, .300)
 		else
 			local QPred = GetPredictionForPlayer(myHeroPos, target, GetMoveSpeed(target),1670, 250, 830, 150, false, true)
 			if QPred.HitChance == 1 then
@@ -219,7 +219,7 @@ end
 					local QPred = GetPredictionForPlayer(myHeroPos, target, GetMoveSpeed(target),1670, 250, 830, 150, false, true)
 					CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
 				end
-			end, 50)
+			end, .050)
 		end
 		if CanUseSpell(myHero,_Q) == READY and CanUseSpell(myHero,_W) ~= READY and ValidTarget(target,900) and QPred.HitChance == 0 and GetCurrentHP(target) < fullDMG then
 			CastTargetSpell(target,_R)
@@ -228,7 +228,7 @@ end
 					local QPred = GetPredictionForPlayer(myHeroPos, target, GetMoveSpeed(target),1670, 250, 830, 150, false, true)
 					CastSkillShot(_Q,QPred.PredPos.x,QPred.PredPos.y,QPred.PredPos.z)
 				end
-			end, 50)
+			end, .050)
 		end
 		if CanUseSpell(myHero,_Q) ~= READY and CanUseSpell(myHero,_W) == READY and ValidTarget(target,900) and GetCurrentHP(target) < fullDMG then
 			CastTargetSpell(target,_R)
@@ -254,7 +254,7 @@ end
 								CastTargetSpell(minion,_R)
 								-- PrintChat"CastR"
 								end
-							end,willHit*1000 - 350 )
+							end,willHit - .350 )
 						end
 						end
 					end
@@ -276,7 +276,7 @@ end
 								CastTargetSpell(minion,_R)
 								-- PrintChat"CastRW"
 								end
-							end,willHit*1000 - 350 )
+							end,willHit - .350 )
 						end
 						end
 					end
@@ -297,7 +297,7 @@ end
 									CastSkillShot(_Q,QPredMinion.PredPos.x,QPredMinion.PredPos.y,QPredMinion.PredPos.z)
 									-- PrintChat("CastQ!")
 								end
-							end,(GetDistance(myHeroPos,validMinion)/1800)*1000 - 100 )
+							end,(GetDistance(myHeroPos,validMinion)/1800) - .100 )
 						end
 					end
 				end
@@ -341,7 +341,7 @@ if mainMenu.Flee.Flee1:Value() and mainMenu.Flee.useFlee:Value() then
 							if minion ~= nil and GetDistance(qEnd,GetOrigin(minion)) < 160 then
 								CastTargetSpell(minion,_R)
 							end
-						end, willHit*1000-200)
+						end, willHit - .200)
 					end
 				end
 			end
@@ -365,7 +365,7 @@ if mainMenu.Flee.Flee1:Value() and mainMenu.Flee.useFlee:Value() then
 				end
 			end
 		end
-	end, 200)
+	end, .200)
 	end
 	MoveToXYZ(GetMousePos())
 end
