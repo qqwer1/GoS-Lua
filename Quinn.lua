@@ -30,7 +30,7 @@ OnProcessSpellComplete(function(unit,spell)
 		if CanUseSpell(myHero,2) == READY and ValidTarget(spell.target, 750) and EnemiesAround(GetOrigin(spell.target), 600) < 3 and GetObjectType(spell.target) == Obj_AI_Hero and mainMenu.Combo.useE:Value() then
 			CastTargetSpell(spell.target,2)
 		end
-		end, 5)
+		end, .005)
 		DelayAction(function()
 		if CanUseSpell(myHero,0) == READY and ValidTarget(spell.target, 750) and mainMenu.Combo.useQ:Value() and GetObjectType(spell.target) == Obj_AI_Hero then
 			local qPred = GetPredictionForPlayer(GetOrigin(myHero),spell.target,GetMoveSpeed(spell.target),1550,313,1050,60,true,false)
@@ -38,7 +38,7 @@ OnProcessSpellComplete(function(unit,spell)
 				CastSkillShot(0,qPred.PredPos)
 			end
 		end
-		end, 5)
+		end, .005)
 	end
 end)
 
@@ -67,7 +67,7 @@ end
 if not IsVisible(target) and targetPos ~= nil then
 	DelayAction(function()
 		targetPos = nil
-	end, 1000)
+	end, 1)
 end
 if IsDead(target) then
 	targetPos = nil
