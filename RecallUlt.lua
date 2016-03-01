@@ -5,29 +5,28 @@ local supportedChamp = {
 ["Ashe"] = {
 skillrange = 50000,
 speedChamp = 1600,
-delay = .250,
+delay = 250,
 colision = true,
 dmg = function(target) return CalcDamage(myHero, target, 0, 175*GetCastLevel(myHero,_R)+ 75 + GetBonusAP(myHero)) end
 },
 ["Draven"] = {
 skillrange = 50000,
 speedChamp = 2000,
-delay = .400,
+delay = 400,
 colision = false,
 dmg = function(target) return CalcDamage(myHero, target, 60*GetCastLevel(myHero,_R)+ 30 + (0.44*GetBonusDmg(myHero)+GetBaseDamage(myHero)),0) end
 },
 ["Ezreal"] = {
 skillrange = 50000,
 speedChamp = 2000,
-delay = 1.000,
+delay = 1000,
 colision = false,
--- dmg = function(target) return CalcDamage(myHero, target, 0, (150*GetCastLevel(myHero,_R)+ 40 + (0.80*GetBonusAP(myHero)) + (0.90*(GetBaseDamage(myHero) + GetBonusDmg(myHero))))) end
 dmg = function(target) return CalcDamage(myHero, target, 0, 45*GetCastLevel(myHero,_R)+ 60 + (0.27*GetBonusAP(myHero)) + (0.90*(GetBaseDamage(myHero) + GetBonusDmg(myHero)))) end
 },
 ["Jinx"] = {
 skillrange = 50000,
 speedChamp = 2000,
-delay = .600,
+delay = 600,
 colision = true,
 dmg = function(target) return CalcDamage(myHero, target, ((GetMaxHP(target)-GetCurrentHP(target))*(0.2+0.05*GetCastLevel(myHero, _R))) + 100*GetCastLevel(myHero,_R) + 150 + GetBonusDmg(myHero)) end
 },
@@ -41,7 +40,7 @@ dmg = function(target) return CalcDamage(myHero, target, 0, 20*GetCastLevel(myHe
 ["Lux"] = {
 skillrange = 3340,
 speedChamp = math.huge,
-delay = .500,
+delay = 500,
 colision = false,
 dmg = function(target) return CalcDamage(myHero, target, 0, 100*GetCastLevel(myHero,_R)+ 200 + 0.75*GetBonusAP(myHero)) end
 },
@@ -56,32 +55,40 @@ dmg = function(target) return CalcDamage(myHero, target, 0, 100*GetCastLevel(myH
 
 if not supportedChamp[GetObjectName(myHero)] then return end
 
-local recallMenu = Menu("RecallUlt", "RecallUlt1")
-recallMenu:Boolean("recallult1", "Recall Ult (Beta)", true)
+local recallMenu = Menu("RecallUlt", "RecallUlt")
+recallMenu:Boolean("recallult1", "Recall Ult", true)
+-- recallMenu:Menu("ultA","Ult On:")
+-- DelayAction(function()
+-- for i,enemy in pairs(GetEnemyHeroes()) do
+ -- recallMenu.ultA:Boolean(i,GetObjectName(enemy), true)
+-- end
+-- end,0.01)
 recallMenu:Boolean("recalldraw", "Draw Ult Pos", true)
-recallMenu:Slider("timex","HitChance: 1=High 5=Low", 3, 1, 5, 1)
-recallMenu:Slider("extraDelay","Extra Delay (sec)", 2, 0, 5, 1)
+recallMenu:Slider("timex","HitChance: 1=High 3.5=Low", 3, 1, 3.5, .1)
+recallMenu:Slider("extraDelay","Extra Delay (sec)", 2, 0, 5, .1)
 recallMenu:Boolean("print", "Print Information", true)
 recallMenu:Key("dontUlt", "Don't Ult if Combo is active", string.byte(" "))
-
-PrintChat("Noddy | RecallUlt loaded.")
 
 local skillrange = supportedChamp[GetObjectName(myHero)].skillrange
 local speedChamp = supportedChamp[GetObjectName(myHero)].speedChamp
 local delay = supportedChamp[GetObjectName(myHero)].delay
 local dmg = supportedChamp[GetObjectName(myHero)].dmg
 
-global_ticks = 0
+local global_ticks = 0
+local global_ticks1 = 0
+local global_ticks2 = 0
 
-WP1 = {}
-WP2 = {}
-WP3 = {}
-WP4 = {}
+local tName
+local tHP
 
+local WP1 = {}
+local WP2 = {}
+local WP3 = {}
+local WP4 = {}
+
+DelayAction(function()
 OnProcessWaypoint(function(Object,waypointProc)
-
 if GetTeam(Object) ~= GetTeam(myHero) and GetObjectType(Object) == Obj_AI_Hero then
-
 -- Del
 if WP1[GetNetworkID(Object)] ~= nil then
 	WP1[GetNetworkID(Object)] = nil
@@ -118,28 +125,14 @@ DelayAction(function()
 		end
 		end		
 		
-end, 0.001)
+end, .001)
 
 end
 end)
 
-global_ticks1 = 0
-
 OnTick(function(myHero)
 
 for i,enemy in pairs(GetEnemyHeroes()) do
--- if WP1[GetNetworkID(enemy)] ~= nil then
-	-- DrawCircle(WP1[GetNetworkID(enemy)],25,2,0,ARGB(255,255,255,255));
-	-- end
--- if WP2[GetNetworkID(enemy)] ~= nil then
-	-- DrawCircle(WP2[GetNetworkID(enemy)],25,5,0,ARGB(255,255,255,255));
-	-- end
--- if WP3[GetNetworkID(enemy)] ~= nil then
-	-- DrawCircle(WP3[GetNetworkID(enemy)],25,7,0,ARGB(255,255,255,255));
-	-- end	
--- if WP4[GetNetworkID(enemy)] ~= nil then
-	-- DrawCircle(WP4[GetNetworkID(enemy)],25,9,0,ARGB(255,255,255,255));
-	-- end
 
 -- Start Timers
 if ValidTarget(enemy) and GetCurrentHP(enemy) < dmg(enemy) and CanUseSpell(myHero,_R) == READY then
@@ -147,13 +140,10 @@ local Ticker1 = GetTickCount()
 	if (global_ticks1 + 1) < Ticker1 then
 		DelayAction(function ()
 			if not IsVisible(enemy) then
-				-- if recallMenu.print:Value() and 8 > GetDistance(myHero,enemy)/speedChamp + recallMenu.extraDelay:Value() then
-					-- PrintChat("Possible RecallUlt on "..GetObjectName(enemy).."! Is backing with "..math.floor(GetCurrentHP(enemy)).." HP")
-				-- end
+
 				inStart = GetGameTimer()
-				-- PrintChat("Start!")
 			end			
-		 end , 0.001) 
+		 end , .001) 
 		global_ticks1 = Ticker1
 	end	
 end
@@ -161,8 +151,15 @@ end
 end
 
 if Pos ~= nil and ultON == true then
+	if recallMenu.print:Value() then
+	local Ticker2 = GetTickCount()
+	if (global_ticks2 + 5000) < Ticker2 then
+		PrintChat("Possible RecallUlt on "..tName.."! Is backing with "..tHP.." HP")
+	global_ticks2 = Ticker2
+	end	
+	end
 	DelayAction(function()
-		if ultON == true and Pos ~= nil and not recallMenu.dontUlt:Value() and GetDistance(myHero,Pos) <= skillrange then
+		if ultON == true and Pos ~= nil and not recallMenu.dontUlt:Value() and GetDistance(myHero,Pos) <= skillrange and recallMenu.recallult1:Value() then
 			CastSkillShot(_R,Pos)
 			DelayAction(function()
 				Pos = nil
@@ -186,7 +183,8 @@ if CanUseSpell(myHero,_R) == READY and GetTeam(unit) ~= GetTeam(myHero) and GetO
 if recall.isStart == true then
 
 	if recallMenu.print:Value() and recall.totalTime/1000 > GetDistance(myHero,unit)/speedChamp + recallMenu.extraDelay:Value() then
-		PrintChat("Possible RecallUlt on "..GetObjectName(unit).."! Is backing with "..math.floor(GetCurrentHP(unit)).." HP")
+		tName = GetObjectName(unit)
+		tHP = math.floor(GetCurrentHP(unit))
 	end
 	passedTime = GetGameTimer() - inStart
 
@@ -275,6 +273,8 @@ end
 
 end)
 
+end,0.01)
+
 -- DistanceBetween2Points
 function DistanceBetween(p1,p2)
 return  math.sqrt(math.pow((p2.x - p1.x),2) + math.pow((p2.y - p1.y),2) + math.pow((p2.z - p1.z),2))
@@ -287,3 +287,4 @@ WayZ = B.z - A.z
 return Vector(WayX, WayY, WayZ)
 end
 
+PrintChat("RecallUlt loaded.")
