@@ -64,7 +64,7 @@ recallMenu:Boolean("recallult1", "Recall Ult", true)
 -- end
 -- end,0.01)
 recallMenu:Boolean("recalldraw", "Draw Ult Pos", true)
-recallMenu:Slider("timex","HitChance: 1=High 3.5=Low", 3, 1, 3.5, .1)
+recallMenu:Slider("timex","HitChance: 1=High 3.5=Low", 2.5, 1, 3.5, .1)
 recallMenu:Slider("extraDelay","Extra Delay (sec)", 2, 0, 5, .1)
 recallMenu:Boolean("print", "Print Information", true)
 recallMenu:Key("dontUlt", "Don't Ult if Combo is active", string.byte(" "))
