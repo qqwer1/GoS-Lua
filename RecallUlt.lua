@@ -86,6 +86,8 @@ local WP2 = {}
 local WP3 = {}
 local WP4 = {}
 
+local Pos
+
 DelayAction(function()
 OnProcessWaypoint(function(Object,waypointProc)
 if GetTeam(Object) ~= GetTeam(myHero) and GetObjectType(Object) == Obj_AI_Hero then
@@ -184,7 +186,7 @@ if recall.isStart == true then
 
 	if recallMenu.print:Value() and recall.totalTime/1000 > GetDistance(myHero,unit)/speedChamp + recallMenu.extraDelay:Value() then
 		tName = GetObjectName(unit)
-		tHP = math.floor(GetCurrentHP(unit))
+		tHP = math.floor(GetCurrentHP(unit)+GetHPRegen(unit)*(recallMenu.timex:Value() + GetDistance(myHero,unit)/speedChamp))
 	end
 	passedTime = GetGameTimer() - inStart
 
@@ -251,6 +253,10 @@ if recall.isStart == true then
 
 		-- DrawCircle(Pos,25,2,0,ARGB(255,55,255,255));
 
+	end
+	
+	if IsVisible(unit) then
+		Pos = GetOrigin(unit)
 	end
 	
 	if recall.totalTime/1000 > GetDistance(myHero,Pos)/speedChamp + recallMenu.extraDelay:Value() then
