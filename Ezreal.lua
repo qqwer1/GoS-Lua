@@ -77,7 +77,7 @@ function Ezreal:Menu()
 	mainMenu.Items:Boolean("useBork", "Blade of the Ruined King", true)
 	mainMenu.Items:Boolean("useGhost", "Youmuu's Ghostblade", true)
 	mainMenu.Items:Boolean("useRedPot", "Elixir of Wrath", true)
-	mainMenu.Items:Boolean("useMuramana", "Muramana", true)
+--	mainMenu.Items:Boolean("useMuramana", "Muramana", true)
 	mainMenu:Menu("Misc", "Misc")
 	mainMenu.Misc:Boolean("buyB", "Buy: Farsight Alteration", true)
 	mainMenu.Misc:Boolean("drawDMG", "Draw: R-Damage", true)
@@ -139,9 +139,9 @@ function Ezreal:Combo()
 			end
 		end
 	end
-	if GotBuff(myHero,"Muramana") == 1 and not ValidTarget(GetCurrentTarget(), 1800) and mainMenu.Items.useMuramana:Value() then
-		CastSpell(GetItemSlot(myHero,3042))
-	end
+--	if GotBuff(myHero,"Muramana") == 1 and not ValidTarget(GetCurrentTarget(), 1800) and mainMenu.Items.useMuramana:Value() then
+--		CastSpell(GetItemSlot(myHero,3042))
+--	end
 end
 
 function Ezreal:Harass()
@@ -195,7 +195,7 @@ local CutBlade = GetItemSlot(myHero,3144)
 local bork = GetItemSlot(myHero,3153)
 local ghost = GetItemSlot(myHero,3142)
 local redpot = GetItemSlot(myHero,2140)
-local Muramana = GetItemSlot(myHero,3042)
+--local Muramana = GetItemSlot(myHero,3042)
 	if CutBlade >= 1 and ValidTarget(target,550) and mainMenu.Items.useCut:Value() then
 		if CanUseSpell(myHero,GetItemSlot(myHero,3144)) == READY then
 			CastTargetSpell(target, GetItemSlot(myHero,3144))
@@ -215,11 +215,11 @@ local Muramana = GetItemSlot(myHero,3042)
 			CastSpell(GetItemSlot(myHero,2140))
 		end
 	end
-	if ValidTarget(target,GetCastRange(myHero,_Q)) and Muramana >= 1 and GotBuff(myHero,"Muramana") == 0 and mainMenu.Items.useMuramana:Value() then
-		CastSpell(GetItemSlot(myHero,3042))
-	elseif GotBuff(myHero,"Muramana") == 1 and not ValidTarget(target, 1500) and mainMenu.Items.useMuramana:Value() then
-		CastSpell(GetItemSlot(myHero,3042))
-	end
+--	if ValidTarget(target,GetCastRange(myHero,_Q)) and Muramana >= 1 and GotBuff(myHero,"Muramana") == 0 and mainMenu.Items.useMuramana:Value() then
+--		CastSpell(GetItemSlot(myHero,3042))
+--	elseif GotBuff(myHero,"Muramana") == 1 and not ValidTarget(target, 1500) and mainMenu.Items.useMuramana:Value() then
+--		CastSpell(GetItemSlot(myHero,3042))
+--	end
 end
 
 function Ezreal:qPred(target)
