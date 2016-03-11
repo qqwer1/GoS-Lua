@@ -280,7 +280,7 @@ local CCSpell = CC[spellProc.name]
 						if GetDistance(spellProc.endPos) < CCSpell.spellRadius then
 							CastSpell(_E)
 						end
-					end, (spellTime)-200)
+					end, (spellTime)/1000 - 0.23)
 					global_ticks = Ticker
 				end	
 			end
@@ -299,7 +299,7 @@ if mainMenu.Combo.useW:Value() and mainMenu.Combo.Combo1:Value() then
 		CastSpell(_W)
 		DelayAction(function()
 			AttackUnit(GetCurrentTarget())
-		end, 1)
+		end, .001)
 	end
 end
 if mainMenu.Harass.useW:Value() and mainMenu.Harass.Harass1:Value() and 100*GetCurrentMana(myHero)/GetMaxMana(myHero) >= mainMenu.Harass.Mana:Value() and ValidTarget(GetCurrentTarget(), 550+GetHitBox(GetCurrentTarget())) then
@@ -307,7 +307,7 @@ if mainMenu.Harass.useW:Value() and mainMenu.Harass.Harass1:Value() and 100*GetC
 		CastSpell(_W)
 		DelayAction(function()
 			AttackUnit(GetCurrentTarget())
-		end, 1)
+		end, .001)
 	end
 end
 end)
