@@ -9,12 +9,12 @@ local screen = GetResolution()
 OnProcessRecall(function(Object,recallProc)
 
 	if recallProc.isStart == true then
-		local info = { rTime = 0, rTimeNeed = nil , who = nil, color = ARGB(155,255,255,255), currentTime = 0 }
+		local info = { rTime = 0, rTimeNeed = nil , who = nil, color = ARGB(130,255,255,255), currentTime = 0 }
 		rt[GetNetworkID(Object)] = info
 		rt[GetNetworkID(Object)].rTime = recallProc.totalTime
 		rt[GetNetworkID(Object)].rTimeNeed = recallProc.totalTime/1000 + GetGameTimer()
 		rt[GetNetworkID(Object)].who = Object
-		rt[GetNetworkID(Object)].color = ARGB(155,255,255,255)
+		rt[GetNetworkID(Object)].color = ARGB(130,255,255,255)
 	elseif recallProc.isFinish == true then
 		rt[GetNetworkID(Object)].rTime = 0
 		rt[GetNetworkID(Object)].who = nil
@@ -32,8 +32,8 @@ if rtMenu.trackRecall:Value() then
 	for i,enemy in pairs(GetEnemyHeroes()) do
 		if rt[GetNetworkID(enemy)] ~= nil then
 			if rt[GetNetworkID(enemy)].who ~= nil and rt[GetNetworkID(enemy)].rTime ~= nil and rt[GetNetworkID(enemy)].color ~= nil then
-				trackRecall(rt[GetNetworkID(enemy)])
 				drawRecallTracker(ARGB(250,28,28,28))
+				trackRecall(rt[GetNetworkID(enemy)])
 			end
 		end
 	end
