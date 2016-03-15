@@ -1,5 +1,5 @@
 -- RecallTracker
-
+if not pcall( require, "Inspired" ) then PrintChat("You are missing Inspired.lua!") return end
 local rtMenu = Menu("Recall Tracker", "Recall Tracker")
 rtMenu:Boolean("trackRecall", "Track Recalls", true)
 
