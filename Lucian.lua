@@ -147,7 +147,7 @@ DPS = qDMG + wDMG + pDMG + pDMGCrit
 
 if mainMenu.Combo.lockR:Value() and CanUseSpell(myHero,_R) == READY and ValidTarget(target, 1300) and not IsInDistance(target, GetRange(myHero)+myHitBox) then
 	if GetCastName(myHero,_R) == "LucianR" then
-		local RPred = GetPredictionForPlayer(myHeroPos, target, GetMoveSpeed(target),3500, 250, 1500, 75, true, false)
+		local RPred = GetPredictionForPlayer(myHeroPos, target, GetMoveSpeed(target),3500, 250, 1300, 75, true, false)
 		if RPred.HitChance == 1 then
 			CastSkillShot(_R, RPred.PredPos.x, RPred.PredPos.y, RPred.PredPos.z)
 		end
@@ -265,8 +265,8 @@ if CanUseSpell(myHero,_Q) == READY and ValidTarget(target, 1100) and GetDistance
 
 end
 
-if CanUseSpell(myHero,_R) == READY and GetCastName(myHero,_R) == "LucianR" and mainMenu.Combo.useR:Value() and ValidTarget(target, 1500) and not IsInDistance(target, 900) and GetCurrentHP(target)+GetDmgShield(target) < CalcDamage(myHero,target,(10*GetCastLevel(myHero,_Q)+30+(0.25*GetBonusDmg(myHero))+(0.15*GetBonusAP(myHero))),0)*(5*GetCastLevel(myHero,_R)+8) then --15 real
-	local RPred = GetPredictionForPlayer(myHeroPos, target, GetMoveSpeed(target),3500, 250, 1500, 75, true, false)
+if CanUseSpell(myHero,_R) == READY and GetCastName(myHero,_R) == "LucianR" and mainMenu.Combo.useR:Value() and ValidTarget(target, 1300) and not IsInDistance(target, 900) and GetCurrentHP(target)+GetDmgShield(target) < CalcDamage(myHero,target,(10*GetCastLevel(myHero,_Q)+30+(0.25*GetBonusDmg(myHero))+(0.15*GetBonusAP(myHero))),0)*(5*GetCastLevel(myHero,_R)+8) then --15 real
+	local RPred = GetPredictionForPlayer(myHeroPos, target, GetMoveSpeed(target),3500, 250, 1300, 75, true, false)
 	if RPred.HitChance == 1 then
 		CastSkillShot(_R, RPred.PredPos.x, RPred.PredPos.y, RPred.PredPos.z)
 	end
