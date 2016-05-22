@@ -6,7 +6,7 @@
 -- 5 = Drake_Element
 -- 6 = Rift/Baron/Ender
 -- 7 = Win
-local expGain = { [1] = 1, [2] = 1, [3] = 3, [4] = 5, [5] = 10, [6] = 25, [7] = 100}
+local expGain = { [1] = 1, [2] = 1, [3] = 3, [4] = 5, [5] = 10, [6] = 25, [7] = 10*math.round(GameTime)}
 
 --expNeeded
 local level = GetLevel(myKappa)
