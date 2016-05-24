@@ -35,7 +35,7 @@ OnTick(function(myHero)
         local ePred = GetPrediction(target,shyvE)
         if ePred and ePred.hitChance >= 0.4 then
         -- im the witch doctor
-          if (GetDistance(ePred.castPos) < GetDistance(target)) or (GetMoveSpeed(target) < GetMoveSpeed(myHero)) then
+          if (GetDistance(ePred.castPos) < GetDistance(target)) or (GetMoveSpeed(target) < GetMoveSpeed(myHero)) or (IsInDistance(target,myHitBox+185)) then
             CastSkillShot(2,ePred.castPos)
           end
         end
