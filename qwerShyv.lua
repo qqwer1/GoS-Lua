@@ -31,12 +31,14 @@ OnTick(function(myHero)
       	  CastSpell(1)
         end
       end
-      if CanUseSpell(myHero,2 == READY and ValidTarget(target,600) then
-      	local ePred = GetPrediction(target,shyvE)
-      	if ePred.hitChance >= 0.4 then
-      	  -- im the witch doctor
-      		
-      	end
+      if CanUseSpell(myHero,2) == READY and ValidTarget(target,600) then
+        local ePred = GetPrediction(target,shyvE)
+        if ePred and ePred.hitChance >= 0.4 then
+        -- im the witch doctor
+          if (GetDistance(ePred.castPos) < GetDistance(target)) or (GetMoveSpeed(target) < GetMoveSpeed(myHero)) then
+            CastSkillShot(2,ePred.castPos)
+          end
+        end
       end
     end
   end
