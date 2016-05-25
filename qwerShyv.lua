@@ -4,6 +4,7 @@
 -- auto surrender
 -- run it down mid
 -- exclusive no jungle clear
+require("OpenPredict")
 
 local shyvE = {delay = .250, speed = 1800, width = 70, range = 950}
 local shyvR = {delay = .250, speed = 1800, width = 150, range = 950}
