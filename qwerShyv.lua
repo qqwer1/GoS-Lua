@@ -48,7 +48,7 @@ OnTick(function(myHero)
   if sickMenu.combo:Value() then
     local target = GetCurrentTarget()
     local myHitBox = GetHitBox(myHero)
-    if GetDistance(target) < 1000+myHitBox then
+    if GetDistance(target) < 1000+myHitBox and not IsDead(target) then
       if CanUseSpell(myHero,3) == READY then
         local rPred = GetLinearAOEPrediction(target,shyvR)
         if rPred and rPred.hitChance >= 0.4 then
