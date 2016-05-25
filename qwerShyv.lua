@@ -18,7 +18,7 @@ OnProcessSpellComplete(function(unit,spell)
       CastSpell(0)
       DelayAction(function()
         AttackUnit(spell.target)
-      end, 0.05)
+      end, 0.03)
     else
       local titan = GetItemSlot(myHero,3748)
       local looksLikeHydraToMe
@@ -32,10 +32,10 @@ OnProcessSpellComplete(function(unit,spell)
           CastSpell(titan)
           DelayAction(function()
             AttackUnit(spell.target)
-          end, 0.05)
+          end, 0.03)
         end
       end
-      if looksLikeHydraToMe > 0 then
+      if looksLikeHydraToMe ~= nil and looksLikeHydraToMe > 0 then
         if CanUseSpell(myHero,looksLikeHydraToMe) == READY then
           CastSpell(looksLikeHydraToMe)
         end
@@ -51,14 +51,14 @@ OnTick(function(myHero)
     if GetDistance(target) < 1000+myHitBox and not IsDead(target) then
       if CanUseSpell(myHero,3) == READY and GetDistance(target,GetMousePos()) < GetDistance(target) then
         local rPred = GetLinearAOEPrediction(target,shyvR)
-        if rPred and rPred.hitChance >= 0.4 then
+        if rPred and rPred.hitChance >= 0.4 and rPred:hCollision() then
           if #rPred:hCollision() >= 2 then
             CastSkillShot(3,rPred.castPos)
           end
         end
       end
       if CanUseSpell(myHero,1) == READY then
-        if (ValidTarget(target,400+myHitBox) and GetMoveSpeed(target) < GetMoveSpeed(myHero)*(0.25+0.05*GetCastLevel(myHero,0))) or (ValidTarget(target,162.5+myHitBox)) then
+        if (ValidTarget(target,500+myHitBox) and GetMoveSpeed(target) < GetMoveSpeed(myHero)*(0.25+0.05*GetCastLevel(myHero,0))) or (ValidTarget(target,250+myHitBox)) then
       	  CastSpell(1)
         end
       end
