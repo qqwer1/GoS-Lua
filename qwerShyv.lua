@@ -17,9 +17,28 @@ OnProcessSpellComplete(function(unit,spell)
       CastSpell(0)
       DelayAction(function()
         AttackUnit(spell.target)
-     end, 0.05)
+      end, 0.05)
     else
-    -- zeItems
+      local titan = GetItemSlot(myHero,3748)
+      local looksLikeHydraToMe
+      if GetItemSlot(myHero,3077) > 0 then
+        looksLikeHydraToMe = GetItemSlot(myHero,3077)
+      elseif GetItemSlot(myHero,3074) > 0 then
+        looksLikeHydraToMe = GetItemSlot(myHero,3074)
+      end
+      if titan > 0 then
+        if CanUseSpell(myHero,titan) == READY then
+          CastSpell(titan)
+          DelayAction(function()
+            AttackUnit(spell.target)
+          end, 0.05)
+        end
+      end
+      if looksLikeHydraToMe > 0 then
+        if CanUseSpell(myHero,looksLikeHydraToMe) == READY then
+          CastSpell(looksLikeHydraToMe)
+        end
+      end
     end
   end
 end)
