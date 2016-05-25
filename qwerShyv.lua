@@ -6,6 +6,7 @@
 -- exclusive no jungle clear
 
 local shyvE = {delay = .250, speed = 1800, width = 70, range = 950}
+local shyvR = {delay = .250, speed = 1800, width = 150, range = 950}
 
 local sickMenu = Menu("qwerShyv", "qwerShyv")
       sickMenu:Key("combo", "Just do it", string.byte(" "))
@@ -17,6 +18,8 @@ OnProcessSpellComplete(function(unit,spell)
       DelayAction(function()
         AttackUnit(spell.target)
      end, 0.05)
+    else
+    -- zeItems
     end
   end
 end)
@@ -26,6 +29,14 @@ OnTick(function(myHero)
     local target = GetCurrentTarget()
     local myHitBox = GetHitBox(myHero)
     if GetDistance(target) < 1000+myHitBox then
+      if CanUseSpell(myHero,3) == READY then
+        local rPred = GetLinearAOEPrediction(target,shyvR)
+        if rPred and rPred.hitChance >= 0.4 then
+          if #rPred:hCollision() >= 2 then
+            CastSkillShot(3,rPred.castPos)
+          end
+        end
+      end
       if CanUseSpell(myHero,1) == READY then
         if (ValidTarget(target,400+myHitBox) and GetMoveSpeed(target) < GetMoveSpeed(myHero)*(0.25+0.05*GetCastLevel(myHero,0))) or (ValidTarget(target,162.5+myHitBox)) then
       	  CastSpell(1)
