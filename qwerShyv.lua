@@ -1,3 +1,4 @@
+if GetObjectName(GetMyHero()) ~= "Shyvana" then return end
 -- sick qwerShyv.lua
 -- super slow combo
 -- will boost you to bronze5
