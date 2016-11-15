@@ -226,7 +226,7 @@ end
 
 OnProcessRecall(function(unit,recall)
 	if recall.isFinish == true and drawThem[GetNetworkID(unit)] == true and recall.isStart == false then
-		print("Finished recall: "..unit.charName)
+		-- print("Finished recall: "..unit.charName)
 		drawThem[GetNetworkID(unit)] = false
 	end
 end)
@@ -277,7 +277,7 @@ end)
 						manaNeed = manaNeed + GetCastMana(myHero,3,GetCastLevel(myHero,3))
 					end
 					local dps = qdmg + wdmg + edmg + lDmg + lichDmg
-					if dps >= GetCurrentHP(enemy) and GetCurrentMana(myHero) >= manaNeed and drawThem[GetNetworkID(enemy)] == true and GetDistance(enemy) < 8000 then
+					if dps >= GetCurrentHP(enemy) and GetCurrentMana(myHero) >= manaNeed and drawThem[GetNetworkID(enemy)] == true and GetDistance(enemy) < 7000 then
 						DrawSprite(champSprite[GetObjectName(enemy)],myhppos.x-26 + 26*(i-1),myhppos.y+23,0,0,0,0,ARGB(255,255,255,255))
 					end
 				end
