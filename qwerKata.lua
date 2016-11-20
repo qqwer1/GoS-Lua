@@ -1,4 +1,6 @@
 -- qwerKatarina
+if GetObjectName(GetMyHero()) ~= "Katarina" then return end
+
 local mainMenu = Menu("qwerKata", "qwerKatarina")
 mainMenu:Slider("xR","Ult on X enemies", 3, 1, 5, 1)
 mainMenu:Key("Combo1", "Start QWER", string.byte(" "))
