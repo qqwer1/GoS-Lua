@@ -78,14 +78,14 @@ end)
 OnTick(function()
 	if mainMenu.Combo1:Value() then
 		local target = GetCurrentTarget()
-		if ValidTarget(target,1600) then
+		if ValidTarget(target,1500) then
 			local gun = GetItemSlot(myHero,3146)
 			if gun >= 1 and ValidTarget(target,550) then
 				if CanUseSpell(myHero,gun) == READY then
 					CastTargetSpell(target,gun)
 				end
 			end
-			if GetDistance(target) < 750 and CanUseSpell(myHero,0) == READY then
+			if GetDistance(target) < 650 and CanUseSpell(myHero,0) == READY then
 				CastTargetSpell(target,0)
 			end
 			if GetDistance(target) < 200 and CanUseSpell(myHero,1) == READY then
@@ -93,14 +93,14 @@ OnTick(function()
 			end
 			if CanUseSpell(myHero,2) == READY then
 				for i,v in pairs(animationCancel) do
-					if GetDistance(v) < 170 and GetDistance(target) < 1000 then
+					if GetDistance(v) < 170 and GetDistance(target) < 800 then
 						CastSkillShot(2,GetOrigin(target))
 					end
 				end
 				for i,v in pairs(resetAble) do
 					if GetDistance(target,v) < 350 and GetDistance(v) < 1200 then
 						CastSkillShot(2,GetOrigin(target) + (VectorWay(GetOrigin(target),GetOrigin(v))):normalized()*math.random(100,150))
-					elseif GetDistance(target,v) < 200 and GetDistance(target) < 1000 then
+					elseif GetDistance(target,v) < 200 and GetDistance(target) < 800 then
 						CastSkillShot(2,GetOrigin(target))
 					end
 				end
@@ -123,11 +123,11 @@ OnTick(function()
 					if GetCurrentHP(target) < dps then
 						if GetDistance(target) > 1200 then
 							for i,v in pairs(resetAble) do
-								if GetDistance(v) < 1000 and GetDistance(v) > 300 and GetDistance(v,target) < 800 then
+								if GetDistance(v) < 900 and GetDistance(v) > 300 and GetDistance(v,target) < 800 then
 									CastSkillShot(2,GetOrigin(v))
 								end
 							end
-						elseif GetDistance(target) < 1000 then
+						elseif GetDistance(target) < 800 then
 							CastSkillShot(2,GetOrigin(target))
 						end
 					end
