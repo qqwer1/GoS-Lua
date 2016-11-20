@@ -1,5 +1,6 @@
 -- qwerKatarina
 local mainMenu = Menu("qwerKata", "qwerKatarina")
+mainMenu:Slider("xR","Ult on X enemies", 3, 1, 5, 1)
 mainMenu:Key("Combo1", "Start QWER", string.byte(" "))
 
 local dagger = {}
@@ -78,6 +79,12 @@ OnTick(function()
 	if mainMenu.Combo1:Value() then
 		local target = GetCurrentTarget()
 		if ValidTarget(target,1600) then
+			local gun = GetItemSlot(myHero,3146)
+			if gun >= 1 and ValidTarget(target,550) then
+				if CanUseSpell(myHero,gun) == READY then
+					CastTargetSpell(target,gun)
+				end
+			end
 			if GetDistance(target) < 750 and CanUseSpell(myHero,0) == READY then
 				CastTargetSpell(target,0)
 			end
@@ -140,6 +147,11 @@ OnTick(function()
 					if cast == true then
 						CastSpell(3)
 					end
+				end
+			end
+			if CanUseSpell(myHero,3) == READY then
+				if EnemiesAround(GetOrigin(myHero),500) >= mainMenu.xR:Value() then
+					CastSpell(3)
 				end
 			end
 		end
