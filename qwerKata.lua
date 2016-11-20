@@ -6,6 +6,7 @@ mainMenu:Slider("xR","Ult on X enemies", 3, 1, 5, 1)
 mainMenu:Key("Combo1", "Start QWER", string.byte(" "))
 
 local dagger = {}
+local daggerHitPos = {}
 local resetAble = {}
 local animationCancel = {}
 local kataCounter = 0
@@ -42,39 +43,64 @@ OnSpellCast(function(castProc)
 end)
 
 OnCreateObj(function(o)
-	if GetDistance(o) < 2000 then
-		if GetObjectBaseName(o) == "Katarina_Base_W_Indicator_Ally.troy" then
+	if GetDistance(o) < 2500 then
+		if o.name == "Katarina_Base_W_mis.troy" and GetDistance(o) < 100 then
 			table.insert(dagger, o)
+		end
+		if o.name == "Katarina_Base_W_Indicator_Ally.troy" then
+			table.insert(daggerHitPos, o)
+			local delay = 0.2
+			if GetDistance(o) < 50 then
+				delay = 0
+			end
 			DelayAction(function()
 				table.insert(resetAble, o)
-				DelayAction(function()
-					table.insert(animationCancel, o)
-					DelayAction(function()
-						for i,v in pairs(animationCancel) do
-							if GetNetworkID(v) == GetNetworkID(o) then
-								table.remove(animationCancel,i)
-							end
-						end
-					end,0.03)
-				end,03771)
-			end,1)
+			end,1.1 - delay)
 		end
 	end
 end)
 
 OnDeleteObj(function(o)
-	if GetObjectBaseName(o) == "Katarina_Base_W_Indicator_Ally.troy" then
+	if o.name == "Katarina_Base_W_mis.troy" then
 		for i,v in pairs(dagger) do
 			if GetNetworkID(v) == GetNetworkID(o) then
 				table.remove(dagger,i)
 			end
 		end
+	end
+	if o.name == "Katarina_Base_W_Indicator_Ally.troy" then
 		for i,v in pairs(resetAble) do
 			if GetNetworkID(v) == GetNetworkID(o) then
 				table.remove(resetAble,i)
 			end
 		end
+		for i,v in pairs(daggerHitPos) do
+			if GetNetworkID(v) == GetNetworkID(o) then
+				table.remove(daggerHitPos,i)
+			end
+		end
 	end
+end)
+
+OnDraw(function()
+if mainMenu.Combo1:Value() then
+	local target = GetCurrentTarget()
+	if ValidTarget(target,900) then
+		for i,v in pairs(dagger) do
+			for i,d in pairs(daggerHitPos) do
+				-- 33
+				-- 0.6 3/3 4th try fail(without dagger)
+				-- 0.55 6/8 8th try fail(without dagger)
+				-- 0.5 6/7 7th try fail(without dagger)
+				-- 0.45 3/5 5th try fail(without dagger)
+				-- keep > 3.6
+				if GetDistance(v,d) < 4.54 and GetDistance(v,d) > 3.6 and GetDistance(d) < 180 and CanUseSpell(myHero,2) == READY then
+					CastSkillShot(2,GetOrigin(target))
+				end
+			end
+		end
+	end
+end
 end)
 
 OnTick(function()
@@ -94,11 +120,6 @@ OnTick(function()
 				CastSpell(1)
 			end
 			if CanUseSpell(myHero,2) == READY then
-				for i,v in pairs(animationCancel) do
-					if GetDistance(v) < 170 and GetDistance(target) < 800 then
-						CastSkillShot(2,GetOrigin(target))
-					end
-				end
 				for i,v in pairs(resetAble) do
 					if GetDistance(target,v) < 350 and GetDistance(v) < 1200 then
 						CastSkillShot(2,GetOrigin(target) + (VectorWay(GetOrigin(target),GetOrigin(v))):normalized()*math.random(100,150))
