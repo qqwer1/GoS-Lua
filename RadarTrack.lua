@@ -1,5 +1,4 @@
--- RadarHack
-if not pcall( require, "Inspired" ) then PrintChat("You are missing Inspired.lua!") return end
+-- RadarTrack
 
 if not DirExists(SPRITE_PATH.."RadarHack\\") then
 	CreateDir(SPRITE_PATH.."RadarHack\\") 
@@ -76,7 +75,7 @@ end
 
 DelayAction(function()
 
-local rtMenu = Menu("Radar Hack", "Radar Hack")
+local rtMenu = Menu("Radar Hack", "Radar Track")
 rtMenu:Boolean("trackAlly", "Show: Allies", true)
 rtMenu:Boolean("trackEnemy", "Show: Enemies", true)
 rtMenu:Boolean("showDistance", "Show: Distance", true)
