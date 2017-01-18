@@ -12,6 +12,7 @@ local gankAlert = MenuElement({id = "gaMenu", name = "Movement Tracker", type = 
 		gankAlert.circle:MenuElement({id = "minimap", name = "On Minimap", value = true, leftIcon = "http://puu.sh/rGpKK/e60ba3daa3.png" })
 		
 	gankAlert:MenuElement({id = "alert", name = "Gank Alert", type = MENU ,leftIcon = "http://i.imgur.com/fXU3MKH.png" })
+		gankAlert.alert:MenuElement({id = "range", name = "Detection Range", value = 2500, min = 1500, max = 4000, step = 10})
 		gankAlert.alert:MenuElement({id = "drawGank", name = "Gank Alert", value = true})
 		gankAlert.alert:MenuElement({id = "drawGankFOW", name = "FOW Gank Alert", value = true})
 		
@@ -61,11 +62,16 @@ local gankBOT = Sprite("MovementTracker\\gankBOT.png")
 local gankShadow = Sprite("MovementTracker\\gankShadow.png")
 
 local recallMini = Sprite("MovementTracker\\recallMini.png",0.5)
+local recallMiniC = Sprite("MovementTracker\\recallMini.png",0.5)
 local miniRed = Sprite("MovementTracker\\miniRed.png",0.5)
+local miniRedC = Sprite("MovementTracker\\miniRed.png",0.5)
+
+local bigRed = Sprite("MovementTracker\\miniRed.png")
 
 local champSprite = {}
 local champSpriteSmall = {}
 local champSpriteMini = {}
+local champSpriteMiniC = {}
 
 local midX = Game.Resolution().x/2
 local midY = Game.Resolution().y/2
@@ -141,6 +147,7 @@ DelayAction(function()
 			champSprite[hero.charName] = Sprite("Champions\\"..hero.charName..".png", 1.2)
 			champSpriteSmall[hero.charName] = Sprite("Champions\\"..hero.charName..".png", 1)
 			champSpriteMini[hero.charName] = Sprite("Champions\\"..hero.charName..".png", .5)
+			champSpriteMiniC[hero.charName] = Sprite("Champions\\"..hero.charName..".png", .5)
 			invChamp[hero.networkID] = {champ = hero, lastTick = GetTickCount(), lastWP = Vector(0,0,0), lastPos = hero.pos or eBasePos, where = "will be added.", status = hero.visible, n = add }
 			iCanSeeYou[hero.networkID] = {tick = 0, champ = hero, number = add, draw = false}
 			isRecalling[hero.networkID] = {status = false, tick = 0, proc = nil, spendTime = 0}
@@ -160,6 +167,7 @@ for i = 1, Game.HeroCount() do
 		champSprite[hero.charName] = Sprite("Champions\\"..hero.charName..".png", 1.2)
 		champSpriteSmall[hero.charName] = Sprite("Champions\\"..hero.charName..".png", 1)
 		champSpriteMini[hero.charName] = Sprite("Champions\\"..hero.charName..".png", .5)
+		champSpriteMiniC[hero.charName] = Sprite("Champions\\"..hero.charName..".png", .5)
 		invChamp[hero.networkID] = {champ = hero, lastTick = GetTickCount(), lastWP = Vector(0,0,0), lastPos = hero.pos or eBasePos, where = "will be added.", status = hero.visible, n = add }
 		iCanSeeYou[hero.networkID] = {tick = 0, champ = hero, number = add, draw = false}
 		isRecalling[hero.networkID] = {status = false, tick = 0, proc = nil, spendTime = 0}
@@ -178,8 +186,10 @@ function OnTick()
 		local hero = Game.Hero(i)
 		--OnGainVision
 		if invChamp[hero.networkID] ~= nil and invChamp[hero.networkID].status == false and hero.visible and not hero.dead then
-			OnGainVision[hero.networkID].status = true
-			OnGainVision[hero.networkID].tick = GetTickCount()
+			if myHero.pos:DistanceTo(hero.pos) <= gankAlert.alert.range:Value() + 100 and GetTickCount()-invChamp[hero.networkID].lastTick > 5000 then
+				OnGainVision[hero.networkID].status = true
+				OnGainVision[hero.networkID].tick = GetTickCount()
+			end
 			newExp[hero.networkID] = hero.levelData.exp
 			oldExp[hero.networkID] = hero.levelData.exp
 		end
@@ -264,17 +274,20 @@ if gankAlert.circle.draw:Value() and (gankAlert.circle.screen:Value() or gankAle
 			local vec = v.lastPos + (Vector(v.lastPos,myHero.pos)/v.lastPos:DistanceTo(myHero.pos))*v.champ.ms*timer
 			if v.champ.ms*timer < 10000 and v.champ.ms*timer > 0 and vec:DistanceTo(v.lastPos) < myHero.pos:DistanceTo(v.lastPos) + 2000 then
 				if gankAlert.circle.screen:Value() then
+					local d2 = v.lastPos:ToScreen()
+					if d2.onScreen then
+						bigRed:Draw(d2.x - 25, d2.y - 25)
+						champSpriteSmall[v.champ.charName]:Draw(d2.x - 25, d2.y - 25)
+					end
 					if gankAlert.circle.drawWP:Value() then
 						if v.lastPos ~= eBasePos and v.champ.pos:DistanceTo(eBasePos) > 250 then
-							local d2 = v.lastPos:To2D()
-							local d2_to = v.champ.posTo:To2D()
-							if v.lastPos ~= eBasePos then
+							local d2_to = v.champ.posTo:ToScreen()
+							if d2_to.onScreen or d2.onScreen then
 								Draw.Line(d2,d2_to,2 ,Draw.Color(255,255,28,28))
 							end
-							champSpriteSmall[v.champ.charName]:Draw(d2.x - 25, d2.y - 25)
-							if v.lastPos ~= eBasePos then
-								champSpriteMini[v.champ.charName]:Draw(d2_to.x - 12.5, d2_to.y - 12.5)
-								miniRed:Draw(d2_to.x - 12.5, d2_to.y - 12.5)
+							if v.lastPos ~= eBasePos and d2_to.onScreen then
+								champSpriteMiniC[v.champ.charName]:Draw(d2_to.x - 12.5, d2_to.y - 12.5)
+								miniRedC:Draw(d2_to.x - 12.5, d2_to.y - 12.5)
 							end
 						end
 					end
@@ -294,8 +307,6 @@ if gankAlert.circle.draw:Value() and (gankAlert.circle.screen:Value() or gankAle
 							local r = 25/isRecalling[v.champ.networkID].proc.totalTime * (isRecalling[v.champ.networkID].proc.totalTime - (GetTickCount()-isRecalling[v.champ.networkID].tick))
 							local recallCut = {x = 0, y = 25, w = 25, h = r }
 							recallMini:Draw(recallCut,v.champ.posMM.x - 12,v.champ.posMM.y - 12 + 25)
-						else
-							 -- Draw.CircleMinimap(v.lastPos,720, 2,Draw.Color(255,225,0,10))
 						end
 					end
 					if v.champ.ms*timer > 720 then
@@ -313,17 +324,21 @@ if gankAlert.drawRecall:Value() then
 		if v.status == false and not v.champ.dead then
 			if isRecalling[v.champ.networkID].status == true then
 				local recall = isRecalling[v.champ.networkID]
-				local spend_to_recall = recall.tick - v.lastTick
+				local spend_to_recall = recall.tick - v.lastTick - 500
 				if spend_to_recall < 2000 then
 					local recallPos = v.lastPos + (Vector(v.lastPos,v.champ.posTo)/v.lastPos:DistanceTo(v.champ.posTo))*(v.champ.ms*spend_to_recall/1000)
-					local d2 = recallPos:To2D()
-					local b4_d2 = v.lastPos:To2D()
-					Draw.Line(d2,b4_d2,4 ,Draw.Color(255,0,128,255))
-					champSpriteMini[v.champ.charName]:SetColor(Draw.Color(255,255,255,255))
-					champSpriteMini[v.champ.charName]:Draw(d2.x - 12.5,d2.y - 12.5)
-					local r = 25/isRecalling[v.champ.networkID].proc.totalTime * (isRecalling[v.champ.networkID].proc.totalTime - (GetTickCount()-isRecalling[v.champ.networkID].tick))
-					local recallCut = {x = 0, y = 25, w = 25, h = r }
-					recallMini:Draw(recallCut,d2.x - 12.5,d2.y - 12.5 + 25)
+					if recallPos:DistanceTo(v.lastPos) < spend_to_recall*v.champ.ms then
+						local d2 = recallPos:ToScreen()
+						local b4_d2 = v.lastPos:ToScreen()
+						if d2.onScreen or b4_d2.onScreen then
+							Draw.Line(d2,b4_d2,4 ,Draw.Color(255,0,128,255))
+							champSpriteMini[v.champ.charName]:SetColor(Draw.Color(255,255,255,255))
+							champSpriteMini[v.champ.charName]:Draw(d2.x - 12.5,d2.y - 12.5)
+							local r = 25/isRecalling[v.champ.networkID].proc.totalTime * (isRecalling[v.champ.networkID].proc.totalTime - (GetTickCount()-isRecalling[v.champ.networkID].tick))
+							local recallCut = {x = 0, y = 25, w = 25, h = r }
+							recallMiniC:Draw(recallCut,d2.x - 12.5,d2.y - 12.5 + 25)
+						end
+					end
 				end
 			end
 		end
@@ -456,11 +471,12 @@ if gankAlert.alert.drawGank:Value() and not myHero.dead then
 	local nDraws = -1
 	for i,v in pairs(invChamp) do
 	
-		if GetTickCount() - OnGainVision[v.champ.networkID].tick > 4000 and GetTickCount()-v.lastTick > 5000 and OnGainVision[v.champ.networkID].status == true then
+		if GetTickCount() - OnGainVision[v.champ.networkID].tick > 4000 and OnGainVision[v.champ.networkID].status == true then
 			OnGainVision[v.champ.networkID].status = false
 		end
-		if OnGainVision[v.champ.networkID].status == true and GetTickCount() - OnGainVision[v.champ.networkID].tick <= 4000 and GetTickCount()-v.lastTick > 5000 and not v.champ.dead then
-			if v.champ.pos:DistanceTo(myHero.pos) < 3000 then
+		-- if OnGainVision[v.champ.networkID].status == true and GetTickCount() - OnGainVision[v.champ.networkID].tick <= 4000 and GetTickCount()-v.lastTick > 5000 and not v.champ.dead then
+		if OnGainVision[v.champ.networkID].status == true and not v.champ.dead then
+			if v.champ.pos:DistanceTo(myHero.pos) < gankAlert.alert.range:Value() then
 				iCanSeeYou[v.champ.networkID].draw = true
 				if GetTickCount() - OnGainVision[v.champ.networkID].tick > 3500 then
 					OnGainVision[v.champ.networkID].status = false
