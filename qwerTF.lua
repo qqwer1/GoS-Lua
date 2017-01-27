@@ -10,6 +10,8 @@
 -- 1SHOT HELPER: Will show you which enemy you can 1shot perfect for fuking ult tps
 -- didnt test if it will work for 1. start but fuk it, it works for me
 
+--GoldCardPreAttack
+
 if GetObjectName(GetMyHero()) ~= "TwistedFate" then return end
 
 if not DirExists(SPRITE_PATH.."Champions\\") then
@@ -52,43 +54,45 @@ local ludens = 0
 local lich
 
 OnCreateObj(function(Object)
-	if GetObjectBaseName(Object) == "PickaCard_yellow_tar.troy" then
+	if GetObjectBaseName(Object) == "TwistedFate_Base_W_Yellow_Tar.troy" then
 		if CanUseSpell(myHero,0) == READY and GetDistance(Object) <= pewpewQ.range + pewpewQ.width then
 			for i,enemy in pairs(GetEnemyHeroes()) do
-				if GetDistance(enemy,Object) < 60 and not IsDead(enemy) then
+				if GetDistance(enemy,Object) < 60 and not IsDead(enemy) and (GetDistance(Object) > 750 or GetCurrentHP(enemy) <= CalcDamage(myHero,enemy,0,15+(45*GetCastLevel(myHero,0))+(GetBonusAP(myHero)*0.65)) ) then
 					CastSkillShot(0,GetOrigin(Object))
 				end
 			end
 		end
 	end
 	if GetDistance(Object) < 5 then
-		if GetObjectBaseName(Object) == "Card_Yellow.troy" then
+		if GetObjectBaseName(Object) == "TwistedFate_Base_W_SelectYellow.troy" then
 			currentCardAboveYourFuking4Head = "yellow"
 			currentlyPickingAfukingCardjustW8abit = false
-		elseif GetObjectBaseName(Object) == "Card_Blue.troy" then
+		elseif GetObjectBaseName(Object) == "TwistedFate_Base_W_SelectBlue.troy" then
 			currentCardAboveYourFuking4Head = "blue"
 			currentlyPickingAfukingCardjustW8abit = false
-		elseif GetObjectBaseName(Object) == "Card_Red.troy" then
+		elseif GetObjectBaseName(Object) == "TwistedFate_Base_W_SelectRed.troy" then
 			currentCardAboveYourFuking4Head = "red"
 			currentlyPickingAfukingCardjustW8abit = false
 		end
 	end
 	if GetDistance(Object) < 5 then
-		if GetObjectBaseName(Object):lower():find("twistedfate_base_w_") then
+		if GetObjectBaseName(Object):lower():find("twistedfate_base_w_") and not GetObjectBaseName(Object):lower():find("select") then
 			currentlyPickingAfukingCardjustW8abit = true
 		end
 		if GetObjectBaseName(Object):lower():find("twistedfate_base_w_"..pickTHISfukingCARDnow) then
 			CastSpell(1)
+			currentlyPickingAfukingCardjustW8abit = false
 			pickTHISfukingCARDnow = "Back to vip Kappa"
 		end
 		if GetObjectBaseName(Object):lower():find("twistedfate_base_w_gold") and mainMenu.Combo1:Value() then
 			CastSpell(1)
+			currentlyPickingAfukingCardjustW8abit = false
 		end
 	end
 end)
 
 OnDeleteObj(function(Object)
-	if GetDistance(Object) < 5 and GetObjectBaseName(Object):find("Card_") then
+	if GetDistance(Object) < 5 and GetObjectBaseName(Object):find("TwistedFate_Base_W_Select") and not GetObjectBaseName(Object):find("Sparks") then
 		DelayAction(function()
 			currentCardAboveYourFuking4Head = "nil"
 		end, 0.2)
@@ -118,12 +122,27 @@ OnProcessSpell(function(unit,spell)
 			if GotBuff(myHero,"pickacard_tracker") == 0 then
 				CastSpell(1)
 			end
+			DelayAction(function()
+				-- print("after R")
+				local target = GetCurrentTarget()
+				if IsDead(target) == false and IsImmune(target,myHero) == false and IsTargetable(target) and GetDistance(target,spell.endPos) <= 575 and currentCardAboveYourFuking4Head == "yellow" then
+					AttackUnit(target)
+				end
+			end,1.55)
 		end
 		if spell.name:lower():find("attack") then		
 			IsAA = true
 			DelayAction(function()
 				IsAA = false
 			end,spell.windUpTime)
+		end
+		if spell.name == "SummonerFlash" then
+			DelayAction(function()
+				local target = GetCurrentTarget()
+				if IsDead(target) == false and IsImmune(target,myHero) == false and IsTargetable(target) and GetDistance(target,spell.endPos) <= 575 and currentCardAboveYourFuking4Head == "yellow" then
+					AttackUnit(target)
+				end
+			end,0.05)
 		end
 	end
 end)
@@ -197,9 +216,9 @@ end
 		end
 		if CanUseSpell(myHero,0) == READY and ValidTarget(target,pewpewQ.range + 100) then
 			local qPred = GetPrediction(target,pewpewQ)
-			-- if (qPred and qPred.hitChance >= 0.99 and GetDistance(GetOrigin(target), qPred.castPos) < 50 ) or (GetDistance(target) < 500 and qPred.hitChance >= 0.8) then
+			-- if (qPred and qPred.hitChance >= 0.9 and GetDistance(GetOrigin(target), qPred.castPos) < 50 ) or (GetDistance(target) < 500 and qPred.hitChance >= 0.8) then
 			-- if (qPred and GetDistance(GetOrigin(target), qPred.castPos) < 50 ) or (GetDistance(target) < 550 and CanUseSpell(myHero,1) == ONCOOLDOWN and not currentCardAboveYourFuking4Head == "yellow" and isAA == false) then
-			if (qPred and GetDistance(GetOrigin(target), qPred.castPos) < 40 ) or (GetDistance(target) < 570 and CanUseSpell(myHero,1) == ONCOOLDOWN and currentlyPickingAfukingCardjustW8abit == false and isAA == false and currentCardAboveYourFuking4Head == "nil") then
+			if (qPred and GetDistance(GetOrigin(target), qPred.castPos) < 30 ) or (GetDistance(target) < 570 and CanUseSpell(myHero,1) == ONCOOLDOWN and currentlyPickingAfukingCardjustW8abit == false and isAA == false and currentCardAboveYourFuking4Head == "nil") then
 				CastSkillShot(0,qPred.castPos)
 			end
 		end
