@@ -1,5 +1,5 @@
 local supportedChamps = {
-["Ashe"] = 0,["Caitlyn"] = 0,["Corki"] = 1,["Draven"] = 0,["Ezreal"] = 0,["Graves"] = 0,["Jinx"] = 0,["Kalista"] = 0,["Kennen"] = 0,["Kindred"] = 0,["KogMaw"] = 0,["Lucian"] = 0,["MissFortune"] = 0,["Quinn"] = 0,["Sivir"] = 0,["Tristana"] = 0,["Twitch"] = 0,["Urgot"] = 0,["Varus"] = 0,["Vayne"] = 0,["Jhin"] = 0,
+["Ashe"] = 0,["Caitlyn"] = 0,["Corki"] = 1,["Draven"] = 0,["Ezreal"] = 0,["Graves"] = 0,["Jinx"] = 0,["Kalista"] = 0,["Kennen"] = 0,["Kindred"] = 0,["KogMaw"] = 0,["Lucian"] = 0,["MissFortune"] = 0,["Quinn"] = 0,["Sivir"] = 0,["Tristana"] = 0,["Twitch"] = 0,["Urgot"] = 0,["Varus"] = 0,["Vayne"] = 1,["Jhin"] = 0,
 }
 if supportedChamps[myHero.charName] ~= 1 then return end
 
@@ -655,7 +655,7 @@ local ticker = GetTickCount()
 	end
 end
 
-local aa = {state = 1, tick = GetTickCount(), tick2 = GetTickCount(), target = myHero}
+local aa = {state = 1, tick = GetTickCount(), tick2 = GetTickCount(), downTime = GetTickCount(), target = myHero}
 local lastTick = 0
 local lastMove = 0
 Callback.Add("Tick", function() aaTick() end)
@@ -674,6 +674,7 @@ function aaTick()
 		if Game.Timer() + Game.Latency()/2000 + myHero.attackData.castFrame/100 > myHero.attackData.endTime - myHero.attackData.windDownTime and aa.state == 2 then
 			aa.state = 3
 			aa.tick2 = GetTickCount()
+			aa.downTime = myHero.attackData.windDownTime*1000 - (myHero.attackData.windUpTime*1000)/2
 			-- print("OnProcessAttackComplete")
 		end
 	end
@@ -689,6 +690,37 @@ function aaTick()
 	end
 end
 
+local castAttack = {state = 0, tick = GetTickCount(), casting = GetTickCount() - 1000, mouse = mousePos}
+local function CastAttack(pos,range,delay)
+local delay = delay or myHero.attackData.windDownTime*1000/2
+-- local delay = delay or 25 + Game.Latency()
+
+local ticker = GetTickCount()
+	if castAttack.state == 0 and GetDistance(myHero.pos,pos.pos) < range and ticker - castAttack.casting > delay + Game.Latency() and aa.state == 1 and not pos.dead and pos.isTargetable then
+		castAttack.state = 1
+		castAttack.mouse = mousePos
+		castAttack.tick = ticker
+	end
+	if castAttack.state == 1 then
+		if ticker - castAttack.tick < Game.Latency() and aa.state == 1 then
+				Control.SetCursorPos(pos.pos)
+				Control.mouse_event(MOUSEEVENTF_RIGHTDOWN)
+				Control.mouse_event(MOUSEEVENTF_RIGHTUP)
+				castAttack.casting = ticker + delay
+			DelayAction(function()
+				if castAttack.state == 1 then
+					Control.SetCursorPos(castAttack.mouse)
+					castAttack.state = 0
+				end
+			end,Game.Latency()/1000)
+		end
+		if ticker - castAttack.casting > Game.Latency() then
+			Control.SetCursorPos(castAttack.mouse)
+			castAttack.state = 0
+		end
+	end
+end
+
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -696,7 +728,8 @@ local version = 0.1
 
 local icons = {	["Corki"] = "http://vignette2.wikia.nocookie.net/leagueoflegends/images/3/3d/CorkiSquare.png",
 				["Sivir"] = "http://vignette4.wikia.nocookie.net/leagueoflegends/images/e/e1/SivirSquare.png",
-				["Lucian"] = "http://vignette4.wikia.nocookie.net/leagueoflegends/images/1/1e/LucianSquare.png"
+				["Lucian"] = "http://vignette4.wikia.nocookie.net/leagueoflegends/images/1/1e/LucianSquare.png",
+				["Vayne"] = "http://vignette2.wikia.nocookie.net/leagueoflegends/images/9/95/VayneSquare.png",
 }
 
 local 	ADCMenu = MenuElement({id = "ADCMainExt", name = "ADC in 2017 LUL | "..myHero.charName, type = MENU ,leftIcon = icons[myHero.charName] })
@@ -757,8 +790,6 @@ function Corki:Menu()
 	-- KILLSTEAL
 	ADCMenu.Killsteal:MenuElement({id = "useQ", name = "Use Q to killsteal", value = true, leftIcon = self.spellIcons.Q})
 	ADCMenu.Killsteal:MenuElement({id = "useR", name = "Use R to killsteal", value = true, leftIcon = self.spellIcons.R})
-	
-	
 	
 end
 
@@ -1210,13 +1241,336 @@ function Sivir:CircularSkillshotBlock(i,v,who,cast)
 	end
 end
 
-
-
-
-
-
-
+--VAYNE--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+class "Vayne"
+
+function Vayne:__init()
+	if not pcall( require, "MapPositionGOS" ) then PrintChat("You are missing MapPositionGOS.lua!") return end
+	print("ADC Main | Vayne loaded!")
+	self.spellIcons = { Q = "http://vignette4.wikia.nocookie.net/leagueoflegends/images/8/8d/Tumble.png",
+						W = "http://vignette3.wikia.nocookie.net/leagueoflegends/images/1/12/Silver_Bolts.png",
+						E = "http://vignette2.wikia.nocookie.net/leagueoflegends/images/6/66/Condemn.png",
+						R = "http://vignette1.wikia.nocookie.net/leagueoflegends/images/b/b4/Final_Hour.png"}
+	self.AA = { delay = 0.25, speed = 2000, width = 0, range = 550 }
+	self.Q = { delay = 0.5, speed = 1000, width = 0, range = 300 }
+	self.W = { delay = 0, speed = 0, width = 0, range = 0, dmg = function(target) return 1 end }
+	self.E = { delay = 0.15, speed = 2000, width = 10, range = 750 }
+	self.R = { delay = 0.25, speed = 2000, width = 40, range = 1300 }
+	self.range = 550
+	self.canUseQ = Game.CanUseSpell(_Q)
+	self:Menu()
+	function OnTick() self:Tick() end
+ 	-- function OnDraw() self:Draw() end
+end
+
+function Vayne:Menu()
+	-- COMBO
+	ADCMenu.Combo:MenuElement({id = "useQ", name = "Use Q", value = true, leftIcon = self.spellIcons.Q})
+	ADCMenu.Combo:MenuElement({id = "useE", name = "Use E", value = true, leftIcon = self.spellIcons.E})
+	ADCMenu.Combo:MenuElement({id = "Epush", name = "Custom E push distance", value = 350, min = 100, max = 450, step = 10, leftIcon = self.spellIcons.E})
+	ADCMenu.Combo:MenuElement({id = "useR", name = "Use R", value = true, leftIcon = self.spellIcons.R})
+	ADCMenu.Combo:MenuElement({id = "useRx", name = "Use R at X enemies", value = 3, min = 1, max = 5, step = 1, leftIcon = self.spellIcons.R})
+	ADCMenu.Combo:MenuElement({id = "Orb", name = "Use ADC in 2017 Orbwalker", value = true})
+	ADCMenu.Combo:MenuElement({id = "OrbKey", name = "Orbwalker Key", key = string.byte(" ")})
+	ADCMenu.Combo:MenuElement({id = "moveDelay", name = "Delay between movement clicks", value = 160, min = 0, max = 250, step = 1})
+	
+	-- HARASS
+	ADCMenu.Harass:MenuElement({id = "useQ", name = "Use Q", value = true, leftIcon = self.spellIcons.Q})
+	ADCMenu.Harass:MenuElement({id = "manaQ", name = " Q | Mana-Manager", value = 60, min = 0, max = 100, step = 1, leftIcon = "http://vignette1.wikia.nocookie.net/leagueoflegends/images/1/1d/Mana_Potion_item.png"})
+
+	-- KILLSTEAL
+	ADCMenu.Killsteal:MenuElement({id = "useE", name = "Use E to killsteal", value = true, leftIcon = self.spellIcons.E})
+	
+end
+
+function Vayne:Tick()
+	if GetMode() == "Combo" or (ADCMenu.Combo.Orb:Value() and ADCMenu.Combo.OrbKey:Value()) then
+		local target = GetTarget(850,"AD")
+		if target then
+			if GetDistance(myHero.pos,target.pos) > self.range + 100 then
+				local cTarget = GetTarget(self.range + 100,"AD")
+				if cTarget then
+					target = cTarget
+				end
+			end
+		end
+		if target then
+			self:Combo(target)
+			Item:useItem(target)
+		end
+		--hehexd
+		if (ADCMenu.Combo.Orb:Value() and ADCMenu.Combo.OrbKey:Value()) then
+			if target and GetDistance(myHero.pos,target.pos) < self.range + 75 then
+				if aa.state == 1 and aa.state ~= 2 and castSpell.state ~= 1 then
+					Control.Attack(target)
+					-- CastAttack(target,self.range + 75)
+					lastTick = GetTickCount()
+				elseif aa.state == 3 and aa.state ~= 2 and castSpell.state ~= 1 and GetTickCount() - lastMove > ADCMenu.Combo.moveDelay:Value() then
+					Control.Move()
+					lastMove = GetTickCount()
+				end
+			else
+				if aa.state ~= 2 and castSpell.state ~= 1 and GetTickCount() - lastMove > ADCMenu.Combo.moveDelay:Value() then
+					Control.Move()
+					lastMove = GetTickCount()
+				end
+			end
+		end
+	elseif GetMode() == "Harass" then
+		local target = GetTarget(850,"AD")
+		if target then
+			if GetDistance(myHero.pos,target.pos) > self.range + 100 then
+				local cTarget = GetTarget(self.range + 100,"AD")
+				if cTarget then
+					target = cTarget
+				end
+			end
+		end
+		if target then
+			self:Harass(target)
+		end
+	end
+	self:Killsteal()
+	self:ResetOrb()
+end
+
+function Vayne:Draw()
+
+end
+
+function Vayne:ResetOrb()
+	if self.canUseQ ~= 0 and  Game.CanUseSpell(_Q) == 0 then
+		self.canUseQ = Game.CanUseSpell(_Q)
+	end
+	if self.canUseQ == 0 and Game.CanUseSpell(_Q) ~= 0 then
+		aa.state = 1
+		self.canUseQ = Game.CanUseSpell(_Q)
+	end
+end
+
+function Vayne:Combo(target)
+	if ADCMenu.Combo.useQ:Value() then
+		self:useQ(target)
+	end
+	if ADCMenu.Combo.useE:Value() then
+		self:useE(target)
+	end
+	if ADCMenu.Combo.useR:Value() then
+		self:useR(target)
+	end
+end
+
+function Vayne:Harass(target)
+	local mp = GetPercentMP(myHero)
+	if ADCMenu.Harass.useQ:Value() and mp > ADCMenu.Harass.manaQ:Value() then
+		self:useQ(target)
+	end
+end
+
+function Vayne:Killsteal()
+	for i = 1, Game.HeroCount() do
+		local target = Game.Hero(i)
+		if target.isEnemy and target.valid and not target.dead and target.visible and target.isTargetable then
+			Item:ksItem(target)
+			if ADCMenu.Killsteal.useE:Value() and Game.CanUseSpell(_E) == 0 and GetDistance(myHero.pos,target.pos) < self.E.range and (GetDistance(myHero.pos,target.pos) > self.range or (aa.state == 3 and GetTickCount() - aa.tick2 < 100)) then
+				local hp = target.health + target.shieldAD + target.hpRegen*2
+				local extraStackeronikekoroni = 0
+				if GetTickCount() - aa.tick2 < GetDistance(myHero.pos,target.pos)/self.AA.speed*1000 - 100 and aa.target == target.handle then
+					extraStackeronikekoroni = 1
+				end
+				local wDMG = 0
+				if GotBuff(target,"VayneSilveredDebuff") + extraStackeronikekoroni == 2 then
+					wDMG = math.floor(target.maxHealth*(0.045 + 0.015*myHero:GetSpellData(_W).level) + 20 + 20*myHero:GetSpellData(_W).level)
+				end
+				if hp < wDMG and CountAlliesInRange(target.pos,500) == 0 then
+					CastSpell(HK_E,target.pos,self.E.range)
+				end
+			end
+		end
+	end
+end
+
+function Vayne:useQ(target)
+	if Game.CanUseSpell(_Q) == 0 then
+		self:useQkill(target)
+		self:useQchase(target)
+		self:useQaway(target)
+		self:useQSilver(target)
+		self:useQult(target)
+	end
+end
+
+function Vayne:useE(target)
+	if CanUseSpell(_E) and GetDistance(myHero.pos,target.pos) <= self.E.range then
+		self:useEstun(target)
+		self:useEtower(target)
+		self:useEmelee(target)
+	end
+end
+
+function Vayne:useR(target)
+	if CanUseSpell(_R) then
+		self:useRfight(target)
+	end
+end
+
+function Vayne:useQchase(target)
+	if aa.state == 3 then
+		local qPred = target:GetPrediction(math.huge,0.75)
+		if GetDistance(target.pos,myHero.pos) <= self.range + 50 and GetDistance(qPred,myHero.pos) > self.range + 50 then
+			if GetDistance(mousePos,target.pos) + 250 < GetDistance(myHero.pos,mousePos) then
+				local dashRange = GetDistance(myHero.pos,mousePos)
+				if dashRange > self.Q.range then dashRange = self.Q.range end
+				local afterQ = myHero.pos + Vector(myHero.pos,mousePos):Normalized() * dashRange
+				local underT = false
+				for t = 1,Game.TurretCount() do
+					local tower = Game.Turret(t)
+					if GetDistance(qPred,tower.pos) < 800 and GetDistance(afterQ,tower.pos) < 750 and tower.isEnemy then
+						underT = true
+						break
+					end
+				end
+				if underT == false then
+					CastSpell(HK_Q,mousePos,5000,10)
+				end
+			end		
+		end
+	end
+end
+
+function Vayne:useQaway(target)
+	if aa.state == 3 then
+		local qPred = target:GetPrediction(math.huge,0.5)
+		if GetDistance(target.pos,myHero.pos) <= self.range + 50 and GetDistance(qPred,myHero.pos) <= 200 then
+			local dashRange = 425
+			local qPosVec = Vector(myHero.pos,mousePos):Normalized()
+			local afterQ = myHero.pos + qPosVec * dashRange
+			if GetDistance(afterQ,target.pos) < GetDistance(myHero.pos,target.pos) then
+				afterQ = myHero.pos - qPosVec * dashRange
+			end
+			local underT = false
+			for t = 1,Game.TurretCount() do
+				local tower = Game.Turret(t)
+				if GetDistance(qPred,tower.pos) < 800 and GetDistance(afterQ,tower.pos) < 750 and tower.isEnemy then
+					underT = true
+					break
+				end
+			end
+			if underT == false and CountEnemiesInRange(myHero.pos, 650) >= CountEnemiesInRange(afterQ, 650) then
+				CastSpell(HK_Q,afterQ,5000,10)
+			end	
+		end
+	end
+end
+
+function Vayne:useQSilver(target)
+	if aa.state == 3 and aa.downTime - (GetTickCount() - aa.tick2) > 250 then
+		local extraStackeronikekoroni = 0
+		if GetTickCount() - aa.tick2 < GetDistance(myHero.pos,target.pos)/self.AA.speed*1000 - 100 and aa.target == target.handle then
+			extraStackeronikekoroni = 1
+		end
+		local dashRange = GetDistance(myHero.pos,mousePos)
+		if dashRange > self.Q.range then dashRange = self.Q.range end
+		local qPos = myHero.pos + Vector(myHero.pos,mousePos):Normalized() * dashRange
+		local qPosVec = Vector(myHero.pos,mousePos):Normalized()
+		local afterQ = myHero.pos + qPosVec * (GetDistance(myHero.pos,target.pos) - 350)
+		if GetDistance(afterQ,target.pos) < 550 then
+			if GotBuff(target,"VayneSilveredDebuff") + extraStackeronikekoroni == 2 then
+				CastSpell(HK_Q,mousePos,5000,10)
+			end
+		end
+	end
+end
+
+function Vayne:useQkill(target)
+	if aa.state ~= 2 then
+		local qPred = target:GetPrediction(math.huge,0.5)
+		if GetDistance(target.pos,myHero.pos) <= self.range + 75 + 300 and GetDistance(qPred,myHero.pos) > self.range + 50 then
+			if GetDistance(mousePos,target.pos) + 250 < GetDistance(myHero.pos,mousePos) then
+				local hp = target.health + target.shieldAD + target.hpRegen*2
+				local qDMG = CalcPhysicalDamage(myHero,target,myHero.totalDamage + (myHero.totalDamage*(0.25+0.05*myHero:GetSpellData(_Q).level)))
+				local extraStackeronikekoroni = 0
+				local extraAA = 0
+				if GetTickCount() - aa.tick2 < GetDistance(myHero.pos,target.pos)/self.AA.speed*1000 - 100 and aa.target == target.handle then
+					extraStackeronikekoroni = 1
+					extraAA = CalcPhysicalDamage(myHero,target,myHero.totalDamage)
+				end
+				local wDMG = 0
+				if GotBuff(target,"VayneSilveredDebuff") + extraStackeronikekoroni == 2 then
+					wDMG = math.floor(target.maxHealth*(0.045 + 0.015*myHero:GetSpellData(_W).level) + 20 + 20*myHero:GetSpellData(_W).level)
+				end
+				if hp <= qDMG + extraAA + wDMG then
+					CastSpell(HK_Q,target.pos,5000,10)
+				end
+			end
+		end
+	end
+end
+
+function Vayne:useQult(target)
+	if GetDistance(myHero.pos,target.pos) < 850 then
+		if GotBuff(myHero,"VayneInquisition") > 0 then
+			local dashRange = GetDistance(myHero.pos,mousePos)
+			if dashRange > self.Q.range then dashRange = self.Q.range end
+			local qPos = myHero.pos + Vector(myHero.pos,mousePos):Normalized() * dashRange
+			if GetDistance(qPos,target.pos) < 600 then
+				CastSpell(HK_Q,mousePos,5000,100)
+			end
+		end
+	end
+end
+
+function Vayne:useEstun(target)
+	-- if aa.state ~= 2 and GetDistance(myHero.pos,target.pos) < self.E.range and ((GetDistance(myHero.pos,target.pos) < self.range + 50 and aa.state == 3) or GetDistance(myHero.pos,target.pos) > self.range + 50 ) then
+	if (aa.state == 3 and GetDistance(myHero.pos,target.pos) < self.range + 50) or (GetDistance(myHero.pos,target.pos) > self.range + 50) then
+		local ePred = target:GetPrediction(self.E.speed,self.E.delay)
+		for i = 100,ADCMenu.Combo.Epush:Value(),50 do
+			local pushPos = myHero.pos + Vector(myHero.pos,ePred):Normalized() * (GetDistance(myHero.pos,target.pos) + i)
+			local checkPos = myHero.pos + Vector(myHero.pos,ePred):Normalized() * (GetDistance(myHero.pos,target.pos) + i + 50)
+			if MapPosition:inWall(pushPos) == true and MapPosition:inWall(checkPos) == true and GetDistance(pushPos,myHero.pos) < self.range + ADCMenu.Combo.Epush:Value() then
+				CastSpell(HK_E,target.pos,self.E.range,10)
+				break
+			end
+		end
+	end
+end
+
+function Vayne:useEmelee(target)
+	if aa.state ~= 2 and Game.CanUseSpell(_Q) ~= 0 then
+		if target.range < 300 then
+			if GetDistance(myHero.pos,target.pos) < 250 then
+				local ePred = target:GetPrediction(self.E.speed,self.E.delay)
+				if GetDistance(ePred,myHero.pos) < GetDistance(target.pos,myHero.pos) then
+					CastSpell(HK_E,target.pos,self.E.range,10)
+				end
+			end
+		end
+	end
+end
+
+function Vayne:useEtower(target)
+	for t = 1,Game.TurretCount() do
+		local tower = Game.Turret(t)
+		if GetDistance(target.pos,tower.pos) < 800 and GetDistance(myHero.pos,tower.pos) < 1200 and tower.isAlly and tower.targetID == target.networkID then
+			local ePred = target:GetPrediction(self.E.speed,self.E.delay)
+			local pushPos = myHero.pos + Vector(myHero.pos,ePred):Normalized() * 350
+			if GetDistance(tower.pos,pushPos) < GetDistance(tower.pos,target.pos) then 
+				CastSpell(HK_E,target.pos,self.E.range,10)
+			end
+			break
+		end
+	end
+end
+
+function Vayne:useRfight(target)
+	if CountEnemiesInRange(myHero.pos,800) >= ADCMenu.Combo.useRx:Value() then
+		CastSpell(HK_R,mousePos,5000,10)
+	end
+end
+
+--ITEMS--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 class "Item"
