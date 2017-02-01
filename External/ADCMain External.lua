@@ -535,7 +535,7 @@ function DamageReductionMod(source,target,amount,DamageType)
         end
 
         if target.charName == "Maokai" and source.type ~= Obj_AI_Turret then
-          if buff.name == "MaokaiDrainDefense" > 0 then
+          if buff.name == "MaokaiDrainDefense" then
             amount = amount * 0.8
           end
         end
