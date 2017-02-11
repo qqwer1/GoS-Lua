@@ -4,7 +4,7 @@ if myHero.charName ~= "Xerath" then return end
 
 --MENU
 
-local version = 0.1
+local version = 1.0
 
 local icons = {	["Xerath"] = "http://vignette2.wikia.nocookie.net/leagueoflegends/images/7/7a/XerathSquare.png",
 }
@@ -540,7 +540,7 @@ end
 local aa = {state = 1, tick = GetTickCount(), tick2 = GetTickCount(), downTime = GetTickCount(), target = myHero}
 local lastTick = 0
 local lastMove = 0
-Callback.Add("Tick", function() aaTick() end)
+local aaTicker = Callback.Add("Tick", function() aaTick() end)
 function aaTick()
 	if aa.state == 1 and myHero.attackData.state == 2 then
 		lastTick = GetTickCount()
@@ -629,7 +629,7 @@ function LazyXerath:__init()
 	self.AA = { delay = 0.25, speed = 2000, width = 0, range = 550 }
 	self.Q = { delay = 0.35, speed = math.huge, width = 145, range = 750 }
 	self.W = { delay = 0.5, speed = math.huge, width = 200, range = 1050 }
-	self.E = { delay = 0.25, speed = 2100, width = 60, range = 1050 }
+	self.E = { delay = 0.25, speed = 2100, width = 80, range = 1050 }
 	self.R = { delay = 0.5, speed = math.huge, width = 200, range = 3520 }
 	self.range = 550
 	self.chargeQ = false
@@ -685,7 +685,7 @@ end
 
 function LazyXerath:MenuRTarget(v,t)
 	if LazyMenu.Combo.R.BlackList[v.charName] ~= nil then
-		Callback.Del("Tick",create_menu_tick)
+		-- Callback.Del("Tick",create_menu_tick)
 	else
 		LazyMenu.Combo.R.BlackList:MenuElement({id = v.charName, name = "Blacklist: "..v.charName, value = false})
 	end
@@ -1069,6 +1069,7 @@ _targetSelectTick = tick
 					p = Priority(kill.charName)
 					target = kill
 					oneshot = true
+					print("OnShot: "..target.charName.." | "..p)
 				end
 			else
 				if p < Priority(kill.charName) and oneshot == false then
@@ -1078,6 +1079,7 @@ _targetSelectTick = tick
 			end
 		end
 		if target then
+			print("Chosen: "..target.charName)
 			_targetSelect = target
 			return target
 		else
