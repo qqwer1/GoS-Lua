@@ -1069,7 +1069,7 @@ _targetSelectTick = tick
 					p = Priority(kill.charName)
 					target = kill
 					oneshot = true
-					print("OnShot: "..target.charName.." | "..p)
+					-- print("OnShot: "..target.charName.." | "..p)
 				end
 			else
 				if p < Priority(kill.charName) and oneshot == false then
@@ -1079,7 +1079,7 @@ _targetSelectTick = tick
 			end
 		end
 		if target then
-			print("Chosen: "..target.charName)
+			-- print("Chosen: "..target.charName)
 			_targetSelect = target
 			return target
 		else
