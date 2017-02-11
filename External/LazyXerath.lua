@@ -642,7 +642,8 @@ function LazyXerath:__init()
 	self.R_Stacks = 0
 	self.lastRtick = GetTickCount()
 	self.CanUseR = true
-	self.lastTarget = myHero
+	self.lastTarget = nil
+	self.lastTarget_tick = GetTickCount()
 	self:Menu()
 	function OnTick() self:Tick() end
  	function OnDraw() self:Draw() end
@@ -650,11 +651,13 @@ end
 
 function LazyXerath:Menu()
 	LazyMenu.Combo:MenuElement({id = "useQ", name = "Use Q", value = true, leftIcon = self.spellIcons.Q})
+	LazyMenu.Combo:MenuElement({id = "legitQ", name = "Legit Q slider", value = 0.075, min = 0, max = 0.15, step = 0.01})
 	LazyMenu.Combo:MenuElement({id = "useW", name = "Use W", value = true, leftIcon = self.spellIcons.W})
 	LazyMenu.Combo:MenuElement({id = "useE", name = "Use E", value = true, leftIcon = self.spellIcons.E})
 	LazyMenu.Combo:MenuElement({id = "useR", name = "Use R", value = true, leftIcon = self.spellIcons.R})
 	LazyMenu.Combo:MenuElement({id = "R", name = "Ultimate Settings", type = MENU, leftIcon = self.spellIcons.R})
 	LazyMenu.Combo.R:MenuElement({id = "useRself", name = "Start R manually", value = false})
+	LazyMenu.Combo.R:MenuElement({id = "BlackList", name = "Auto R blacklist", type = MENU})
 	LazyMenu.Combo.R:MenuElement({id = "safeR", name = "Safety R stack", value = 1, min = 0, max = 2, step = 1})
 	LazyMenu.Combo.R:MenuElement({id = "targetChangeDelay", name = "Delay between target switch", value = 450, min = 0, max = 2000, step = 10})
 	LazyMenu.Combo.R:MenuElement({id = "castDelay", name = "Delay between casts", value = 150, min = 0, max = 500, step = 1})
@@ -666,6 +669,26 @@ function LazyXerath:Menu()
 	LazyMenu.Harass:MenuElement({id = "manaW", name = " W | Mana-Manager", value = 60, min = 0, max = 100, step = 1, leftIcon = "http://vignette1.wikia.nocookie.net/leagueoflegends/images/1/1d/Mana_Potion_item.png"})
 	LazyMenu.Harass:MenuElement({id = "useE", name = "Use E", value = false, leftIcon = self.spellIcons.E})
 	LazyMenu.Harass:MenuElement({id = "manaE", name = " E | Mana-Manager", value = 80, min = 0, max = 100, step = 1, leftIcon = "http://vignette1.wikia.nocookie.net/leagueoflegends/images/1/1d/Mana_Potion_item.png"})
+
+	LazyMenu:MenuElement({id = "TargetSwitchDelay", name = "Delay between target switch", value = 350, min = 0, max = 750, step = 1})
+	self:TargetMenu()
+end
+
+local create_menu_tick
+function LazyXerath:TargetMenu()
+	create_menu_tick = Callback.Add("Tick",function() 
+		for i,v in pairs(GetEnemyHeroes()) do
+			self:MenuRTarget(v,create_menu_tick)
+		end
+	end)
+end
+
+function LazyXerath:MenuRTarget(v,t)
+	if LazyMenu.Combo.R.BlackList[v.charName] ~= nil then
+		Callback.Del("Tick",create_menu_tick)
+	else
+		LazyMenu.Combo.R.BlackList:MenuElement({id = v.charName, name = "Blacklist: "..v.charName, value = false})
+	end
 end
 
 function LazyXerath:Tick()
@@ -793,13 +816,9 @@ end
 function LazyXerath:useQ()
 	if Game.CanUseSpell(_Q) == 0 and castSpell.state == 0 then
 		local target = GetTarget(1500,"AP")
-		-- if not target then
-			-- target = GetTarget(1500,"AP")
-		-- end
 		if target then
 			local qPred = GetPred(target,math.huge,0.35 + Game.Latency()/1000)
 			local qPred2 = GetPred(target,math.huge,1)
-			
 			if qPred and qPred2 then
 				if GetDistance(myHero.pos,qPred2) < 1500 then
 					self:startQ()
@@ -816,7 +835,8 @@ end
 function LazyXerath:useW()
 	if Game.CanUseSpell(_W) == 0 and self.chargeQ == false and castSpell.state == 0 then
 		local target = GetTarget(self.W.range,"AP")
-		if target then
+		if self.lastTarget == nil then self.lastTarget = target end
+		if target and (target == self.lastTarget or (GetTickCount() - self.lastTarget_tick > LazyMenu.TargetSwitchDelay:Value())) then
 			local wPred = GetPred(target,math.huge,0.5)
 			if wPred then
 				self:useWdash(target)
@@ -832,7 +852,8 @@ function LazyXerath:useE()
 	if Game.CanUseSpell(_E) == 0 and self.chargeQ == false and castSpell.state == 0 then
 		self:useECC()
 		local target = GetTarget(self.E.range,"AP")
-		if target then
+		if self.lastTarget == nil then self.lastTarget = target end
+		if target and (target == self.lastTarget or (GetTickCount() - self.lastTarget_tick > LazyMenu.TargetSwitchDelay:Value())) then
 			local ePred = GetPred(target,self.E.speed,self.E.delay)
 			if ePred and target:GetCollision(self.E.width,self.E.speed,self.E.delay) == 0 then
 				self:useEdash(target)
@@ -880,13 +901,17 @@ function LazyXerath:useQCC(target)
 	if GetDistance(myHero.pos,target.pos) < self.Q.range - 20 then
 		if IsImmobileTarget(target) == true then
 			ReleaseSpell(HK_Q,target.pos,self.Q.range,100)
+			self.lastTarget = target
+			self.lastTarget_tick = GetTickCount() + 250
 		end
 	end
 end
 
 function LazyXerath:useQonTarget(target,qPred)
-	if Game.Timer() - OnWaypoint(target).time > 0.05 and (((Game.Timer() - OnWaypoint(target).time < 0.15 or Game.Timer() - OnWaypoint(target).time > 1.0) and OnVision(target).state == true) or (OnVision(target).state == false)) and GetDistance(myHero.pos,qPred) < self.Q.range - target.boundingRadius then
+	if Game.Timer() - OnWaypoint(target).time > 0.05 + LazyMenu.Combo.legitQ:Value() and (((Game.Timer() - OnWaypoint(target).time < 0.15 + LazyMenu.Combo.legitQ:Value() or Game.Timer() - OnWaypoint(target).time > 1.0) and OnVision(target).state == true) or (OnVision(target).state == false)) and GetDistance(myHero.pos,qPred) < self.Q.range - target.boundingRadius then
 		ReleaseSpell(HK_Q,qPred,self.Q.range,100)
+		self.lastTarget = target
+		self.lastTarget_tick = GetTickCount() + 250
 	end
 end
 
@@ -894,6 +919,8 @@ function LazyXerath:useWCC(target)
 	if GetDistance(myHero.pos,target.pos) < self.W.range - 50 then
 		if IsImmobileTarget(target) == true then
 			CastSpell(HK_W,target.pos,self.W.range)
+			self.lastTarget = target
+			self.lastTarget_tick = GetTickCount() + 250
 		end
 	end
 end
@@ -907,6 +934,8 @@ function LazyXerath:useWhighHit(target,wPred)
 	end
 	if Game.Timer() - OnWaypoint(target).time > 0.05 and (Game.Timer() - OnWaypoint(target).time < 0.20 or Game.Timer() - OnWaypoint(target).time > 1.25) and GetDistance(myHero.pos,wPred) < self.W.range - 50 and afterE == false then
 		CastSpell(HK_W,wPred,self.W.range)
+		self.lastTarget = target
+		self.lastTarget_tick = GetTickCount() + 250
 	end
 end
 
@@ -915,6 +944,8 @@ function LazyXerath:useWdash(target)
 		local wPred = GetPred(target,math.huge,0.5)
 		if GetDistance(myHero.pos,wPred) < self.W.range then
 			CastSpell(HK_W,wPred,self.W.range)
+			self.lastTarget = target
+			self.lastTarget_tick = GetTickCount() + 250
 		end
 	end
 end
@@ -933,6 +964,8 @@ function LazyXerath:useECC()
 		if GetDistance(myHero.pos,target.pos) < self.E.range - 20 then
 			if IsImmobileTarget(target) == true and target:GetCollision(self.E.width,self.E.speed,0.25) == 0 then
 				CastSpell(HK_E,target.pos,5000)
+				self.lastTarget = target
+				self.lastTarget_tick = GetTickCount() + 250
 			end
 		end
 	end
@@ -942,9 +975,13 @@ function LazyXerath:useEbrainAFK(target,ePred)
 	if Game.Timer() - OnWaypoint(target).time > 0.05 and (Game.Timer() - OnWaypoint(target).time < 0.125 or Game.Timer() - OnWaypoint(target).time > 1.25) and GetDistance(myHero.pos,ePred) < self.E.range then
 		if GetDistance(myHero.pos,ePred) <= 800 then
 			CastSpell(HK_E,ePred,5000)
+			self.lastTarget = target
+			self.lastTarget_tick = GetTickCount()
 		else
 			if target.ms < 340 then
 				CastSpell(HK_E,ePred,5000)
+				self.lastTarget = target
+				self.lastTarget_tick = GetTickCount() + 250
 			end
 		end
 	end
@@ -955,6 +992,8 @@ function LazyXerath:useEdash(target)
 		local ePred = GetPred(target,math.huge,0.5)
 		if GetDistance(myHero.pos,ePred) < self.E.range and target:GetCollision(self.E.width,self.E.speed,1) == 0 then
 			CastSpell(HK_E,ePred,5000)
+			self.lastTarget = target
+			self.lastTarget_tick = GetTickCount() + 250
 		end
 	end
 end
@@ -972,7 +1011,7 @@ function LazyXerath:startR(target)
 end
 
 function LazyXerath:useRkill(target)
-	if self.chargeR == false and not LazyMenu.Combo.R.useRself:Value() then
+	if self.chargeR == false and not LazyMenu.Combo.R.useRself:Value() and LazyMenu.Combo.R.BlackList[target.charName]:Value() == false then
 		local rDMG = CalcMagicalDamage(myHero,target,170+30*myHero:GetSpellData(_R).level + (myHero.ap*0.43))*(2+myHero:GetSpellData(_R).level - LazyMenu.Combo.R.safeR:Value())
 		if target.health + target.shieldAP + target.shieldAD < rDMG and CountAlliesInRange(target.pos,700) == 0 then
 			local delay =  math.floor((target.health + target.shieldAP + target.shieldAD)/(rDMG/(2+myHero:GetSpellData(_R).level))) * 0.8
@@ -1008,7 +1047,7 @@ local _targetSelect
 local _targetSelectTick = GetTickCount()
 function LazyXerath:GetRTarget(closeRange,maxRange)
 local tick = GetTickCount()
-if tick - _targetSelectTick > 200 then
+if tick - _targetSelectTick > 250 then
 _targetSelectTick = tick
 	if CountEnemiesInRange(myHero.pos,closeRange) >= 2 then
 		local killable = {}
@@ -1023,10 +1062,19 @@ _targetSelectTick = tick
 		end
 		local target
 		local p = 0
+		local oneshot = false
 		for i,kill in pairs(killable) do
-			if p < Priority(kill.charName) then
-				p = Priority(kill.charName)
-				target = kill
+			if (CalcMagicalDamage(myHero,kill,170+30*myHero:GetSpellData(_R).level + (myHero.ap*0.43)) > kill.health + kill.shieldAP + kill.shieldAD) then
+				if p < Priority(kill.charName) then
+					p = Priority(kill.charName)
+					target = kill
+					oneshot = true
+				end
+			else
+				if p < Priority(kill.charName) and oneshot == false then
+					p = Priority(kill.charName)
+					target = kill
+				end
 			end
 		end
 		if target then
@@ -1046,7 +1094,8 @@ end
 if _targetSelect and not _targetSelect.dead then
 	return _targetSelect
 else
-	return
+	_targetSelect = GetTarget(maxRange,"AP")
+	return _targetSelect
 end
 end
 
