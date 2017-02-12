@@ -836,7 +836,7 @@ function LazyXerath:useW()
 	if Game.CanUseSpell(_W) == 0 and self.chargeQ == false and castSpell.state == 0 then
 		local target = GetTarget(self.W.range,"AP")
 		if self.lastTarget == nil then self.lastTarget = target end
-		if target and (target == self.lastTarget or (GetTickCount() - self.lastTarget_tick > LazyMenu.TargetSwitchDelay:Value())) then
+		if target and (target == self.lastTarget or (GetDistance(target.pos,self.lastTarget.pos) > 400 and GetTickCount() - self.lastTarget_tick > LazyMenu.TargetSwitchDelay:Value())) then
 			local wPred = GetPred(target,math.huge,0.5)
 			if wPred then
 				self:useWdash(target)
@@ -853,7 +853,7 @@ function LazyXerath:useE()
 		self:useECC()
 		local target = GetTarget(self.E.range,"AP")
 		if self.lastTarget == nil then self.lastTarget = target end
-		if target and (target == self.lastTarget or (GetTickCount() - self.lastTarget_tick > LazyMenu.TargetSwitchDelay:Value())) then
+		if target and (target == self.lastTarget or (GetDistance(target.pos,self.lastTarget.pos) > 400 and GetTickCount() - self.lastTarget_tick > LazyMenu.TargetSwitchDelay:Value())) then
 			local ePred = GetPred(target,self.E.speed,self.E.delay)
 			if ePred and target:GetCollision(self.E.width,self.E.speed,self.E.delay) == 0 then
 				self:useEdash(target)
@@ -902,7 +902,7 @@ function LazyXerath:useQCC(target)
 		if IsImmobileTarget(target) == true then
 			ReleaseSpell(HK_Q,target.pos,self.Q.range,100)
 			self.lastTarget = target
-			self.lastTarget_tick = GetTickCount() + 250
+			self.lastTarget_tick = GetTickCount() + 200
 		end
 	end
 end
@@ -911,7 +911,7 @@ function LazyXerath:useQonTarget(target,qPred)
 	if Game.Timer() - OnWaypoint(target).time > 0.05 + LazyMenu.Combo.legitQ:Value() and (((Game.Timer() - OnWaypoint(target).time < 0.15 + LazyMenu.Combo.legitQ:Value() or Game.Timer() - OnWaypoint(target).time > 1.0) and OnVision(target).state == true) or (OnVision(target).state == false)) and GetDistance(myHero.pos,qPred) < self.Q.range - target.boundingRadius then
 		ReleaseSpell(HK_Q,qPred,self.Q.range,100)
 		self.lastTarget = target
-		self.lastTarget_tick = GetTickCount() + 250
+		self.lastTarget_tick = GetTickCount() + 200
 	end
 end
 
@@ -920,7 +920,7 @@ function LazyXerath:useWCC(target)
 		if IsImmobileTarget(target) == true then
 			CastSpell(HK_W,target.pos,self.W.range)
 			self.lastTarget = target
-			self.lastTarget_tick = GetTickCount() + 250
+			self.lastTarget_tick = GetTickCount() + 200
 		end
 	end
 end
@@ -935,7 +935,7 @@ function LazyXerath:useWhighHit(target,wPred)
 	if Game.Timer() - OnWaypoint(target).time > 0.05 and (Game.Timer() - OnWaypoint(target).time < 0.20 or Game.Timer() - OnWaypoint(target).time > 1.25) and GetDistance(myHero.pos,wPred) < self.W.range - 50 and afterE == false then
 		CastSpell(HK_W,wPred,self.W.range)
 		self.lastTarget = target
-		self.lastTarget_tick = GetTickCount() + 250
+		self.lastTarget_tick = GetTickCount() + 200
 	end
 end
 
@@ -945,7 +945,7 @@ function LazyXerath:useWdash(target)
 		if GetDistance(myHero.pos,wPred) < self.W.range then
 			CastSpell(HK_W,wPred,self.W.range)
 			self.lastTarget = target
-			self.lastTarget_tick = GetTickCount() + 250
+			self.lastTarget_tick = GetTickCount() + 200
 		end
 	end
 end
@@ -965,7 +965,7 @@ function LazyXerath:useECC()
 			if IsImmobileTarget(target) == true and target:GetCollision(self.E.width,self.E.speed,0.25) == 0 then
 				CastSpell(HK_E,target.pos,5000)
 				self.lastTarget = target
-				self.lastTarget_tick = GetTickCount() + 250
+				self.lastTarget_tick = GetTickCount() + 200
 			end
 		end
 	end
@@ -976,12 +976,12 @@ function LazyXerath:useEbrainAFK(target,ePred)
 		if GetDistance(myHero.pos,ePred) <= 800 then
 			CastSpell(HK_E,ePred,5000)
 			self.lastTarget = target
-			self.lastTarget_tick = GetTickCount()
+			self.lastTarget_tick = GetTickCount() + 200
 		else
 			if target.ms < 340 then
 				CastSpell(HK_E,ePred,5000)
 				self.lastTarget = target
-				self.lastTarget_tick = GetTickCount() + 250
+				self.lastTarget_tick = GetTickCount() + 200
 			end
 		end
 	end
@@ -993,7 +993,7 @@ function LazyXerath:useEdash(target)
 		if GetDistance(myHero.pos,ePred) < self.E.range and target:GetCollision(self.E.width,self.E.speed,1) == 0 then
 			CastSpell(HK_E,ePred,5000)
 			self.lastTarget = target
-			self.lastTarget_tick = GetTickCount() + 250
+			self.lastTarget_tick = GetTickCount() + 200
 		end
 	end
 end
