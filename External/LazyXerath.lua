@@ -59,14 +59,14 @@ end
 local _EnemyHeroes
 function GetEnemyHeroes()
   if _EnemyHeroes then return _EnemyHeroes end
-  _EnemyHeroes = {}
   for i = 1, Game.HeroCount() do
     local unit = Game.Hero(i)
     if unit.isEnemy then
+	  if _EnemyHeroes == nil then _EnemyHeroes = {} end
       table.insert(_EnemyHeroes, unit)
     end
   end
-  return _EnemyHeroes
+  return {}
 end
 
 function IsImmobileTarget(unit)
@@ -401,8 +401,8 @@ end
 
 local function Priority(charName)
   local p1 = {"Alistar", "Amumu", "Blitzcrank", "Braum", "Cho'Gath", "Dr. Mundo", "Garen", "Gnar", "Maokai", "Hecarim", "Jarvan IV", "Leona", "Lulu", "Malphite", "Nasus", "Nautilus", "Nunu", "Olaf", "Rammus", "Renekton", "Sejuani", "Shen", "Shyvana", "Singed", "Sion", "Skarner", "Taric", "TahmKench", "Thresh", "Volibear", "Warwick", "MonkeyKing", "Yorick", "Zac", "Poppy"}
-  local p2 = {"Aatrox", "Darius", "Elise", "Evelynn", "Galio", "Gragas", "Irelia", "Jax", "Lee Sin", "Morgana", "Janna", "Nocturne", "Pantheon", "Rengar", "Rumble", "Swain", "Trundle", "Tryndamere", "Udyr", "Urgot", "Vi", "XinZhao", "RekSai", "Bard", "Nami", "Sona"}
-  local p3 = {"Akali", "Diana", "Ekko", "Fiddlesticks", "Fiora", "Gangplank", "Fizz", "Heimerdinger", "Jayce", "Kassadin", "Kayle", "Kha'Zix", "Lissandra", "Mordekaiser", "Nidalee", "Riven", "Shaco", "Vladimir", "Yasuo", "Zilean", "Zyra", "Ryze"}
+  local p2 = {"Aatrox", "Darius", "Elise", "Evelynn", "Galio", "Gragas", "Irelia", "Jax", "Lee Sin", "Morgana", "Janna", "Nocturne", "Pantheon", "Rengar", "Rumble", "Swain", "Trundle", "Tryndamere", "Udyr", "Urgot", "Vi", "XinZhao", "RekSai", "Bard", "Nami", "Sona", "Camille"}
+  local p3 = {"Akali", "Diana", "Ekko", "FiddleSticks", "Fiora", "Gangplank", "Fizz", "Heimerdinger", "Jayce", "Kassadin", "Kayle", "Kha'Zix", "Lissandra", "Mordekaiser", "Nidalee", "Riven", "Shaco", "Vladimir", "Yasuo", "Zilean", "Zyra", "Ryze"}
   local p4 = {"Ahri", "Anivia", "Annie", "Ashe", "Azir", "Brand", "Caitlyn", "Cassiopeia", "Corki", "Draven", "Ezreal", "Graves", "Jinx", "Kalista", "Karma", "Karthus", "Katarina", "Kennen", "KogMaw", "Kindred", "Leblanc", "Lucian", "Lux", "Malzahar", "MasterYi", "MissFortune", "Orianna", "Quinn", "Sivir", "Syndra", "Talon", "Teemo", "Tristana", "TwistedFate", "Twitch", "Varus", "Vayne", "Veigar", "Velkoz", "Viktor", "Xerath", "Zed", "Ziggs", "Jhin", "Soraka"}
   if table.contains(p1, charName) then return 1 end
   if table.contains(p2, charName) then return 1.25 end
@@ -1092,12 +1092,11 @@ local _targetSelect
 local _targetSelectTick = GetTickCount()
 function LazyXerath:GetRTarget(closeRange,maxRange)
 local tick = GetTickCount()
-if tick - _targetSelectTick > 250 then
-_targetSelectTick = tick
-	if CountEnemiesInRange(myHero.pos,closeRange) >= 2 then
-		local killable = {}
+if tick - _targetSelectTick > 200 then
+	_targetSelectTick = tick
+	local killable = {}
 		for i,hero in pairs(GetEnemyHeroes()) do
-			if hero.isEnemy and hero.valid and not hero.dead and (OnVision(hero).state == true or (OnVision(hero).state == false and GetTickCount() - OnVision(hero).tick < 850)) and hero.isTargetable and GetDistance(myHero.pos,hero.pos) < maxRange then
+			if hero.isEnemy and hero.valid and not hero.dead and hero.isTargetable and (OnVision(hero).state == true or (OnVision(hero).state == false and GetTickCount() - OnVision(hero).tick < 150)) and hero.isTargetable and GetDistance(myHero.pos,hero.pos) < maxRange then
 				local stacks = self.R_Stacks
 				local rDMG = CalcMagicalDamage(myHero,hero,170+30*myHero:GetSpellData(_R).level + (myHero.ap*0.43))*stacks
 				if hero.health + hero.shieldAP + hero.shieldAD < rDMG then
@@ -1114,7 +1113,6 @@ _targetSelectTick = tick
 					p = Priority(kill.charName)
 					target = kill
 					oneshot = true
-					print("OnShot: "..target.charName.." | "..p)
 				end
 			else
 				if p < Priority(kill.charName) and oneshot == false then
@@ -1124,26 +1122,27 @@ _targetSelectTick = tick
 			end
 		end
 		if target then
-			print("Chosen: "..target.charName)
 			_targetSelect = target
-			return target
-		else
-			local t = GetTarget(closeRange,"AP")
-			_targetSelect = t
-			return t
-		end	
+			return _targetSelect
+		end
+	if CountEnemiesInRange(myHero.pos,closeRange) >= 2 then
+		local t = GetTarget(closeRange,"AP")
+		_targetSelect = t
+		return _targetSelect
 	else
 		local t = GetTarget(maxRange,"AP")
 		_targetSelect = t
-		return t
+		return _targetSelect
 	end
 end
+
 if _targetSelect and not _targetSelect.dead then
 	return _targetSelect
 else
 	_targetSelect = GetTarget(maxRange,"AP")
 	return _targetSelect
 end
+
 end
 
 
