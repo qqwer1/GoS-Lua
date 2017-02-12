@@ -246,7 +246,7 @@ local DamageReductionTable = {
   ["Braum"] = {buff = "BraumShieldRaise", amount = function(target) return 1 - ({0.3, 0.325, 0.35, 0.375, 0.4})[target:GetSpellData(_E).level] end},
   ["Urgot"] = {buff = "urgotswapdef", amount = function(target) return 1 - ({0.3, 0.4, 0.5})[target:GetSpellData(_R).level] end},
   ["Alistar"] = {buff = "Ferocious Howl", amount = function(target) return ({0.5, 0.4, 0.3})[target:GetSpellData(_R).level] end},
-  ["Amumu"] = {buff = "Tantrum", amount = function(target) return ({2, 4, 6, 8, 10})[target:GetSpellData(_E).level] end, damageType = 1},
+  -- ["Amumu"] = {buff = "Tantrum", amount = function(target) return ({2, 4, 6, 8, 10})[target:GetSpellData(_E).level] end, damageType = 1},
   ["Galio"] = {buff = "GalioIdolOfDurand", amount = function(target) return 0.5 end},
   ["Garen"] = {buff = "GarenW", amount = function(target) return 0.7 end},
   ["Gragas"] = {buff = "GragasWSelf", amount = function(target) return ({0.1, 0.12, 0.14, 0.16, 0.18})[target:GetSpellData(_W).level] end},
@@ -670,6 +670,11 @@ function LazyXerath:Menu()
 	LazyMenu.Harass:MenuElement({id = "useE", name = "Use E", value = false, leftIcon = self.spellIcons.E})
 	LazyMenu.Harass:MenuElement({id = "manaE", name = " E | Mana-Manager", value = 80, min = 0, max = 100, step = 1, leftIcon = "http://vignette1.wikia.nocookie.net/leagueoflegends/images/1/1d/Mana_Potion_item.png"})
 
+	LazyMenu.Killsteal:MenuElement({id = "useQ", name = "Use Q to killsteal", value = true, leftIcon = self.spellIcons.Q})
+	LazyMenu.Killsteal:MenuElement({id = "useW", name = "Use W to killsteal", value = true, leftIcon = self.spellIcons.W})
+	
+	LazyMenu.Misc:MenuElement({id = "gapE", name = "Use E on gapcloser (beta)", value = true, leftIcon = self.spellIcons.E})
+	
 	LazyMenu:MenuElement({id = "TargetSwitchDelay", name = "Delay between target switch", value = 350, min = 0, max = 750, step = 1})
 	self:TargetMenu()
 end
@@ -705,6 +710,7 @@ function LazyXerath:Tick()
 			self:Harass()
 		end
 	end
+	self:EnemyLoop()
 end
 
 function LazyXerath:Draw()
@@ -821,7 +827,7 @@ function LazyXerath:useQ()
 			local qPred2 = GetPred(target,math.huge,1)
 			if qPred and qPred2 then
 				if GetDistance(myHero.pos,qPred2) < 1500 then
-					self:startQ()
+					self:startQ(target)
 				end
 				if self.chargeQ == true then
 					self:useQCC(target)
@@ -891,8 +897,47 @@ function LazyXerath:useR()
 	end
 end
 
-function LazyXerath:startQ()
-	if Game.CanUseSpell(_Q) == 0 and self.chargeQ == false then
+function LazyXerath:EnemyLoop()
+	if aa.state ~= 2 and castSpell.state == 0 then
+		for i,target in pairs(GetEnemyHeroes()) do
+			if not target.dead and target.isTargetable and target.valid then
+				if LazyMenu.Killsteal.useQ:Value() then
+					if Game.CanUseSpell(_Q) == 0 and GetDistance(myHero.pos,target.pos) < 1500 then
+						local hp = target.health + target.shieldAP + target.shieldAD
+						local dmg = CalcMagicalDamage(myHero,target,40 + 40*myHero:GetSpellData(_Q).level + (0.75*myHero.ap))
+						if hp < dmg then
+							if self.chargeQ == false then
+								local qPred2 = GetPred(target,math.huge,1.25)
+								if GetDistance(qPred2,myHero.pos) < 1500 then
+									Control.KeyDown(HK_Q)
+								end
+							else
+								local qPred = GetPred(target,math.huge,0.35 + Game.Latency()/1000)
+								self:useQonTarget(target,qPred)
+							end
+						end
+					end
+				end
+				if LazyMenu.Killsteal.useW:Value() then
+					if Game.CanUseSpell(_W) == 0 and GetDistance(myHero.pos,target.pos) < self.W.range then
+						local wPred = GetPred(target,math.huge,0.55)
+						self:useWkill(target,wPred)
+					end
+				end
+				if LazyMenu.Misc.gapE:Value() then
+					if GetDistance(target.posTo,myHero.pos) < 500 then
+						self:useEdash(target)
+					end
+				end
+			end
+		end
+	end
+end
+
+function LazyXerath:startQ(target)
+	local start = true
+	if LazyMenu.Combo.useE:Value() and Game.CanUseSpell(_E) == 0 and GetDistance(target.pos,myHero.pos) < 650 and target:GetCollision(self.E.width,self.E.speed,self.E.delay) == 0 then start = false end
+	if Game.CanUseSpell(_Q) == 0 and self.chargeQ == false and start == true then
 		Control.KeyDown(HK_Q)
 	end
 end
@@ -952,7 +997,7 @@ end
 
 function LazyXerath:useWkill(target,wPred)
 	if Game.Timer() - OnWaypoint(target).time > 0.05 and GetDistance(myHero.pos,wPred) < self.W.range then
-		if target.health + target.shieldAP + target.shieldAD < CalcMagicalDamage(myHero,target,100) then
+		if target.health + target.shieldAP + target.shieldAD < CalcMagicalDamage(myHero,target,30 + 30*myHero:GetSpellData(_W).level + (0.6*myHero.ap)) then
 			CastSpell(HK_W,wPred,self.W.range)
 		end
 	end
@@ -1069,7 +1114,7 @@ _targetSelectTick = tick
 					p = Priority(kill.charName)
 					target = kill
 					oneshot = true
-					-- print("OnShot: "..target.charName.." | "..p)
+					print("OnShot: "..target.charName.." | "..p)
 				end
 			else
 				if p < Priority(kill.charName) and oneshot == false then
@@ -1079,7 +1124,7 @@ _targetSelectTick = tick
 			end
 		end
 		if target then
-			-- print("Chosen: "..target.charName)
+			print("Chosen: "..target.charName)
 			_targetSelect = target
 			return target
 		else
