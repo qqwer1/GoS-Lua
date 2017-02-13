@@ -137,7 +137,9 @@ local function GetPred(unit,speed,delay)
 	end
 end
 
-
+local function CanUseSpell(spell)
+	return myHero:GetSpellData(spell).currentCd == 0 and myHero:GetSpellData(spell).level > 0 and myHero:GetSpellData(spell).mana <= myHero.mana
+end
 
 function GetPercentHP(unit)
   if type(unit) ~= "userdata" then error("{GetPercentHP}: bad argument #1 (userdata expected, got "..type(unit)..")") end
@@ -659,8 +661,9 @@ function LazyXerath:Menu()
 	LazyMenu.Combo.R:MenuElement({id = "useRself", name = "Start R manually", value = false})
 	LazyMenu.Combo.R:MenuElement({id = "BlackList", name = "Auto R blacklist", type = MENU})
 	LazyMenu.Combo.R:MenuElement({id = "safeR", name = "Safety R stack", value = 1, min = 0, max = 2, step = 1})
-	LazyMenu.Combo.R:MenuElement({id = "targetChangeDelay", name = "Delay between target switch", value = 450, min = 0, max = 2000, step = 10})
+	LazyMenu.Combo.R:MenuElement({id = "targetChangeDelay", name = "Delay between target switch", value = 100, min = 0, max = 2000, step = 10})
 	LazyMenu.Combo.R:MenuElement({id = "castDelay", name = "Delay between casts", value = 150, min = 0, max = 500, step = 1})
+	LazyMenu.Combo.R:MenuElement({id = "useBlue", name = "Use Farsight Alteration", value = true, leftIcon = "http://vignette2.wikia.nocookie.net/leagueoflegends/images/7/75/Farsight_Alteration_item.png"})
 	LazyMenu.Combo.R:MenuElement({id = "useRkey", name = "On key press (close to mouse)", key = string.byte("T")})
 	
 	LazyMenu.Harass:MenuElement({id = "useQ", name = "Use Q", value = true, leftIcon = self.spellIcons.Q})
@@ -674,9 +677,11 @@ function LazyXerath:Menu()
 	LazyMenu.Killsteal:MenuElement({id = "useW", name = "Use W to killsteal", value = true, leftIcon = self.spellIcons.W})
 	
 	LazyMenu.Misc:MenuElement({id = "gapE", name = "Use E on gapcloser (beta)", value = true, leftIcon = self.spellIcons.E})
+	LazyMenu.Misc:MenuElement({id = "drawRrange", name = "Draw R range on minimap", value = true, leftIcon = self.spellIcons.R})
 	
 	LazyMenu:MenuElement({id = "TargetSwitchDelay", name = "Delay between target switch", value = 350, min = 0, max = 750, step = 1})
 	self:TargetMenu()
+	LazyMenu:MenuElement({id = "space", name = "Don't forget to turn off default [COMBO] orbwalker!", type = SPACE, onclick = function() LazyMenu.space:Hide() end})
 end
 
 local create_menu_tick
@@ -697,6 +702,7 @@ function LazyXerath:MenuRTarget(v,t)
 end
 
 function LazyXerath:Tick()
+if myHero.dead then return end
 	self:castingQ()
 	self:castingR()
 	self:useRonKey()
@@ -714,8 +720,14 @@ function LazyXerath:Tick()
 end
 
 function LazyXerath:Draw()
+if myHero.dead then return end
 	if LazyMenu.Combo.R.useRkey:Value() then
 		Draw.Circle(mousePos,500)
+	end
+	if LazyMenu.Misc.drawRrange:Value() then
+		if Game.CanUseSpell(_R) == 0 then
+			Draw.CircleMinimap(myHero.pos,2000 + 1220*myHero:GetSpellData(_R).level,1.5,Draw.Color(200,50,180,230))
+		end
 	end
 end
 
@@ -871,7 +883,7 @@ end
 
 function LazyXerath:useR()
 	if Game.CanUseSpell(_R) == 0 and self.chargeQ == false and castSpell.state == 0 then
-		local target = self:GetRTarget(1100,2200 + 1320*myHero:GetSpellData(_R).level)
+		local target = self:GetRTarget(1100,2200 + 1220*myHero:GetSpellData(_R).level)
 		if target then
 			self:useRkill(target)
 			if (self.firstRCast == true or self.chargeR ~= true) and target ~= self.R_target then
@@ -1049,7 +1061,17 @@ function LazyXerath:startR(target)
 		eAallowed = 1
 	end
 	if self.chargeR == false and CountEnemiesInRange(myHero.pos,2500) <= eAallowed and GetDistance(myHero.pos,target.pos) > 1300 and not (GetDistance(myHero.pos,target.pos) < 1500 and Game.CanUseSpell(_Q) == 0) and (OnVision(target).state == true or (OnVision(target).state == false and GetTickCount() - OnVision(target).tick < 50)) then
-		CastSpell(HK_R,myHero.pos + Vector(myHero.pos,target.pos):Normalized() * math.random(500,800),2200 + 1320*myHero:GetSpellData(_R).level,50)
+		if LazyMenu.Combo.R.useBlue:Value() then
+			local blue = GetItemSlot(myHero,3363)
+			if blue > 0 and CanUseSpell(blue) and OnVision(target).state == false and GetDistance(myHero.pos,target.pos) < 3800 then
+				local bluePred = GetPred(target,math.huge,0.25)
+				CastSpellMM(HK_ITEM_7,bluePred,4000,50)
+			else
+				CastSpell(HK_R,myHero.pos + Vector(myHero.pos,target.pos):Normalized() * math.random(500,800),2200 + 1320*myHero:GetSpellData(_R).level,50)
+			end
+		else
+			CastSpell(HK_R,myHero.pos + Vector(myHero.pos,target.pos):Normalized() * math.random(500,800),2200 + 1320*myHero:GetSpellData(_R).level,50)
+		end
 		self.R_target = target
 		self.firstRCast = true
 	end
@@ -1096,7 +1118,7 @@ if tick - _targetSelectTick > 200 then
 	_targetSelectTick = tick
 	local killable = {}
 		for i,hero in pairs(GetEnemyHeroes()) do
-			if hero.isEnemy and hero.valid and not hero.dead and hero.isTargetable and (OnVision(hero).state == true or (OnVision(hero).state == false and GetTickCount() - OnVision(hero).tick < 150)) and hero.isTargetable and GetDistance(myHero.pos,hero.pos) < maxRange then
+			if hero.isEnemy and hero.valid and not hero.dead and hero.isTargetable and (OnVision(hero).state == true or (OnVision(hero).state == false and GetTickCount() - OnVision(hero).tick < 50)) and hero.isTargetable and GetDistance(myHero.pos,hero.pos) < maxRange then
 				local stacks = self.R_Stacks
 				local rDMG = CalcMagicalDamage(myHero,hero,170+30*myHero:GetSpellData(_R).level + (myHero.ap*0.43))*stacks
 				if hero.health + hero.shieldAP + hero.shieldAD < rDMG then
@@ -1144,15 +1166,5 @@ else
 end
 
 end
-
-
-
-
-
-
-
-
-
-
 
 function OnLoad() LazyXerath() end
