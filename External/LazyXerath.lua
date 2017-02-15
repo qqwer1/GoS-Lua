@@ -4,7 +4,7 @@ if myHero.charName ~= "Xerath" then return end
 
 --MENU
 
-local version = 1.0
+local version = 1.1
 
 local icons = {	["Xerath"] = "http://vignette2.wikia.nocookie.net/leagueoflegends/images/7/7a/XerathSquare.png",
 }
@@ -553,7 +553,8 @@ function aaTick()
 		if myHero.attackData.state == 1 then
 			aa.state = 1
 		end
-		if Game.Timer() + Game.Latency()/2000 > myHero.attackData.endTime - myHero.attackData.windDownTime and aa.state == 2 then
+		if Game.Timer() + Game.Latency()/2000 - myHero.attackData.castFrame/200 > myHero.attackData.endTime - myHero.attackData.windDownTime and aa.state == 2 then
+			-- print("OnAttackComp WindUP:"..myHero.attackData.endTime)
 			aa.state = 3
 			aa.tick2 = GetTickCount()
 			aa.downTime = myHero.attackData.windDownTime*1000 - (myHero.attackData.windUpTime*1000)
@@ -724,7 +725,7 @@ if myHero.dead then return end
 	if LazyMenu.Combo.R.useRkey:Value() then
 		Draw.Circle(mousePos,500)
 	end
-	if LazyMenu.Misc.drawRrange:Value() then
+	if LazyMenu.Misc.drawRrange:Value() and self.chargeR == false then
 		if Game.CanUseSpell(_R) == 0 then
 			Draw.CircleMinimap(myHero.pos,2000 + 1220*myHero:GetSpellData(_R).level,1.5,Draw.Color(200,50,180,230))
 		end
@@ -842,6 +843,7 @@ function LazyXerath:useQ()
 					self:startQ(target)
 				end
 				if self.chargeQ == true then
+					self:useQclose(target,qPred)
 					self:useQCC(target)
 					self:useQonTarget(target,qPred)
 				end
@@ -886,21 +888,20 @@ function LazyXerath:useR()
 		local target = self:GetRTarget(1100,2200 + 1220*myHero:GetSpellData(_R).level)
 		if target then
 			self:useRkill(target)
-			if (self.firstRCast == true or self.chargeR ~= true) and target ~= self.R_target then
+			if ((self.firstRCast == true or self.chargeR ~= true) or (GetTickCount() - self.lastRtick > 500 + LazyMenu.Combo.R.targetChangeDelay:Value() and GetDistance(target.pos,self.R_target.pos) > 750) or (GetDistance(target.pos,self.R_target.pos) <= 850)) and target ~= self.R_target then
 				self.R_target = target
 			end
-			if target == self.R_target or (target ~= self.R_target and GetDistance(target.pos,self.R_target.pos) > 600 and GetTickCount() - self.R_target_tick > 800 + LazyMenu.Combo.R.targetChangeDelay:Value()) then
+			-- if target == self.R_target or (target ~= self.R_target and GetDistance(target.pos,self.R_target.pos) > 600 and GetTickCount() - self.lastRtick > 800 + LazyMenu.Combo.R.targetChangeDelay:Value()) then
+			if target == self.R_target then
 				if self.chargeR == true and GetTickCount() - self.lastRtick >= 800 + LazyMenu.Combo.R.castDelay:Value() then
 					if target and not IsImmune(target) and (Game.Timer() - OnWaypoint(target).time > 0.05 and (Game.Timer() - OnWaypoint(target).time < 0.20 or Game.Timer() - OnWaypoint(target).time > 1.25) or IsImmobileTarget(target) == true or (self.firstRCast == true and OnVision(target).state == false) ) then
 						local rPred = GetPred(target,math.huge,0.45)
 						if rPred:ToScreen().onScreen then
 							CastSpell(HK_R,rPred,2200 + 1320*myHero:GetSpellData(_R).level,100)
 							self.R_target = target
-							self.R_target_tick = GetTickCount()
 						else
 							CastSpellMM(HK_R,rPred,2200 + 1320*myHero:GetSpellData(_R).level,100)
 							self.R_target = target
-							self.R_target_tick = GetTickCount()
 						end
 					end
 				end
@@ -912,7 +913,7 @@ end
 function LazyXerath:EnemyLoop()
 	if aa.state ~= 2 and castSpell.state == 0 then
 		for i,target in pairs(GetEnemyHeroes()) do
-			if not target.dead and target.isTargetable and target.valid then
+			if not target.dead and target.isTargetable and target.valid and (OnVision(target).state == true or (OnVision(target).state == false and GetTickCount() - OnVision(target).tick < 500)) then
 				if LazyMenu.Killsteal.useQ:Value() then
 					if Game.CanUseSpell(_Q) == 0 and GetDistance(myHero.pos,target.pos) < 1500 then
 						local hp = target.health + target.shieldAP + target.shieldAD
@@ -967,6 +968,14 @@ end
 function LazyXerath:useQonTarget(target,qPred)
 	if Game.Timer() - OnWaypoint(target).time > 0.05 + LazyMenu.Combo.legitQ:Value() and (((Game.Timer() - OnWaypoint(target).time < 0.15 + LazyMenu.Combo.legitQ:Value() or Game.Timer() - OnWaypoint(target).time > 1.0) and OnVision(target).state == true) or (OnVision(target).state == false)) and GetDistance(myHero.pos,qPred) < self.Q.range - target.boundingRadius then
 		ReleaseSpell(HK_Q,qPred,self.Q.range,100)
+		self.lastTarget = target
+		self.lastTarget_tick = GetTickCount() + 200
+	end
+end
+
+function LazyXerath:useQclose(target,qPred)
+	if GetDistance(myHero.pos,qPred) < 750 and Game.Timer() - OnWaypoint(target).time > 0.05 then
+		ReleaseSpell(HK_Q,qPred,self.Q.range,75)
 		self.lastTarget = target
 		self.lastTarget_tick = GetTickCount() + 200
 	end
