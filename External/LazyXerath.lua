@@ -4,7 +4,7 @@ if myHero.charName ~= "Xerath" then return end
 
 --MENU
 
-local version = 1.1
+local version = 1.11
 
 local icons = {	["Xerath"] = "http://vignette2.wikia.nocookie.net/leagueoflegends/images/7/7a/XerathSquare.png",
 }
@@ -703,9 +703,9 @@ function LazyXerath:MenuRTarget(v,t)
 end
 
 function LazyXerath:Tick()
-if myHero.dead then return end
 	self:castingQ()
 	self:castingR()
+	if myHero.dead then return end
 	self:useRonKey()
 	if GetMode() == "Combo" then
 		if aa.state ~= 2 then
@@ -769,13 +769,20 @@ function LazyXerath:castingQ()
 			Control.KeyUp(HK_Q)
 		end
 	end
-	if self.chargeQ == false and Control.IsKeyDown(HK_Q) == true then
+	if Control.IsKeyDown(HK_Q) == true and self.chargeQ == false then
 		DelayAction(function()
-			if self.chargeQ == false then
+			if Control.IsKeyDown(HK_Q) == true and self.chargeQ == false then
+				Control.KeyUp(HK_Q)
+			end
+		end,0.3)
+	end
+	if Control.IsKeyDown(HK_Q) == true and Game.CanUseSpell(_Q) ~= 0 then
+		DelayAction(function()
+			if Control.IsKeyDown(HK_Q) == true then
 				self.Q.range = 750
 				Control.KeyUp(HK_Q)
 			end
-		end,0.5)
+		end,0.01)
 	end
 end
 
@@ -810,9 +817,15 @@ end
 
 function LazyXerath:Combo()
 	if self.chargeR == false then
-		self:useW()
-		self:useE()
-		self:useQ()
+		if LazyMenu.Combo.useW:Value() then
+			self:useW()
+		end
+		if LazyMenu.Combo.useE:Value() then
+			self:useE()
+		end
+		if LazyMenu.Combo.useQ:Value() then
+			self:useQ()
+		end
 	end
 	self:useR()
 end
@@ -993,7 +1006,7 @@ end
 
 function LazyXerath:useWhighHit(target,wPred)
 	local afterE = false
-	if Game.CanUseSpell(_E) == 0 and myHero:GetSpellData(_W).mana + myHero:GetSpellData(_E).mana <= myHero.mana and GetDistance(myHero.pos,target.pos) <= 800 then
+	if LazyMenu.Combo.useE:Value() and Game.CanUseSpell(_E) == 0 and myHero:GetSpellData(_W).mana + myHero:GetSpellData(_E).mana <= myHero.mana and GetDistance(myHero.pos,target.pos) <= 750 then
 		if target:GetCollision(self.E.width,self.E.speed,self.E.delay) == 0 then
 			afterE = true
 		end
@@ -1087,7 +1100,7 @@ function LazyXerath:startR(target)
 end
 
 function LazyXerath:useRkill(target)
-	if self.chargeR == false and not LazyMenu.Combo.R.useRself:Value() and LazyMenu.Combo.R.BlackList[target.charName]:Value() == false then
+	if self.chargeR == false and LazyMenu.Combo.R.BlackList[target.charName] ~= nil and not LazyMenu.Combo.R.useRself:Value() and LazyMenu.Combo.R.BlackList[target.charName]:Value() == false then
 		local rDMG = CalcMagicalDamage(myHero,target,170+30*myHero:GetSpellData(_R).level + (myHero.ap*0.43))*(2+myHero:GetSpellData(_R).level - LazyMenu.Combo.R.safeR:Value())
 		if target.health + target.shieldAP + target.shieldAD < rDMG and CountAlliesInRange(target.pos,700) == 0 then
 			local delay =  math.floor((target.health + target.shieldAP + target.shieldAD)/(rDMG/(2+myHero:GetSpellData(_R).level))) * 0.8
