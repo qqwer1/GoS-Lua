@@ -147,7 +147,7 @@ DPS = qDMG + wDMG + pDMG + pDMGCrit
 
 if mainMenu.Combo.lockR:Value() and CanUseSpell(myHero,_R) == READY and ValidTarget(target, 1300) and not IsInDistance(target, GetRange(myHero)+myHitBox) then
 	if GetCastName(myHero,_R) == "LucianR" then
-		local RPred = GetPredictionForPlayer(myHeroPos, target, GetMoveSpeed(target),3500, 250, 1500, 75, true, false)
+		local RPred = GetPredictionForPlayer(myHeroPos, target, GetMoveSpeed(target),3500, 250, 1300, 75, true, false)
 		if RPred.HitChance == 1 then
 			CastSkillShot(_R, RPred.PredPos.x, RPred.PredPos.y, RPred.PredPos.z)
 		end
