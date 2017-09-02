@@ -519,6 +519,83 @@ Control.mouse_event(MOUSEEVENTF_RIGHTUP)
 Control.KeyUp(HK_TCO)
 end
 
+--FAST EDIT---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+class "Jinx"
+
+function Jinx:__init()
+	print("ADC Main | Jinx loaded!")
+	self.spellIcons = { Q = "http://vignette3.wikia.nocookie.net/leagueoflegends/images/f/f8/Phosphorus_Bomb.png",
+						W = "http://vignette3.wikia.nocookie.net/leagueoflegends/images/d/d5/Valkyrie.png",
+						E = "http://vignette3.wikia.nocookie.net/leagueoflegends/images/3/36/Gatling_Gun.png",
+						R = "http://vignette2.wikia.nocookie.net/leagueoflegends/images/d/d3/Missile_Barrage.png"}
+	self.Q = { delay = 0.25, speed = 1125, width = 250, range = 825 }
+	self.W = { delay = 0.25, speed = 650, width = 100, range = 600 }
+	self.E = { delay = 0.05, speed = math.huge, width = 80, range = 550 }
+	self.R = { delay = 0.25, speed = 2000, width = 40, range = 1300 }
+	self.range = 550
+	self:Menu()
+	function OnTick() self:Tick() end
+ 	-- function OnDraw() self:Draw() end
+end
+
+function Jinx:Menu()
+	-- COMBO
+	ADCMenu.Combo:MenuElement({id = "useQ", name = "Use Q", value = true, leftIcon = self.spellIcons.Q})
+	ADCMenu.Combo:MenuElement({id = "useW", name = "Use W", value = true, leftIcon = self.spellIcons.W})
+	ADCMenu.Combo:MenuElement({id = "useE", name = "Use E", value = true, leftIcon = self.spellIcons.E})
+	ADCMenu.Combo:MenuElement({id = "useR", name = "Use R", value = true, leftIcon = self.spellIcons.R})
+	ADCMenu.Combo:MenuElement({id = "Orb", name = "Use ADC in 2017 Orbwalker", value = true})
+end
+
+function Jinx:Tick()
+	if GetMode() == "Combo" then
+		self.range = myHero.range
+		local target = GetTarget(self.range + 100,"AD")
+		if target then
+			if GetDistance(myHero.pos,target.pos) > self.range + 100 then
+				local cTarget = GetTarget(self.range + 100,"AD")
+				if cTarget then
+					target = cTarget
+				end
+			end
+		end
+		if target then
+			Item:useItem(target)
+		end
+		--hehexd
+		if ADCMenu.Combo.Orb:Value() then
+			if target and GetDistance(myHero.pos,target.pos) < self.range + 75 then
+				if aa.state == 1 and aa.state ~= 2 and castSpell.state ~= 1 then
+					CastAttack(target,self.range + 75)
+					lastTick = GetTickCount()
+				elseif aa.state == 3 and aa.state ~= 2 and castSpell.state ~= 1 and GetTickCount() - lastMove > 120 then
+					Control.Move()
+					-- CastMove()
+					lastMove = GetTickCount()
+				end
+			else
+				if aa.state ~= 2 and castSpell.state ~= 1 and GetTickCount() - lastMove > 120 then
+					Control.Move()
+					-- CastMove()
+					lastMove = GetTickCount()
+				end
+			end
+		end
+	end
+	self:Killsteal()
+end
+
+function Jinx:Killsteal()
+	for i = 1, Game.HeroCount() do
+		local target = Game.Hero(i)
+		if target.isEnemy and target.valid and not target.dead and target.visible and target.isTargetable then
+			Item:ksItem(target)
+		end
+	end
+end
+
 --CORKI--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -1214,7 +1291,11 @@ function Vayne:Tick()
 end
 
 function Vayne:Draw()
-
+	if MapPosition:inWall(mousePos) == true then
+		Draw.Text("WALL",40,cursorPos)
+	else
+		Draw.Text("----",40,cursorPos)
+	end
 end
 
 function Vayne:ResetOrb()
@@ -1311,8 +1392,8 @@ function Vayne:useQchase(target)
 						break
 					end
 				end
-				if underT == false then
-					CastSpell(HK_Q,mousePos,5000,100)
+				if underT == false and GetDistance(afterQ,target.pos) > 250 then
+					Control.CastSpell(HK_Q,mousePos)
 				end
 			end		
 		end
@@ -1322,7 +1403,7 @@ end
 function Vayne:useQaway(target)
 	if aa.state == 3 then
 		local qPred = target:GetPrediction(math.huge,0.5)
-		if GetDistance(target.pos,myHero.pos) <= self.range + 50 and GetDistance(qPred,myHero.pos) <= 200 then
+		if GetDistance(target.pos,myHero.pos) <= self.range + 50 and GetDistance(qPred,myHero.pos) <= 300 then
 			local dashRange = 425
 			local qPosVec = Vector(myHero.pos,mousePos):Normalized()
 			local afterQ = myHero.pos + qPosVec * dashRange
@@ -1337,8 +1418,8 @@ function Vayne:useQaway(target)
 					break
 				end
 			end
-			if underT == false and CountEnemiesInRange(myHero.pos, 650) >= CountEnemiesInRange(afterQ, 650) then
-				CastSpell(HK_Q,afterQ,5000,100)
+			if underT == false and CountEnemiesInRange(myHero.pos, 650) >= CountEnemiesInRange(afterQ, 650) and GetDistance(myHero.pos,afterQ) > 250 then
+				Control.CastSpell(HK_Q,afterQ)
 			end	
 		end
 	end
@@ -1355,9 +1436,9 @@ function Vayne:useQSilver(target)
 		local qPos = myHero.pos + Vector(myHero.pos,mousePos):Normalized() * dashRange
 		local qPosVec = Vector(myHero.pos,mousePos):Normalized()
 		local afterQ = myHero.pos + qPosVec * (GetDistance(myHero.pos,target.pos) - 350)
-		if GetDistance(afterQ,target.pos) < 550 then
+		if GetDistance(afterQ,target.pos) < 550 and GetDistance(afterQ,target.pos) > 250 then
 			if GotBuff(target,"VayneSilveredDebuff") + extraStackeronikekoroni == 2 then
-				CastSpell(HK_Q,mousePos,5000,100)
+				Control.CastSpell(HK_Q,mousePos)
 			end
 		end
 	end
@@ -1381,7 +1462,9 @@ function Vayne:useQkill(target)
 					wDMG = math.floor(target.maxHealth*(0.045 + 0.015*myHero:GetSpellData(_W).level) + 20 + 20*myHero:GetSpellData(_W).level)
 				end
 				if hp <= qDMG + extraAA + wDMG then
-					CastSpell(HK_Q,target.pos,5000,100)
+					if CountEnemiesInRange(myHero.pos, 650) >= CountEnemiesInRange(afterQ, 650) and GetDistance(myHero.pos,afterQ) > 250 then
+						Control.CastSpell(HK_Q,target.pos)
+					end
 				end
 			end
 		end
@@ -1395,7 +1478,7 @@ function Vayne:useQult(target)
 			if dashRange > self.Q.range then dashRange = self.Q.range end
 			local qPos = myHero.pos + Vector(myHero.pos,mousePos):Normalized() * dashRange
 			if GetDistance(qPos,target.pos) < 600 then
-				CastSpell(HK_Q,mousePos,5000,100)
+				Control.CastSpell(HK_Q,mousePos)
 			end
 		end
 	end
