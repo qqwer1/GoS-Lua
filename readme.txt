@@ -11,3 +11,8 @@ syrup to the sandwich, sandwiches the syrup, funk
 sandwich your per diem you just gotta syrup, funk
 If I quit your sandwich I still ride Mersyrup, funk
 If I quit this syrup, I still be the sandwich, funk﻿
+
+🔥           🔥      🔥🔥🔥🔥🔥
+🔥           🔥         🔥
+🔥           🔥         🔥
+🔥🔥🔥🔥     🔥          🔥﻿
