@@ -584,7 +584,7 @@ function LazyXayah:__init()
 	self.AA = { delay = 0.25, speed = 2000, width = 0, range = 525 }
 	self.Q = { delay = 0.25, speed = 1800, width = 100, range = 1100 }
 	self.W = { delay = 0.05, speed = math.huge, width = 200, range = 525 }
-	self.E = { delay = 0.25, speed = 3000, width = 100, range = 1050 }
+	self.E = { delay = 0.25, speed = 3000, width = 90, range = 1050 }
 	self.R = { delay = 0.5, speed = math.huge, width = 200, range = 1000, angle = 30 }
 	self.Q_DMG = function(target) return CalcPhysicalDamage(myHero,target,40 + 40*myHero:GetSpellData(0).level + myHero.bonusDamage) end
 	self.W_DMG = function(target) return CalcPhysicalDamage(myHero,target,myHero.totalDamage*0.2) end
@@ -615,6 +615,8 @@ function LazyXayah:Menu()
 		LazyMenu.Combo.E:MenuElement({id = "leaveX", name = " If target leaving X feathers hits", value = 3, min = 3, max = 10, step = 1})
 	LazyMenu.Combo:MenuElement({id = "useR", name = "Use R", value = true, leftIcon = self.spellIcons.R})
 		LazyMenu.Combo:MenuElement({id = "R", name = "R - Settings", type = MENU, leftIcon = self.spellIcons.R})
+		LazyMenu.Combo.R:MenuElement({id = "useKillR", name = "Use R to kill", value = true})
+		LazyMenu.Combo.R:MenuElement({id = "useXR", name = "Use R on X enemies", value = true})
 		LazyMenu.Combo.R:MenuElement({id = "canHitX", name = " If can hit X enemies", value = 3, min = 2, max = 5, step = 1})
 		
 	LazyMenu.Harass:MenuElement({id = "useQ", name = "Use Q", value = true, leftIcon = self.spellIcons.Q})
@@ -655,7 +657,7 @@ if myHero.dead then return end
 end
 
 function LazyXayah:Combo()
-	local targetAA = GetTarget(self.range + myHero.boundingRadius/2 + 50,"AD")
+	local targetAA = GetTarget(self.range + myHero.boundingRadius/2 + 100,"AD")
 	--W
 	if LazyMenu.Combo.useW:Value() and targetAA then
 		self:useW(targetAA)
@@ -741,6 +743,7 @@ function LazyXayah:useR()
 	if Game.CanUseSpell(_R) == 0 and castSpell.state == 0 then
 		local target = GetTarget(1200,"AD")
 		if target then
+			self:useR_kill(target)
 			self:useR_multi(target)
 		end
 	end
@@ -756,7 +759,7 @@ function LazyXayah:useQ_simple(targetAA)
 					local aaDMG = CalcPhysicalDamage(myHero,targetAA,myHero.totalDamage*(1+myHero.critChance))
 					if targetAA:GetCollision(self.Q.width,self.Q.speed,self.Q.delay) > 0 then dmg = dmg/2 end
 					if myHero.hudAmmo < 3 or aaDMG < dmg then
-						CastSpell(HK_Q,qPred)
+						CastSpell(HK_Q,qPred,1000,250)
 					end
 				end
 			end
@@ -765,7 +768,7 @@ function LazyXayah:useQ_simple(targetAA)
 			if target and (Game.Timer() - OnWaypoint(target).time < 0.15 or Game.Timer() - OnWaypoint(target).time > 1.0) then
 				local qPred = GetPred(target,self.Q.speed,self.Q.delay + Game.Latency()/1000)
 				if GetDistance(myHero.pos,qPred) < self.Q.range - 250 then
-					CastSpell(HK_Q,qPred)
+					CastSpell(HK_Q,qPred,1000,250)
 				end
 			end
 		end
@@ -788,10 +791,6 @@ function LazyXayah:useQkill()
 		if eDMG > 0 and target.health + target.shieldAD < qDMG + eDMG then
 			if GetDistance(myHero.pos,qPred) < self.Q.range - 175 then
 				CastSpell(HK_Q,qPred)
-				--hmmmm?
-				-- DelayAction(function()
-					-- Control.CastSpell(HK_E)
-				-- end,0.25)
 				return
 			end
 		end
@@ -810,7 +809,7 @@ function LazyXayah:useE_runout(target)
 		local fOn = self.FeathersOn[target.networkID]
 		local fOnD = self.FeathersOnDelay[target.networkID]
 		if fOn ~= nil and fOnD ~= nil then
-			if fOn >= LazyMenu.Combo.E.leaveX:Value() and fOnD < fOn - 1 then
+			if fOn >= LazyMenu.Combo.E.leaveX:Value() and fOnD < fOn then
 				Control.CastSpell(HK_E)
 				return
 			end
@@ -818,11 +817,58 @@ function LazyXayah:useE_runout(target)
 	end
 end
 
+-- E before R dmg if doesnt need the extra dmg
+-- R before E if needed the extra dmg for E
+-- R if target out of range and Q/E on cooldown
+
+function LazyXayah:useR_kill(target)
+	if LazyMenu.Combo.R.useKillR:Value() then
+		local targetHP = target.health + target.shieldAD + target.hpRegen*2
+		local rPred = GetPred(target,self.R.speed,self.R.delay + 0.25 + Game.Latency()/1000)
+		if GetDistance(myHero.pos,target.pos) > GetDistance(rPred,target.pos) then
+			local rDMG = self.R_DMG(target)
+			local feathers = 0
+			local extraFeathers = 0
+			local fOn = self.FeathersOn[target.networkID]
+			local aggro = ((GetDistance(myHero.pos,target.pos) - 250 > GetDistance(Game.mousePos(),target.pos)) or (GetDistance(myHero.pos,target.pos) < 350)) and true or false
+			if GetDistance(myHero.pos,rPred) + myHero.ms/1.5 > self.R.range then return end
+			if Game.CanUseSpell(_E) == 0 and fOn ~= nil then feathers = fOn end
+			if GetDistance(myHero.pos,rPred) <= 350 then extraFeathers = 3 elseif GetDistance(myHero.pos,rPred) > 350 and GetDistance(myHero.pos,rPred) < 600 then extraFeathers = 2 else extraFeathers = 1 end
+				if IsImmobileTarget(target) == true then
+					extraFeathers = extraFeathers + 2
+				end
+			if Game.CanUseSpell(_E) == 0 then
+				local eDMG = self.E_DMG(target,feathers)
+				if targetHP <= eDMG + rDMG then
+				print("1")
+					CastSpell(HK_R,rPred)
+				elseif targetHP > eDMG + rDMG and aggro == true then
+					print("2")
+					local eDMG2 = self.E_DMG(target,feathers + extraFeathers)
+					if targetHP < eDMG2 + rDMG then
+						print("2!")
+						CastSpell(HK_R,rPred)
+					end
+				end
+				if feathers < 3 and targetHP > eDMG and GetDistance(myHero.pos,target.pos) > 850 and targetHP < rDMG and aggro == true then
+					print("3")
+					CastSpell(HK_R,rPred)
+				end
+			else
+				if GetDistance(myHero.pos,target.pos) > 850 and targetHP < rDMG and aggro == true then
+					print("4")
+					CastSpell(HK_R,rPred)
+				end
+			end
+		end
+	end
+end
+
 function LazyXayah:useR_multi(target)
+if LazyMenu.Combo.R.useXR:Value() then
 	local rPred = GetPred(target,self.R.speed,self.R.delay + Game.Latency()/1000)
 	if GetDistance(rPred,myHero.pos) < self.R.range then
 		local mainPos = myHero.pos + Vector(myHero.pos,rPred):Normalized()*self.R.range
-		 -- 500,0.4166666666666666666667 radiant
 		local points = {[1] = mainPos,[2] = mainPos + Vector(myHero.pos,mainPos):Normalized():Perpendicular()*150, [3] = mainPos + Vector(myHero.pos,mainPos):Normalized():Perpendicular2()*150}
 		local hits = {[1] = 1, [2] = 1, [3] = 1}
 		local distance = {[1] = 0, [2] = 0, [3] = 0}
@@ -857,6 +903,7 @@ function LazyXayah:useR_multi(target)
 			return
 		end
 	end
+end
 end
 
 ------------------------------------------------------------------------------
