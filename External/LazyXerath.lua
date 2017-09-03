@@ -950,7 +950,7 @@ function LazyXerath:EnemyLoop()
 						self:useWkill(target,wPred)
 					end
 				end
-				if LazyMenu.Misc.gapE:Value() then
+				if LazyMenu.Misc.gapE:Value() and Game.CanUseSpell(_E) == 0 then
 					if GetDistance(target.posTo,myHero.pos) < 500 then
 						self:useEdash(target)
 					end
