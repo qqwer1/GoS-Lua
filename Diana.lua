@@ -1,7 +1,5 @@
 if GetObjectName(GetMyHero()) ~= "Diana" then return end
 
-if not pcall( require, "Inspired" ) then PrintChat("You are missing Inspired.lua!") return end
-
 local mainMenu = Menu("Diana", "Diana")
 mainMenu:Menu("Combo", "Combo")
 mainMenu.Combo:Boolean("useQ", "Use Q  in combo", true)
@@ -113,11 +111,11 @@ end
 end)
 
 
-local ts = TargetSelector(1200, 2, DAMAGE_MAGICAL)
+local target = GetCurrentTarget()
 
 OnTick(function(myHero)
 
-target = ts:GetTarget()
+target = GetCurrentTarget()
 local myHeroPos = GetOrigin(myHero)
 
 local Sheen = GetItemSlot(myHero,3057)
@@ -390,7 +388,6 @@ end)
 
 OnDraw(function(myHero)
 local myHeroPos = GetOrigin(myHero)
--- local target = GetCurrentTarget()
 
 if ValidTarget(target,1400) and fullDMG ~= nil then	
 	DrawDmgOverHpBar(target,GetCurrentHP(target),fullDMG,0,0xff00ff00)
