@@ -43,7 +43,7 @@ if mainMenu.Drawings.DrawDMG:Value() and ValidTarget(target, 2500) then
 	if CanUseSpell(myHero,_Q) == READY then
 		qDMG = CalcDamage(myHero, target, 0, (30*GetCastLevel(myHero,_Q)+50+(0.5*(GetBaseDamage(myHero) + GetBonusDmg(myHero)))+(0.5*GetBonusAP(myHero))))
 	else
-		qDMG = 0
+		qDMG = 1
 	end
 -- R	
 	if CanUseSpell(myHero,_R) == READY and GotBuff(myHero,"mbcheck2") == 1 then
