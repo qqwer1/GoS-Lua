@@ -703,6 +703,7 @@ function LazyXerath:MenuRTarget(v,t)
 end
 
 function LazyXerath:Tick()
+	if Game.IsChatOpen() then return end
 	self:castingQ()
 	self:castingR()
 	if myHero.dead then return end
