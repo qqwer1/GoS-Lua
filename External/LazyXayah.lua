@@ -710,13 +710,16 @@ function LazyXayah:useE(targetAA)
 		if targetAA then
 			if self.FeathersOn[targetAA.networkID] ~= nil then
 				self:useE_runout(targetAA)
-				local qDMG = 0
-				local aaDMG = CalcPhysicalDamage(myHero,targetAA,myHero.totalDamage*(1+myHero.critChance)*(0.625*myHero.attackSpeed))*1.25
-				if Game.CanUseSpell(_Q) == 0 then qDMG = self.Q_DMG(targetAA) end
-				local eDMG = math.floor(self.E_DMG(targetAA,self.FeathersOn[targetAA.networkID]))
-				if qDMG + aaDMG + eDMG > targetAA.health + targetAA.shieldAD then
-					Control.CastSpell(HK_E)
-					return
+				if GetDistance(myHero.pos,targetAA.pos) < 500 then
+					local qDMG = 0
+					local aaDMG = CalcPhysicalDamage(myHero,targetAA,myHero.totalDamage*(1+myHero.critChance)*(0.625*myHero.attackSpeed))*1.25
+					if Game.CanUseSpell(_Q) == 0 then qDMG = self.Q_DMG(targetAA) end
+					local eDMG = math.floor(self.E_DMG(targetAA,self.FeathersOn[targetAA.networkID]))
+					if qDMG + aaDMG + eDMG > targetAA.health + targetAA.shieldAD and eDMG > 0 then
+						--print("E1")
+						Control.CastSpell(HK_E)
+						return
+					end
 				end
 			end
 		else
@@ -729,6 +732,7 @@ function LazyXayah:useE(targetAA)
 			for i,target in pairs(GetEnemyHeroes()) do
 				if GetDistance(myHero.pos,target.pos) < 3500 then
 					if self.FeathersOn[target.networkID] ~= nil and math.floor(self.E_DMG(target,self.FeathersOn[target.networkID])) >= target.health + target.shieldAD then
+					--print("E2")
 						Control.CastSpell(HK_E)
 						return
 					end
@@ -759,7 +763,7 @@ function LazyXayah:useQ_simple(targetAA)
 					local aaDMG = CalcPhysicalDamage(myHero,targetAA,myHero.totalDamage*(1+myHero.critChance))
 					if targetAA:GetCollision(self.Q.width,self.Q.speed,self.Q.delay) > 0 then dmg = dmg/2 end
 					if myHero.hudAmmo < 3 or aaDMG < dmg then
-						CastSpell(HK_Q,qPred,1000,250)
+						CastSpell(HK_Q,qPred,1000,50)
 					end
 				end
 			end
@@ -768,7 +772,7 @@ function LazyXayah:useQ_simple(targetAA)
 			if target and (Game.Timer() - OnWaypoint(target).time < 0.15 or Game.Timer() - OnWaypoint(target).time > 1.0) then
 				local qPred = GetPred(target,self.Q.speed,self.Q.delay + Game.Latency()/1000)
 				if GetDistance(myHero.pos,qPred) < self.Q.range - 250 then
-					CastSpell(HK_Q,qPred,1000,250)
+					CastSpell(HK_Q,qPred,1000,50)
 				end
 			end
 		end
@@ -799,6 +803,7 @@ end
 
 function LazyXayah:useE_team()
 	if self.RootAble >= LazyMenu.Combo.E.canRootX:Value() or self.FeatherHit >= LazyMenu.Combo.E.canHitX:Value() then
+		--print("Eteam")
 		Control.CastSpell(HK_E)
 		return
 	end
@@ -810,6 +815,7 @@ function LazyXayah:useE_runout(target)
 		local fOnD = self.FeathersOnDelay[target.networkID]
 		if fOn ~= nil and fOnD ~= nil then
 			if fOn >= LazyMenu.Combo.E.leaveX:Value() and fOnD < fOn then
+			--print("Erun")
 				Control.CastSpell(HK_E)
 				return
 			end
@@ -839,24 +845,24 @@ function LazyXayah:useR_kill(target)
 				end
 			if Game.CanUseSpell(_E) == 0 then
 				local eDMG = self.E_DMG(target,feathers)
+				if eDMG > targetHP then return end
 				if targetHP <= eDMG + rDMG then
-				print("1")
+					--print("1")
 					CastSpell(HK_R,rPred)
 				elseif targetHP > eDMG + rDMG and aggro == true then
-					print("2")
 					local eDMG2 = self.E_DMG(target,feathers + extraFeathers)
 					if targetHP < eDMG2 + rDMG then
-						print("2!")
+						--print("2!")
 						CastSpell(HK_R,rPred)
 					end
 				end
 				if feathers < 3 and targetHP > eDMG and GetDistance(myHero.pos,target.pos) > 850 and targetHP < rDMG and aggro == true then
-					print("3")
+					--print("3")
 					CastSpell(HK_R,rPred)
 				end
 			else
 				if GetDistance(myHero.pos,target.pos) > 850 and targetHP < rDMG and aggro == true then
-					print("4")
+					--print("4")
 					CastSpell(HK_R,rPred)
 				end
 			end
@@ -928,7 +934,10 @@ function LazyXayah:EnemyLoop()
 						
 					end
 					if LazyMenu.Killsteal.useE:Value() then
-
+						if self.FeathersOn[target.networkID] ~= nil and math.floor(self.E_DMG(target,self.FeathersOn[target.networkID])) >= target.health + target.shieldAD then
+							Control.CastSpell(HK_E)
+							return
+						end
 					end
 				end
 			end
@@ -988,7 +997,7 @@ function LazyXayah:CountFeatherOn(target)
 			if GetDistance(targetPos,checkPos) < target.boundingRadius + self.E.width then
 				self.FeathersOn[target.networkID] = self.FeathersOn[target.networkID] + .5
 				self.FeatherHit = self.FeatherHit + 0.5
-				-- DrawRectangleOutline(myHero.pos.x, myHero.pos.y, myHero.pos.z, f.pos.x, f.pos.y, f.pos.z, target.boundingRadius/2 + self.E.width, Draw.Color(200,200,50,200))
+				--DrawRectangleOutline(myHero.pos.x, myHero.pos.y, myHero.pos.z, f.pos.x, f.pos.y, f.pos.z, target.boundingRadius/2 + self.E.width, Draw.Color(200,200,50,200))
 			end
 			--Delay
 			if GetDistance(targetPosDelay,checkPos) < target.boundingRadius + self.E.width then
