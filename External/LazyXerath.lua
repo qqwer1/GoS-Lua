@@ -840,7 +840,7 @@ function LazyXerath:Harass()
 		if LazyMenu.Harass.useE:Value() and mp > LazyMenu.Harass.manaE:Value() then
 			self:useE()
 		end
-		if LazyMenu.Harass.useQ:Value() and mp > LazyMenu.Harass.manaQ:Value() then	
+		if LazyMenu.Harass.useQ:Value() and (mp > LazyMenu.Harass.manaQ:Value() or self.chargeQ == true) then	
 			self:useQ()
 		end
 	end
