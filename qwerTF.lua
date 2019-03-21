@@ -1,15 +1,17 @@
--- qwerTF.lua VIP only ofc pls pfff all those plebs Kappa
--- dont even say thanks senpaii for making me wet ohhiiii kawaii origato
--- sick combos you know W Q BOOM! VIP
--- no R ofc bcs its would be retarded LUL
--- ay and again like at qwerShyv.lua no jungle fuking clear and no waveclear bcs I can use Q by pressing my Q key LOL
--- something else? hmm it draws a card above your HEAD Kappa
--- sick fow gold card stun support for the Q 
--- sick auto follow with Q if you hit a bronze player with ur gold card PogChamp
--- PogChamp a new update for qwerTF with some sik drawings
--- 1SHOT HELPER: Will show you which enemy you can 1shot perfect for fuking ult tps
--- didnt test if it will work for 1. start but fuk it, it works for me
 
+--[[
+qwerTF.lua VIP only ofc pls pfff all those plebs Kappa
+dont even say thanks senpaii for making me wet ohhiiii kawaii origato
+sick combos you know W Q BOOM! VIP
+no R ofc bcs its would be retarded LUL
+ay and again like at qwerShyv.lua no jungle fuking clear and no waveclear bcs I can use Q by pressing my Q key LOL
+something else? hmm it draws a card above your HEAD Kappa
+sick fow gold card stun support for the Q 
+sick auto follow with Q if you hit a bronze player with ur gold card PogChamp
+PogChamp a new update for qwerTF with some sik drawings
+1SHOT HELPER: Will show you which enemy you can 1shot perfect for fuking ult tps
+didnt test if it will work for 1. start but fuk it, it works for me
+--]]
 --GoldCardPreAttack
 
 if GetObjectName(GetMyHero()) ~= "TwistedFate" then return end
